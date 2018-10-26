@@ -1,0 +1,18 @@
+spring:
+  activemq:
+    broker-url: ${activemq.url:vm://localhost}
+    in-memory: true
+    pooled: false
+
+logging:
+  level:
+    com.backbase: INFO
+    org.springframework: INFO
+
+backbase:
+  billpay: 
+    provider:
+      url: http://localhost:1080/fiserv
+      clientAppText: billpay
+      clientAppVersion: 1.0
+      sponsorId: BankA
