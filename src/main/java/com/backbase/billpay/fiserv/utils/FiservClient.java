@@ -50,13 +50,6 @@ public class FiservClient extends WebServiceGatewaySupport {
      */
     public <T extends AbstractResponse> T call(AbstractRequest request, String soapAction) {
         
-        /*
-         * The following code is commented out, typically the session integration code is integrated with a 
-         * caching solution which is not in scope for this demo.
-         *   String sessionId = initiateSession(request);
-         *   request.getHeader().setSessionCorrelationId(sessionId);
-         */
-        
         LOG.debug("Request: {} for soap action {}", request, soapAction);
         try {
             @SuppressWarnings("unchecked")
@@ -75,8 +68,11 @@ public class FiservClient extends WebServiceGatewaySupport {
     /**
      * Some APIs require a session to be active (payments for example).  If an IP address is passed attempt
      * to create a session, otherwise don't.
+     * Typically the session integration code is integrated with a caching solution which is not in scope for this demo.
+     *    String sessionId = initiateSession(request);
+     *    request.getHeader().setSessionCorrelationId(sessionId);
      */
-    private String initiateSession(AbstractRequest request) {
+    public String initiateSession(AbstractRequest request) {
         if (request.getHeader().getSubscriberIpAddress() == null) {
             return null;
         } else {

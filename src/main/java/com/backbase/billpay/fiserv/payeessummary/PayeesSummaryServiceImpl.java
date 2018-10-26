@@ -8,7 +8,7 @@ public class PayeesSummaryServiceImpl implements PayeesSummaryService {
 
     @Override
     public BillPayPayeesSummaryGetResponseBody getBillPayPayeesSummary(String subscriberId) {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO build summary info from other services
+        return new BillPayPayeesSummaryGetResponseBody();
     }
 }

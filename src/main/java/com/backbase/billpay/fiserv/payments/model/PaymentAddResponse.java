@@ -2,7 +2,6 @@ package com.backbase.billpay.fiserv.payments.model;
 
 import com.backbase.billpay.fiserv.common.model.AbstractResponse;
 import com.backbase.billpay.fiserv.common.model.ResultType;
-import com.backbase.billpay.fiserv.payees.model.PayeeSummary;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

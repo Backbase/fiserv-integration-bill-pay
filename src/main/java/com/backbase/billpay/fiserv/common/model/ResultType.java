@@ -43,7 +43,6 @@ public class ResultType {
     /**
      * Tests the results for any errors, throws a BadRequestException is error(s) present.
      */
-    // TODO logging of errors etc
     public void checkForErrors() {
         if (!success) {
             if (CollectionUtils.isEmpty(resultInfo)) {
@@ -54,7 +53,7 @@ public class ResultType {
                 resultInfo.stream()
                            .filter(ResultInfo::isError)
                            .forEach(item -> errors.add(item.getError()));
-                throw new BadRequestException().withMessage("Bad request").withErrors(errors);
+                throw new BadRequestException().withMessage(BAD_REQUEST).withErrors(errors);
             }
         }
     }

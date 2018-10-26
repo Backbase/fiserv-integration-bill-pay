@@ -1,17 +1,12 @@
 package com.backbase.billpay.fiserv.payees;
 
 import static com.backbase.billpay.fiserv.utils.FiservUtils.fromFiservDate;
-import com.backbase.billpay.fiserv.payees.model.BldrDate;
 import com.backbase.billpay.fiserv.payees.model.PayeeSummary;
 import com.backbase.billpay.fiserv.payees.model.PaymentServices;
 import com.backbase.billpay.fiserv.payees.model.PaymentServices.PaymentServiceType;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.PaymentService;
 import com.backbase.rest.spec.common.types.Currency;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.springframework.stereotype.Component;
 

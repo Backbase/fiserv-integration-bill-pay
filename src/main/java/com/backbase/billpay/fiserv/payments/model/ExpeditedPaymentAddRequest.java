@@ -1,5 +1,8 @@
 package com.backbase.billpay.fiserv.payments.model;
 
+import com.backbase.billpay.fiserv.common.model.AbstractRequest;
+import com.backbase.billpay.fiserv.common.model.Header;
+import com.backbase.billpay.fiserv.payees.model.BldrDate;
 import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -7,9 +10,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import com.backbase.billpay.fiserv.common.model.AbstractRequest;
-import com.backbase.billpay.fiserv.common.model.Header;
-import com.backbase.billpay.fiserv.payees.model.BldrDate;
 
 @NoArgsConstructor
 @XmlRootElement(name = "ExpeditedPaymentAddRequest")

@@ -1,7 +1,6 @@
 package com.backbase.billpay.fiserv.payments;
 
 import static com.backbase.billpay.fiserv.utils.FiservUtils.toFiservDate;
-import static com.backbase.billpay.fiserv.utils.FiservUtils.todayFiservDate;
 import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
 import com.backbase.billpay.fiserv.payments.model.PaymentAddRequest;
@@ -97,10 +96,8 @@ public class PaymentsServiceImpl implements PaymentsService {
                                                                    .build())
                                               .header(header)
                                               .build(), PAYMENT_LIST_ACTION);
-        
-//        size = (size == null || size == 0) ? DEFAULT_SIZE : size;
-//        from = from == null ? DEFAULT_FROM : from;
-        
+    
+        // TODO implement pagination
         
         return mapper.map(response);
     }
@@ -150,11 +147,7 @@ public class PaymentsServiceImpl implements PaymentsService {
 
     @Override
     public void deleteRecurringPaymentById(Header header, String id) {
-        PaymentCancelRequest cancelRequest = PaymentCancelRequest.builder()
-                                                                 .header(header)
-                                                                 .paymentId(id)
-                                                                 .build();
-        client.call(cancelRequest, PAYMENT_CANCEL_ACTION);
+        deletePaymentById(header, id);
     }
 
     @Override

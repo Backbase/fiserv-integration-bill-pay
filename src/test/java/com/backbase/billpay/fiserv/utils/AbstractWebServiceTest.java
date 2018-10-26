@@ -111,6 +111,7 @@ public abstract class AbstractWebServiceTest {
         return convertMessageStringToObject(requestString, requestType);
     }
     
+    @SuppressWarnings("unchecked")
     protected <T> T convertMessageStringToObject(String message, Class<T> objectType) {
         try {
             SOAPMessage soapMessage = MessageFactory.newInstance()
