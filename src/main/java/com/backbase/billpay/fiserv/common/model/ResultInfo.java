@@ -18,37 +18,55 @@ public class ResultInfo {
     /**
      * Bill Pay API errors to map provider errors from.
      */
-    static final String INVALID_REQUEST_MESSAGE = "The request is invalid.";
-    static final String INVALID_REQUEST_KEY = "billpay.api.invalidRequest";
-    static final String INVALID_CARD_REQUEST_KEY = "billpay.api.invalidCardRequest";
-    static final String PAYMENT_QUANTITY_EXCEEDED_KEY = "billpay.api.paymentQuantityExceeded";
-    static final String FINAL_DATE_BEFORE_FIRST_DATE_KEY = "billpay.api.finalDateBeforeFirstDate";
-    static final String FRAUD_CHECK_FAILED_KEY = "billpay.api.fraudCheckFailed";
-    static final String FAILED_TO_CHANGE_PAYMENT_STATE_KEY = "billpay.api.failedToChangePaymentState";
-    static final String RISK_CHECK_FAILED_KEY = "billpay.api.riskCheckFailed";
-    static final String DAILY_LIMIT_EXCEEDED_KEY = "billpay.api.dailyLimitExceeded";
-    static final String PAYMENT_TOO_FAR_IN_ADVANCE_KEY = "billpay.api.paymentTooFarInAdvance";
-    static final String PAYMENT_AMOUNT_TOO_SMALL_KEY = "billpay.api.paymentAmountTooSmall";
-    static final String INVALID_BANK_ACCOUNT_KEY = "billpay.api.invalidBankAccount";
-    static final String INVALID_PAYEE_KEY = "billpay.api.invalidPayee";
-    static final String INACTIVE_PAYEE_KEY = "billpay.api.inactivePayee";
-    static final String INVALID_E_BILL_ID_KEY = "billpay.api.invalidEBillID";
-    static final String INVALID_PAYMENT_DATE_KEY = "billpay.api.invalidPaymentDate";
-    static final String PAYMENT_AMOUNT_TOO_LARGE_KEY = "billpay.api.paymentAmountTooLarge";
-    static final String INVALID_PAYMENT_AMOUNT_KEY = "billpay.api.invalidPaymentAmount";
-    static final String PAYMENT_ALREADY_EXISTS_KEY = "billpay.api.paymentAlreadyExists";
-    static final String INVALID_NEXT_PAYMENT_DATE_KEY = "billpay.api.invalidNextPaymentDate";
-    static final String MISSING_PAYMENT_INFORMATION_KEY = "billpay.api.missingPaymentInformation";
-    static final String TOO_MANY_PAYMENTS_REQUESTED_KEY = "billpay.api.tooManyPaymentsRequested";
-    static final String ACCOUNT_SCHEMING_FAILED_KEY = "billpay.api.accountSchemingFailed";
-    static final String INVALID_STATUS_KEY = "billpay.api.invalidStatus";
-    static final String INVALID_STATE_CODE_KEY = "billpay.api.invalidStateCode";
-    static final String INVALID_CITY_NAME_KEY = "billpay.api.invalidCityName";
-    static final String INVALID_ADDRESS_INFORMATION_KEY = "billpay.api.invalidAddressInformation";
-    static final String INVALID_ACCOUNT_NUMBER_KEY = "billpay.api.invalidAccountNumber";
-    static final String INVALID_ZIP_CODE_KEY = "billpay.api.invalidZipCode";
-    static final String PAYEE_ALREADY_EXISTS_KEY = "billpay.api.payeeAlreadyExists";
-
+    private static final Error INVALID_REQUEST = 
+                    new Error().withKey("billpay.api.invalidRequest")
+                               .withMessage("The request is invalid");
+    private static final Error PAYMENT_ALREADY_EXISTS = 
+                    new Error().withKey("billpay.api.paymentAlreadyExists")
+                               .withMessage("Payment already exists");
+    private static final Error INVALID_ZIP_CODE = 
+                    new Error().withKey("billpay.api.invalidZipCode")
+                               .withMessage("Invalid Zip Code");
+    private static final Error INVALID_ADDRESS_INFORMATION = 
+                    new Error().withKey("billpay.api.invalidAddressInformation")
+                               .withMessage("Invalid address information");
+    private static final Error INVALID_PAYMENT_DATE = 
+                    new Error().withKey("billpay.api.invalidPaymentDate")
+                               .withMessage("Invalid payment date");
+    private static final Error INVALID_E_BILL_ID = 
+                    new Error().withKey("billpay.api.invalidEBillID")
+                               .withMessage("Invalid Ebill ID");
+    private static final Error INVALID_PAYEE = 
+                    new Error().withKey("billpay.api.invalidPayee")
+                               .withMessage("The payee is invalid");
+    private static final Error INVALID_BANK_ACCOUNT = 
+                    new Error().withKey("billpay.api.invalidBankAccount")
+                               .withMessage("Invalid bank account");
+    private static final Error PAYMENT_AMOUNT_TOO_SMALL = 
+                    new Error().withKey("billpay.api.paymentAmountTooSmall")
+                               .withMessage("Payment amount is too small");
+    private static final Error DAILY_LIMIT_EXCEEDED = 
+                    new Error().withKey("billpay.api.dailyLimitExceeded")
+                               .withMessage("The daily limit has been exceeded");
+    private static final Error RISK_CHECK_FAILED = 
+                    new Error().withKey("billpay.api.riskCheckFailed")
+                               .withMessage("Payments could not be taken");
+    private static final Error INVALID_CARD_REQUEST = 
+                    new Error().withKey("billpay.api.invalidCardRequest")
+                               .withMessage("The card is invalid");
+    private static final Error FRAUD_CHECK_FAILED = 
+                    new Error().withKey("billpay.api.fraudCheckFailed")
+                               .withMessage("Payments could not be taken");
+    private static final Error PAYMENT_TOO_FAR_IN_ADVANCE = 
+                    new Error().withKey("billpay.api.paymentTooFarInAdvance")
+                               .withMessage("Payment is too far in advance");
+    private static final Error ACCOUNT_SCHEMING_FAILED = 
+                    new Error().withKey("billpay.api.accountSchemingFailed")
+                               .withMessage("Invalid payee account number or Account scheming failed");
+    private static final Error PAYEE_ALREADY_EXISTS = 
+                    new Error().withKey("billpay.api.payeeAlreadyExists")
+                               .withMessage("The payee already exists");
+    
     private String code;
     private String description;
     private String field;
@@ -89,13 +107,46 @@ public class ResultInfo {
             case "370":
             case "375":
             case "380":
-                return new Error().withKey(INVALID_REQUEST_KEY)
-                                  .withMessage(INVALID_REQUEST_MESSAGE);
+                return INVALID_REQUEST;
+            case "266":
+                return INVALID_ZIP_CODE;
+            case "1065":
+                return ACCOUNT_SCHEMING_FAILED;
+            case "1310":
+                return PAYMENT_ALREADY_EXISTS;
+            case "1055":
+            case "1332":
+            case "1038":
+            case "1044":
+            case "1057":
+                return INVALID_ADDRESS_INFORMATION;
+            case "1053":
+                return PAYEE_ALREADY_EXISTS;
+            case "1301": 
+            case "1314":
+                return PAYMENT_TOO_FAR_IN_ADVANCE;
+            case "1318":
+                return INVALID_PAYMENT_DATE;
+            case "1306":
+                return INVALID_E_BILL_ID;
+            case "1308":
+                return INVALID_PAYEE;
+            case "1312":
+                return INVALID_BANK_ACCOUNT;
+            case "1313":
+                return PAYMENT_AMOUNT_TOO_SMALL;
+            case "1315":
+                return DAILY_LIMIT_EXCEEDED;
+            case "1320":
+                return RISK_CHECK_FAILED;
+            case "1343":
+                return INVALID_CARD_REQUEST;
+            case "1900":
+                return FRAUD_CHECK_FAILED;
             case "2017":
             case "2018":
             case "2019":
                 return FiservClient.PROVIDER_UNAVAILABLE_ERROR;
-                
             default:
                 return ResultType.GENERAL_ERROR;
         }
