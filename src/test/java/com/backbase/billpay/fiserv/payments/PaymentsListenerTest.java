@@ -258,6 +258,8 @@ public class PaymentsListenerTest extends AbstractWebServiceTest {
                     .getRequest().getData();
         
         // validate the response
+        assertEquals(Long.valueOf(1), response.getTotalCount());
+        assertEquals(1, response.getPayments().size());
         com.backbase.billpay.fiserv.payments.model.Payment fiservPayment = fiservResponse.getPayments().get(0);
         Payment servicePayment = response.getPayments().get(0);
         assertEquals(fiservPayment.getAmount(), servicePayment.getPaymentAmount());

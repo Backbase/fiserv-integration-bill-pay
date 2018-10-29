@@ -3,6 +3,7 @@ package com.backbase.billpay.fiserv.payments;
 import static com.backbase.billpay.fiserv.utils.FiservUtils.toFiservDate;
 import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
+import com.backbase.billpay.fiserv.payments.model.Payment;
 import com.backbase.billpay.fiserv.payments.model.PaymentAddRequest;
 import com.backbase.billpay.fiserv.payments.model.PaymentAddResponse;
 import com.backbase.billpay.fiserv.payments.model.PaymentCancelRequest;
@@ -30,24 +31,28 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringP
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PaymentsServiceImpl implements PaymentsService {
     
-    public static final int POSITIVE_MAX_DAYS = 360;
-    public static final int NEGATIVE_MAX_DAYS = -10000;
-    public static final int DEFAULT_FROM = 0;
-    public static final int DEFAULT_SIZE = 1000;
-    
+    protected static final int POSITIVE_MAX_DAYS = 360;
+    protected static final int NEGATIVE_MAX_DAYS = -10000;
+    private static final int DEFAULT_FROM = 0;
+    private static final int DEFAULT_SIZE = 1000;
     private static final String PAYMENT_DETAIL_ACTION = "PaymentDetail";
     private static final String PAYMENT_ADD_ACTION = "PaymentAdd";
     private static final String PAYMENT_MODIFY_ACTION = "PaymentModify";
     private static final String PAYMENT_CANCEL_ACTION = "PaymentCancel";
     private static final String PAYMENT_LIST_ACTION = "PaymentList";
-    
-    
+    private static final BillPayPaymentsGetResponseBody EMPTY_PAYMENT_RESPONSE = new BillPayPaymentsGetResponseBody()
+                                                                                    .withTotalCount(Long.valueOf(0));
     private final PaymentsMapper mapper;
     private final PaymentMapper paymentMapper;
     private final FiservClient client;
@@ -85,8 +90,7 @@ public class PaymentsServiceImpl implements PaymentsService {
         } else {
             numberOfDays = (int) ChronoUnit.DAYS.between(calculatedStartDate.toInstant(), endDate.toInstant());
         }
-        
-        
+
         BldrDate bldrStartDate = toFiservDate(calculatedStartDate);
         PaymentListResponse response = client.call(PaymentListRequest.builder()
                                               .filter(PaymentFilter.builder()
@@ -96,10 +100,36 @@ public class PaymentsServiceImpl implements PaymentsService {
                                                                    .build())
                                               .header(header)
                                               .build(), PAYMENT_LIST_ACTION);
-    
-        // TODO implement pagination
         
-        return mapper.map(response);
+        // filter payments by payee ID if supplied
+        List<Payment> filteredPayments = 
+        StringUtils.isEmpty(payeeId) ? response.getPayments()
+                                     : response.getPayments()
+                                         .stream()
+                                         .filter(payment -> String.valueOf(payment.getPayee().getPayeeId()).equals(payeeId))
+                                         .collect(Collectors.toList());
+
+        // return empty response if no payment found
+        if (filteredPayments.isEmpty()) {
+            return EMPTY_PAYMENT_RESPONSE;
+        }
+
+        // paginate the data
+        int pageSize = (size == null || size == 0) ? DEFAULT_SIZE : size;
+        int pageFrom = from == null ? DEFAULT_FROM : from;
+        Map<Integer, List<Payment>> paymentsMap = partition(filteredPayments, pageSize);
+        int numberOfPages = paymentsMap.size();
+        List<Payment> payments = pageFrom > numberOfPages ? paymentsMap.get(numberOfPages - 1) : paymentsMap.get(pageFrom);
+        response.setPayments(payments);
+        return mapper.map(response)
+                     .withTotalCount(Long.valueOf(filteredPayments.size()));
+    }
+    
+    private Map<Integer, List<Payment>> partition(List<Payment> payments, int pageSize) {
+        return IntStream.range(0, (payments.size() + pageSize - 1) / pageSize)
+                        .boxed()
+                        .collect(Collectors.toMap(i -> i, i -> payments
+                                        .subList(i * pageSize, Math.min(pageSize * (i + 1), payments.size()))));
     }
 
     @Override
