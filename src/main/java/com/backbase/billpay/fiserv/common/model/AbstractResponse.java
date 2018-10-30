@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public abstract class AbstractResponse {
     
-    @XmlElement(name="Result", required = true)
+    @XmlElement(name = "Result", required = true)
     private ResultType result;
 }

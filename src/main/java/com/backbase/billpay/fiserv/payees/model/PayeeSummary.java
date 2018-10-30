@@ -9,9 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
+@Setter
 @Builder
 @ToString
 @NoArgsConstructor
@@ -23,7 +25,7 @@ public class PayeeSummary {
     private String accountNumber;
 
     @XmlElement(name = "Address")
-    private USAddress address;
+    private UsAddress address;
 
     @XmlElement(name = "AllowsEbillAutoPayOfAmountDue")
     private Boolean allowsEbillAutoPayOfAmountDue;
@@ -101,7 +103,7 @@ public class PayeeSummary {
     private String nickName;
 
     @XmlElement(name = "OverNightAddress")
-    private USAddress overNightAddress;
+    private UsAddress overNightAddress;
 
     @XmlElement(name = "PayeeId")
     private Long payeeId;

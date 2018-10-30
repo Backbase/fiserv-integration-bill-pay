@@ -17,7 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-public class USAddress {
+public class UsAddress {
 
     @XmlElement(name = "Address1")
     private String address1;

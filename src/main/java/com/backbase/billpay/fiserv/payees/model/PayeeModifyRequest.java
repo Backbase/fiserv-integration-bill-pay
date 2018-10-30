@@ -29,6 +29,13 @@ public class PayeeModifyRequest extends AbstractRequest {
     @XmlElement(name = "PayeeId")
     private Long payeeId;
 
+    /**
+     * Constructor with header from abstract request.
+     * @param modifyPendingPayments Whether to modify pending payments for the payee
+     * @param payeeAddInfo Details of the payee to update
+     * @param payeeId Id of the payee
+     * @param header Fiserv header including the subscriber id and ip address
+     */
     @Builder
     public PayeeModifyRequest(Boolean modifyPendingPayments, PayeeAddInfo payeeAddInfo, Long payeeId, Header header) {
         super(header);

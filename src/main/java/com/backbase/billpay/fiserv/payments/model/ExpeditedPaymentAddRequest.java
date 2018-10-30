@@ -52,6 +52,17 @@ public class ExpeditedPaymentAddRequest extends AbstractRequest {
         }
     }
     
+    /**
+     * Constructor with header from abstract request.
+     * @param bankAccountId Details of the bank account
+     * @param ebillId Id of the associated ebill
+     * @param payeeId Id the payee
+     * @param paymentAmount Amount to pay the payee
+     * @param paymentDate Date the payment is scheduled for
+     * @param paymentDeliveryMethod Method of delivery for the payment
+     * @param paymentFee Fee incurred by scheduling payment
+     * @param header Fiserv header including the subscriber id and ip address
+     */
     @Builder
     public ExpeditedPaymentAddRequest(BankAccountId bankAccountId, String ebillId, Long payeeId,
                     BigDecimal paymentAmount, BldrDate paymentDate, ExpeditedPaymentDelivery paymentDeliveryMethod,

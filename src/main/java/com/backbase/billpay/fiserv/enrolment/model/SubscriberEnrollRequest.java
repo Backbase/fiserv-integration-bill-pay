@@ -18,22 +18,28 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement(name="SubscriberEnrollRequest")
+@XmlRootElement(name = "SubscriberEnrollRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SubscriberEnrollRequest extends AbstractRequest {
-    
-    @XmlElement(name="BankAccountInformation")
+
+    @XmlElement(name = "BankAccountInformation")
     private BankAccountInformation bankAccountInformation;
-    
-    @XmlElement(name="SubscriberInformation")
+
+    @XmlElement(name = "SubscriberInformation")
     private SubscriberInformation subscriberInformation;
 
+    /**
+     * Constructor with header from abstract request.
+     * @param header Fiserv header including the subscriber id and ip address
+     * @param bankAccountInformation Details of the bank account
+     * @param subscriberInformation Details of the subscriber
+     */
     @Builder
     public SubscriberEnrollRequest(Header header, BankAccountInformation bankAccountInformation,
-                                   SubscriberInformation subscriberInformation) {
+                    SubscriberInformation subscriberInformation) {
         super(header);
         this.bankAccountInformation = bankAccountInformation;
         this.subscriberInformation = subscriberInformation;
     }
-    
+
 }

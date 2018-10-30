@@ -19,10 +19,10 @@ import lombok.ToString;
 @Builder
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BankAccountSummary {
-    
-    @XmlElement(name="AccountNickName")
+
+    @XmlElement(name = "AccountNickName")
     private String accountNickName;
-    
-    @XmlElement(name="AccountId")
+
+    @XmlElement(name = "AccountId")
     private BankAccountId accountId;
 }

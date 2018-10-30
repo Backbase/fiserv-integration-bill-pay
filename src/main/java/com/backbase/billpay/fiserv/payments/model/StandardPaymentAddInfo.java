@@ -1,7 +1,7 @@
 package com.backbase.billpay.fiserv.payments.model;
 
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
-import com.backbase.billpay.fiserv.payees.model.USAddress;
+import com.backbase.billpay.fiserv.payees.model.UsAddress;
 import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -35,7 +35,7 @@ public class StandardPaymentAddInfo {
     private Integer listItemId;
     
     @XmlElement(name = "OvernightDeliveryAddress")
-    private USAddress overnightDeliveryAddress;
+    private UsAddress overnightDeliveryAddress;
     
     @XmlElement(name = "PayeeId")
     private Long payeeId;

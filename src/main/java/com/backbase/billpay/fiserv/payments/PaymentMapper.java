@@ -1,5 +1,7 @@
 package com.backbase.billpay.fiserv.payments;
 
+import static com.backbase.billpay.fiserv.payees.PaymentServicesMapper.CURRENCY;
+
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId.BankAccountType;
@@ -25,9 +27,14 @@ public class PaymentMapper {
 
     public Currency map(BigDecimal amount) {
         return new Currency().withAmount(amount)
-                             .withCurrencyCode("USD");
+                             .withCurrencyCode(CURRENCY);
     }
     
+    /**
+     * Convert a BldrDate to a Date object.
+     * @param bldrDate Date to convert
+     * @return Converted date
+     */
     public Date map(BldrDate bldrDate) {
         if (bldrDate == null) {
             return null;
@@ -45,6 +52,11 @@ public class PaymentMapper {
         return BldrDate.builder().date(date).build();
     }
     
+    /**
+     * Convert a BankAccountId to an Account object.
+     * @param bankAccountId Account to convert
+     * @return Converted account
+     */
     public Account map(BankAccountId bankAccountId) {
         return new Account()
                      .withAccountNumber(bankAccountId.getAccountNumber())
@@ -52,6 +64,33 @@ public class PaymentMapper {
                      .withRoutingNumber(bankAccountId.getRoutingTransitNumber());
     }
     
+    /**
+     * Convert a PaymentRequest to a StandardPaymentAddInfo object.
+     * @param paymentRequest Request to convert
+     * @return Converted request
+     */
+    public StandardPaymentAddInfo map(PaymentRequest paymentRequest) {
+        return StandardPaymentAddInfo.builder()
+                        .ebillId(paymentRequest.getEbillID())
+                        .bankAccountId(BankAccountId.builder()
+                                        .accountNumber(paymentRequest.getPaymentAccount().getAccountNumber())
+                                        .accountType(BankAccountType
+                                                        .valueOf(paymentRequest.getPaymentAccount().getAccountType()))
+                                        .routingTransitNumber(paymentRequest.getPaymentAccount().getRoutingNumber())
+                                        .build())
+                        .payeeId(Long.valueOf(paymentRequest.getPayeeID()))
+                        .paymentAmount(paymentRequest.getAmount().getAmount())
+                        .paymentDate(BldrDate.builder().date(paymentRequest.getPaymentDate()).build())
+                        .paymentMemo(paymentRequest.getPaymentMemo()).listItemId(0)
+                        .build();
+    }
+    
+    /**
+     * Convert a BillPayPaymentsPostRequestBody to a BillPayPaymentsPostResponseBody.
+     * @param request Request to convert.
+     * @param addResponse Response containing payment ids.
+     * @return Converted response.
+     */
     public BillPayPaymentsPostResponseBody toBillPayPaymentsPostResponseBody(
                     BillPayPaymentsPostRequestBody request, PaymentAddResponse addResponse) {
         List<PaymentResponse> paymentsResponse = new ArrayList<>();
@@ -60,23 +99,5 @@ public class PaymentMapper {
                                     .withPaymentID(addResponse.getPayments().get(0).getPaymentId()));
         return new BillPayPaymentsPostResponseBody()
                      .withPayments(paymentsResponse);
-    }
-    
-    public StandardPaymentAddInfo map(PaymentRequest paymentRequest) {
-        return StandardPaymentAddInfo.builder()
-                                     .ebillId(paymentRequest.getEbillID())
-                                     .bankAccountId(BankAccountId.builder()
-                                                                 .accountNumber(paymentRequest.getPaymentAccount().getAccountNumber())
-                                                                 .accountType(BankAccountType.valueOf(paymentRequest.getPaymentAccount().getAccountType()))
-                                                                 .routingTransitNumber(paymentRequest.getPaymentAccount().getRoutingNumber())
-                                                                 .build())
-                                     .payeeId(Long.valueOf(paymentRequest.getPayeeID()))
-                                     .paymentAmount(paymentRequest.getAmount().getAmount())
-                                     .paymentDate(BldrDate.builder()
-                                                           .date(paymentRequest.getPaymentDate())
-                                                           .build())
-                                     .paymentMemo(paymentRequest.getPaymentMemo())
-                                     .listItemId(0)
-                                     .build();
     }
 }

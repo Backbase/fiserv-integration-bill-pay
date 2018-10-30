@@ -1,4 +1,4 @@
-package com.backbase.billpay.fiserv.accounts.model;
+package com.backbase.billpay.fiserv.payeessummary.model;
 
 import com.backbase.billpay.fiserv.common.model.AbstractResponse;
 import com.backbase.billpay.fiserv.common.model.ResultType;
@@ -19,16 +19,17 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement(name = "BankAccountListResponse")
+@XmlRootElement(name = "EbillListResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class BankAccountListResponse extends AbstractResponse {
-
-    @XmlElement(name = "BankAccounts")
-    private List<BankAccountSummary> summaries;
-
+public class EbillListResponse extends AbstractResponse {
+    
+    @XmlElement(name = "EbillList")
+    private List<Ebill> ebillList;
+    
     @Builder
-    public BankAccountListResponse(List<BankAccountSummary> summaries, ResultType result) {
+    public EbillListResponse(List<Ebill> ebillList, ResultType result) {
         super(result);
-        this.summaries = summaries;
+        this.ebillList = ebillList;
     }
+
 }

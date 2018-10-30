@@ -24,6 +24,12 @@ public class PayeeCancelRequest extends AbstractRequest {
     @XmlElement(name = "PayeeId")
     private Long payeeId;
 
+    /**
+     * Constructor with header from abstract request.
+     * @param cancelPayments Whether to cancel pending payments for the payee
+     * @param payeeId Id of the payee
+     * @param header Fiserv header including the subscriber id and ip address
+     */
     @Builder
     public PayeeCancelRequest(Boolean cancelPayments, Long payeeId, Header header) {
         super(header);

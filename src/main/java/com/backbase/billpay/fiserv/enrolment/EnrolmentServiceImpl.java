@@ -7,7 +7,7 @@ import com.backbase.billpay.fiserv.enrolment.model.SubscriberEnrollRequest;
 import com.backbase.billpay.fiserv.enrolment.model.SubscriberEnrollResponse;
 import com.backbase.billpay.fiserv.enrolment.model.SubscriberInformation;
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
-import com.backbase.billpay.fiserv.payees.model.USAddress;
+import com.backbase.billpay.fiserv.payees.model.UsAddress;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId.BankAccountType;
 import com.backbase.billpay.fiserv.search.SearchServiceImpl;
@@ -84,7 +84,7 @@ public class EnrolmentServiceImpl implements EnrolmentService {
                                                                             .last("lastName")
                                                                             .build())
                                                         .taxId("0001")
-                                                        .usAddress(USAddress.builder()
+                                                        .usAddress(UsAddress.builder()
                                                                             .address1("address1")
                                                                             .address2("address2")
                                                                             .city("Miami")

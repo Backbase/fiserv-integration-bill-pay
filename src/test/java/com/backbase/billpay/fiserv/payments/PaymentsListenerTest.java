@@ -1,7 +1,7 @@
 package com.backbase.billpay.fiserv.payments;
 
+import static com.backbase.billpay.fiserv.payees.PaymentServicesMapper.CURRENCY;
 import static org.junit.Assert.assertEquals;
-
 import com.backbase.billpay.fiserv.payments.model.BankAccountId;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId.BankAccountType;
 import com.backbase.billpay.fiserv.payments.model.Payee;
@@ -20,13 +20,13 @@ import com.backbase.billpay.fiserv.payments.model.PaymentModifyResponse;
 import com.backbase.billpay.fiserv.payments.model.StandardAddPaymentDetail;
 import com.backbase.billpay.fiserv.payments.recurring.model.ModelInfo;
 import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModel;
-import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelListRequest;
-import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelListResponse;
 import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelAddInfo.ModelFrequency;
 import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelAddRequest;
 import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelAddResponse;
 import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelCancelRequest;
 import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelCancelResponse;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelListRequest;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelListResponse;
 import com.backbase.billpay.fiserv.utils.AbstractWebServiceTest;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayPaymentsGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayPaymentsPostRequestBody;
@@ -48,7 +48,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class PaymentsListenerTest extends AbstractWebServiceTest {
-    
+
     private static final String PAYMENT_ID = "1234";
     
     @Autowired
@@ -84,14 +84,15 @@ public class PaymentsListenerTest extends AbstractWebServiceTest {
         setupWebServiceResponse(fiservResponse);
         
         // retrieve the payment
-        PaymentByIdGetResponseBody response = listener.getPaymentById(createRequestWrapper(null), null, PAYMENT_ID, SUBSCRIBER_ID)
-                                                        .getRequest().getData();
+        PaymentByIdGetResponseBody response =
+                        listener.getPaymentById(createRequestWrapper(null), null, PAYMENT_ID, SUBSCRIBER_ID)
+                                        .getRequest().getData();
         
         // validate the response
         PaymentDetail fiservPayment = fiservResponse.getPaymentDetailResult().get(0);
         assertEquals(fiservPayment.getAmount(), response.getPayment().getPaymentAmount());
         assertEquals(fiservPayment.getAmount(), response.getPayment().getAmount().getAmount());
-        assertEquals("USD", response.getPayment().getAmount().getCurrencyCode());
+        assertEquals(CURRENCY, response.getPayment().getAmount().getCurrencyCode());
         assertEquals(fiservPayment.getEbillId(), response.getPayment().getEbillID());
         assertEquals(fiservPayment.getPaymentId(), response.getPayment().getId());
         assertEquals(fiservPayment.getPayee().getAccountNumber(), response.getPayment().getPayeeAccountNumber());
@@ -180,7 +181,7 @@ public class PaymentsListenerTest extends AbstractWebServiceTest {
                                                           .withEbillID("ebill1")
                                                           .withAmount(new Currency()
                                                                           .withAmount(BigDecimal.TEN)
-                                                                          .withCurrencyCode("USD"))
+                                                                          .withCurrencyCode(CURRENCY))
                                                           .withPayeeID(PAYEE_ID)
                                                           .withPaymentAccount(new PaymentAccount()
                                                                                   .withAccountNumber("1234")
@@ -227,7 +228,7 @@ public class PaymentsListenerTest extends AbstractWebServiceTest {
                                           .withEbillID("ebill1")
                                           .withAmount(new Currency()
                                                           .withAmount(BigDecimal.TEN)
-                                                          .withCurrencyCode("USD"))
+                                                          .withCurrencyCode(CURRENCY))
                                           .withPayeeID(PAYEE_ID)
                                           .withPaymentAccount(new PaymentAccount()
                                                                   .withAccountNumber("1234")
@@ -278,7 +279,7 @@ public class PaymentsListenerTest extends AbstractWebServiceTest {
         Payment servicePayment = response.getPayments().get(0);
         assertEquals(fiservPayment.getAmount(), servicePayment.getPaymentAmount());
         assertEquals(fiservPayment.getAmount(), servicePayment.getAmount().getAmount());
-        assertEquals("USD", servicePayment.getAmount().getCurrencyCode());
+        assertEquals(CURRENCY, servicePayment.getAmount().getCurrencyCode());
         assertEquals(fiservPayment.getEbillId(), servicePayment.getEbillID());
         assertEquals(fiservPayment.getPaymentId(), servicePayment.getId());
         assertEquals(fiservPayment.getPayee().getAccountNumber(), servicePayment.getPayeeAccountNumber());
@@ -299,13 +300,12 @@ public class PaymentsListenerTest extends AbstractWebServiceTest {
         assertEquals("Pending", request.getFilter().getStatusFilter().toString());
         assertEquals(Integer.toString(PaymentsServiceImpl.NEGATIVE_MAX_DAYS), 
                      String.valueOf(request.getFilter().getNumberOfDays()));
-//        assertEquals(FiservUtils.todayFiservDate(), String.valueOf(request.getFilter().getStartingPaymentDate()));
         assertHeader(SUBSCRIBER_ID, request.getHeader());
     }
     
     private PaymentListResponse createPaymentListResponse() {
         com.backbase.billpay.fiserv.payments.model.Payment payment = 
-        com.backbase.billpay.fiserv.payments.model.Payment.builder()
+                                   com.backbase.billpay.fiserv.payments.model.Payment.builder()
                                              .amount(BigDecimal.ONE)
                                              .ebillId("1")
                                              .payee(Payee.builder()

@@ -74,7 +74,8 @@ public interface PayeesService {
      * @param request payee request.
      * @return payees response.
      */
-    ElectronicPayeeByIdPutResponseBody putBillPayElectronicPayees(Header header, String id, ElectronicPayeeByIdPutRequestBody request);
+    ElectronicPayeeByIdPutResponseBody putBillPayElectronicPayees(Header header, String id,
+                    ElectronicPayeeByIdPutRequestBody request);
     
     /**
      * Deletes an electronic payee by ID for the provided subscriber.

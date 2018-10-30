@@ -33,6 +33,9 @@ public class FiservClient extends WebServiceGatewaySupport {
     @Value("${backbase.billpay.provider.url}")
     private String providerUrl;
     
+    /**
+     * Set up the provider url and marshaller.
+     */
     @PostConstruct
     public void setup() {
         setDefaultUri(providerUrl);

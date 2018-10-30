@@ -18,17 +18,17 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement(name="PayeeSearchRequest")
+@XmlRootElement(name = "PayeeSearchRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BankAccountListRequest extends AbstractRequest {
-    
-    @XmlElement(name="Name")
+
+    @XmlElement(name = "Name")
     private String name;
-    
+
     @Builder
     public BankAccountListRequest(String name, Header header) {
         super(header);
         this.name = name;
     }
-    
+
 }

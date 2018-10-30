@@ -44,6 +44,11 @@ public class FiservUtils {
                                .build();
     }
     
+    /**
+     * Convert a BldrDate to a Date object.
+     * @param bldrDate Date to convert
+     * @return Converted date
+     */
     public static Date fromFiservDate(BldrDate bldrDate) {
         try {
             DateFormat format = new SimpleDateFormat(FISERV_DATE_FORMAT);
@@ -53,6 +58,11 @@ public class FiservUtils {
         }
     }
     
+    /**
+     * Convert a Date to a BldrDate object.
+     * @param date Date to convert
+     * @return Converted date
+     */
     public static BldrDate toFiservDate(Date date) {
         return BldrDate.builder()
                         .date(new SimpleDateFormat(FISERV_DATE_FORMAT).format(date))

@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@XmlRootElement(name="SubscriberEnrollResponse")
+@XmlRootElement(name = "SubscriberEnrollResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 @NoArgsConstructor
 public class SubscriberEnrollResponse extends AbstractResponse {
@@ -22,5 +22,5 @@ public class SubscriberEnrollResponse extends AbstractResponse {
     @Builder
     public SubscriberEnrollResponse(ResultType result) {
         super(result);
-    } 
+    }
 }

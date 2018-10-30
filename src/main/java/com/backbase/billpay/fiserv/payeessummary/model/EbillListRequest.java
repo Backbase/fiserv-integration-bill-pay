@@ -1,4 +1,4 @@
-package com.backbase.billpay.fiserv.search.model;
+package com.backbase.billpay.fiserv.payeessummary.model;
 
 import com.backbase.billpay.fiserv.common.model.AbstractRequest;
 import com.backbase.billpay.fiserv.common.model.Header;
@@ -18,17 +18,17 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement(name = "PayeeSearchRequest")
+@XmlRootElement(name = "EbillListRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PayeeSearchRequest extends AbstractRequest {
-
-    @XmlElement(name = "Name")
-    private String name;
-
+public class EbillListRequest extends AbstractRequest {
+    
+    @XmlElement(name = "Filter")
+    private EbillFilter filter;
+    
     @Builder
-    public PayeeSearchRequest(String name, Header header) {
+    public EbillListRequest(EbillFilter filter, Header header) {
         super(header);
-        this.name = name;
+        this.filter = filter;
     }
 
 }

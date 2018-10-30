@@ -23,7 +23,7 @@ public class PayeeAddInfo {
     private String accountNumber;
 
     @XmlElement(name = "Address")
-    private USAddress address;
+    private UsAddress address;
 
     @XmlElement(name = "AddressOnFile")
     private Boolean addressOnFile;
@@ -41,7 +41,7 @@ public class PayeeAddInfo {
     private String nickName;
 
     @XmlElement(name = "OvernightAddress")
-    private USAddress overnightAddress;
+    private UsAddress overnightAddress;
 
     @XmlElement(name = "PhoneNumber")
     private String phoneNumber;

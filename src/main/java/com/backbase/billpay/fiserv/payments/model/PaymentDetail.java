@@ -1,7 +1,7 @@
 package com.backbase.billpay.fiserv.payments.model;
 
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
-import com.backbase.billpay.fiserv.payees.model.USAddress;
+import com.backbase.billpay.fiserv.payees.model.UsAddress;
 import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -56,7 +56,7 @@ public class PaymentDetail {
     private Payee payee;
     
     @XmlElement(name = "PaymentAddress")
-    private USAddress paymentAddress;
+    private UsAddress paymentAddress;
     
     @XmlElement(name = "PaymentDate")
     private BldrDate paymentDate;

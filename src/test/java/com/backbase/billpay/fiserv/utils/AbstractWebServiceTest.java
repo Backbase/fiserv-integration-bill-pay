@@ -68,30 +68,28 @@ public abstract class AbstractWebServiceTest {
 
     protected void setupWebServiceResponse(Object response) {
         new MockServerClient(HOST, PORT)
-           .when(
-                request()
-                    .withMethod(METHOD_POST)
-                    .withPath(PATH)
-                    ,
-                Times.once())
-           .respond(
-                response()
-                    .withStatusCode(200)
-                    .withBody(TestUtil.createSoapResponseWithObject(response), MediaType.XML_UTF_8));
+               .when(
+                    request()
+                        .withMethod(METHOD_POST)
+                        .withPath(PATH),
+                    Times.once())
+               .respond(
+                    response()
+                        .withStatusCode(200)
+                        .withBody(TestUtil.createSoapResponseWithObject(response), MediaType.XML_UTF_8));
     }
     
     protected void setupWebServiceError() {
         new MockServerClient(HOST, PORT)
-           .when(
-                request()
-                    .withMethod(METHOD_POST)
-                    .withPath(PATH)
-                    ,
-                Times.once())
-           .respond(
-                response()
-                    .withStatusCode(500)
-                    .withBody(TestUtil.createSoapFaultError(), MediaType.XML_UTF_8));
+               .when(
+                    request()
+                        .withMethod(METHOD_POST)
+                        .withPath(PATH),
+                    Times.once())
+               .respond(
+                    response()
+                        .withStatusCode(500)
+                        .withBody(TestUtil.createSoapFaultError(), MediaType.XML_UTF_8));
     }
 
     protected void verifyRequestWithXpaths(String xpath) throws AssertionError {
@@ -105,8 +103,12 @@ public abstract class AbstractWebServiceTest {
     }
     
     protected <T> T retrieveRequest(Class<T> requestType) {
+        return retrieveSpecificRequest(0, requestType);
+    }
+    
+    protected <T> T retrieveSpecificRequest(int requestNumber, Class<T> requestType) {
         HttpRequest[] requests = mockServer.retrieveRecordedRequests(null);
-        HttpRequest request = requests[0];
+        HttpRequest request = requests[requestNumber];
         String requestString = request.getBodyAsString();
         return convertMessageStringToObject(requestString, requestType);
     }

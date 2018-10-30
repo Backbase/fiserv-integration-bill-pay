@@ -19,7 +19,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement(name="PayeeSearchResponse")
+@XmlRootElement(name = "PayeeSearchResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PayeeSearchResponse extends AbstractResponse {
 
@@ -30,5 +30,5 @@ public class PayeeSearchResponse extends AbstractResponse {
     public PayeeSearchResponse(List<PayeeSearchResultInfo> payeeResult, ResultType result) {
         super(result);
         this.payeeResult = payeeResult;
-    } 
+    }
 }

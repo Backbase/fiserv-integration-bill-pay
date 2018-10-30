@@ -1,6 +1,7 @@
 package com.backbase.billpay.fiserv.payments;
 
 import static com.backbase.billpay.fiserv.utils.FiservUtils.toFiservDate;
+
 import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
 import com.backbase.billpay.fiserv.payments.model.Payment;
@@ -58,7 +59,7 @@ public class PaymentsServiceImpl implements PaymentsService {
     private static final String PAYMENT_ADD_ACTION = "PaymentAdd";
     private static final String PAYMENT_MODIFY_ACTION = "PaymentModify";
     private static final String PAYMENT_CANCEL_ACTION = "PaymentCancel";
-    private static final String PAYMENT_LIST_ACTION = "PaymentList";
+    public static final String PAYMENT_LIST_ACTION = "PaymentList";
     private static final String RECURRING_ADD_ACTION = "RecurringModelAdd";
     private static final String RECURRING_MODIFY_ACTION = "RecurringModelModify";
     private static final String RECURRING_CANCEL_ACTION = "RecurringModelCancel";
@@ -69,6 +70,12 @@ public class PaymentsServiceImpl implements PaymentsService {
     private final PaymentMapper paymentMapper;
     private final FiservClient client;
     
+    /**
+     * Constructor for PaymentsServiceImpl.
+     * @param mapper Maps between payment objects
+     * @param paymentMapper Maps between payment objects
+     * @param client Client to communicate with the provider
+     */
     @Autowired
     public PaymentsServiceImpl(PaymentsMapper mapper, PaymentMapper paymentMapper, FiservClient client) {
         this.mapper = mapper;
@@ -114,12 +121,10 @@ public class PaymentsServiceImpl implements PaymentsService {
                                               .build(), PAYMENT_LIST_ACTION);
         
         // filter payments by payee ID if supplied
-        List<Payment> filteredPayments = 
-        StringUtils.isEmpty(payeeId) ? response.getPayments()
-                                     : response.getPayments()
-                                         .stream()
-                                         .filter(payment -> String.valueOf(payment.getPayee().getPayeeId()).equals(payeeId))
-                                         .collect(Collectors.toList());
+        List<Payment> filteredPayments = StringUtils.isEmpty(payeeId) ? response.getPayments()
+                        : response.getPayments().stream().filter(
+                            payment -> String.valueOf(payment.getPayee().getPayeeId()).equals(payeeId))
+                                        .collect(Collectors.toList());
 
         // return empty response if no payment found
         if (filteredPayments.isEmpty()) {
@@ -131,7 +136,8 @@ public class PaymentsServiceImpl implements PaymentsService {
         int pageFrom = from == null ? DEFAULT_FROM : from;
         Map<Integer, List<Payment>> paymentsMap = partition(filteredPayments, pageSize);
         int numberOfPages = paymentsMap.size();
-        List<Payment> payments = pageFrom > numberOfPages ? paymentsMap.get(numberOfPages - 1) : paymentsMap.get(pageFrom);
+        List<Payment> payments =
+                        pageFrom > numberOfPages ? paymentsMap.get(numberOfPages - 1) : paymentsMap.get(pageFrom);
         response.setPayments(payments);
         return mapper.map(response)
                      .withTotalCount(Long.valueOf(filteredPayments.size()));
@@ -179,10 +185,10 @@ public class PaymentsServiceImpl implements PaymentsService {
         RecurringModelListResponse response = client.call(RecurringModelListRequest.builder()
                                                     .header(header)
                                                     .build(), RECURRING_LIST_ACTION);
-        Optional<RecurringModel> recurringPayment = response.getRecurringPayments()
-                                                    .stream()
-                                                    .filter(payment -> StringUtils.equals(id, payment.getRecurringModelId()))
-                                                    .findFirst();
+        Optional<RecurringModel> recurringPayment = 
+                        response.getRecurringPayments().stream()
+                        .filter(payment -> StringUtils.equals(id, payment.getRecurringModelId()))
+                        .findFirst();
         if (recurringPayment.isPresent()) {
             return mapper.map(recurringPayment.get());
         } else {

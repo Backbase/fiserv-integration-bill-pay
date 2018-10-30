@@ -19,13 +19,19 @@ import lombok.ToString;
 @XmlRootElement(name = "PayeeAddRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PayeeAddRequest extends AbstractRequest {
-    
-    @XmlElement(name = "OverrideAddressValidation", required=true)
+
+    @XmlElement(name = "OverrideAddressValidation", required = true)
     private Boolean overrideAddressValidation;
 
-    @XmlElement(name = "PayeeAddInfo", required=true)
+    @XmlElement(name = "PayeeAddInfo", required = true)
     private PayeeAddInfo payeeAddInfo;
-    
+
+    /**
+     * Constructor with header from abstract request.
+     * @param overrideAddressValidation Whether to override the address validation
+     * @param payeeAddInfo Details of the payee to add
+     * @param header Fiserv header including the subscriber id and ip address
+     */
     @Builder
     public PayeeAddRequest(Boolean overrideAddressValidation, PayeeAddInfo payeeAddInfo, Header header) {
         super(header);

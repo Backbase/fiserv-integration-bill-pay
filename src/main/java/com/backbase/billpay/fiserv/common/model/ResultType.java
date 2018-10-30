@@ -26,22 +26,19 @@ public class ResultType {
     public static final String INTERNAL_ERROR_KEY = "billpay.api.internalError";
     public static final String BAD_REQUEST = "Bad request";
 
-    public static final Error GENERAL_ERROR = new Error()
-                .withKey(INTERNAL_ERROR_KEY)
-                .withMessage("Sorry, the request could not be completed at this time.");
-    
-    public static final BadRequestException GENERAL_EXCEPTION = 
-                 new BadRequestException()
-                     .withErrors(Collections.singletonList(GENERAL_ERROR))
-                     .withMessage(BAD_REQUEST);
-    
-    @XmlElement(name="Success")
+    public static final Error GENERAL_ERROR = new Error().withKey(INTERNAL_ERROR_KEY)
+                    .withMessage("Sorry, the request could not be completed at this time.");
+
+    public static final BadRequestException GENERAL_EXCEPTION = new BadRequestException()
+                    .withErrors(Collections.singletonList(GENERAL_ERROR)).withMessage(BAD_REQUEST);
+
+    @XmlElement(name = "Success")
     private boolean success;
-    
+
     private List<ResultInfo> resultInfo;
-    
+
     /**
-     * Tests the results for any errors, throws a BadRequestException is error(s) present.
+     * Tests the results for any errors, throws a BadRequestException if error(s) present.
      */
     public void checkForErrors() {
         if (!success) {
@@ -51,8 +48,8 @@ public class ResultType {
             } else {
                 List<Error> errors = new ArrayList<>();
                 resultInfo.stream()
-                           .filter(ResultInfo::isError)
-                           .forEach(item -> errors.add(item.getError()));
+                            .filter(ResultInfo::isError)
+                            .forEach(item -> errors.add(item.getError()));
                 throw new BadRequestException().withMessage(BAD_REQUEST).withErrors(errors);
             }
         }

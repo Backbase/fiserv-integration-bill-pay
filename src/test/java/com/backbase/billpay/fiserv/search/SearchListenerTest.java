@@ -42,9 +42,8 @@ public class SearchListenerTest extends AbstractWebServiceTest {
         setupWebServiceResponse(searchResponse);
 
         // call the search
-        BillPaySearchGetResponseBody response =
-                        listener.getBillPaySearch(createRequestWrapper(null), null, SUBSCRIBER_ID, PAYEE_SEARCH_NAME, null, null)
-                                .getRequest().getData();
+        BillPaySearchGetResponseBody response = listener.getBillPaySearch(createRequestWrapper(null), null,
+                        SUBSCRIBER_ID, PAYEE_SEARCH_NAME, null, null).getRequest().getData();
 
         // validate the results
         Payee payee = response.getPayees().get(0);

@@ -1,7 +1,7 @@
 package com.backbase.billpay.fiserv.enrolment.model;
 
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
-import com.backbase.billpay.fiserv.payees.model.USAddress;
+import com.backbase.billpay.fiserv.payees.model.UsAddress;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -21,28 +21,28 @@ import lombok.ToString;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SubscriberInformation {
 
-    @XmlElement(name="USAddress")
-    private USAddress usAddress;
-    
+    @XmlElement(name = "USAddress")
+    private UsAddress usAddress;
+
     @XmlElement(name = "BirthDate")
     private BldrDate birthDate;
-    
-    @XmlElement(name="DayPhone")
+
+    @XmlElement(name = "DayPhone")
     private String dayPhone;
-    
-    @XmlElement(name="EmailAddress")
+
+    @XmlElement(name = "EmailAddress")
     private String emailAddress;
-    
-    @XmlElement(name="EveningPhone")
+
+    @XmlElement(name = "EveningPhone")
     private String eveningPhone;
-    
-    @XmlElement(name="TaxId")
+
+    @XmlElement(name = "TaxId")
     private String taxId;
-    
-    @XmlElement(name="IsAllowedToSolicit")
+
+    @XmlElement(name = "IsAllowedToSolicit")
     @Builder.Default
     private boolean allowedToSolicit = false;
-    
-    @XmlElement(name="Name")
+
+    @XmlElement(name = "Name")
     private IndividualName name;
 }

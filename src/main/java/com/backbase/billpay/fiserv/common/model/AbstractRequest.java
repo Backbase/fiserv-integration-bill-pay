@@ -15,7 +15,7 @@ import lombok.Setter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractRequest {
     
-    @XmlElement(name="Header", required=true)
+    @XmlElement(name = "Header", required = true)
     private Header header;
 
 }

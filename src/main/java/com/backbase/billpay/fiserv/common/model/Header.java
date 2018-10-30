@@ -19,24 +19,24 @@ import lombok.ToString;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Header {
 
-    @XmlElement(name="ClientAppText")
+    @XmlElement(name = "ClientAppText")
     private String clientAppText;
-    
-    @XmlElement(name="ClientAppVersion")
+
+    @XmlElement(name = "ClientAppVersion")
     private String clientAppVersion;
-    
-    @XmlElement(name="CorrelationId")
+
+    @XmlElement(name = "CorrelationId")
     private String correlationId;
-    
-    @XmlElement(name="SessionCorrelationId")
+
+    @XmlElement(name = "SessionCorrelationId")
     private String sessionCorrelationId;
-    
-    @XmlElement(name="SponsorId")
+
+    @XmlElement(name = "SponsorId")
     private String sponsorId;
-    
-    @XmlElement(name="SubscriberId")
+
+    @XmlElement(name = "SubscriberId")
     private String subscriberId;
-    
-    @XmlElement(name="SubscriberIpAddress")
+
+    @XmlElement(name = "SubscriberIpAddress")
     private String subscriberIpAddress;
 }

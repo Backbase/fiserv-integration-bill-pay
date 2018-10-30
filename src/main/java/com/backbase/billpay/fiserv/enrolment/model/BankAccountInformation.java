@@ -19,30 +19,30 @@ import lombok.ToString;
 @Builder
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BankAccountInformation {
-    
-    @XmlElement(name="AccountId")
+
+    @XmlElement(name = "AccountId")
     private BankAccountId accountId;
-    
-    @XmlElement(name="AccountNickName")
+
+    @XmlElement(name = "AccountNickName")
     private String accountNickName;
-    
+
     @Builder.Default
-    @XmlElement(name="IsBankingEnabled")
+    @XmlElement(name = "IsBankingEnabled")
     private boolean bankingEnabled = false;
-    
+
     @Builder.Default
-    @XmlElement(name="IsBillPaymentEnabled")
+    @XmlElement(name = "IsBillPaymentEnabled")
     private boolean billPaymentEnabled = true;
-    
+
     @Builder.Default
-    @XmlElement(name="IsBillingAccount")
+    @XmlElement(name = "IsBillingAccount")
     private boolean billingAccount = true;
-    
+
     @Builder.Default
-    @XmlElement(name="IsBusinessAccount")
+    @XmlElement(name = "IsBusinessAccount")
     private boolean businessAccount = false;
-    
+
     @Builder.Default
-    @XmlElement(name="IsPreferredAccount")
+    @XmlElement(name = "IsPreferredAccount")
     private boolean preferredAccount = true;
 }

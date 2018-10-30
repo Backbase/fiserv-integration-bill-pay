@@ -22,7 +22,8 @@ public class PayeesSummaryListener extends AbstractListener implements BillPayPa
     @Override
     public RequestProxyWrapper<BillPayPayeesSummaryGetResponseBody> getBillPayPayeesSummary(
             RequestProxyWrapper<Void> request, Exchange exchange, String subscriberId) {
-        BillPayPayeesSummaryGetResponseBody payeesSummary = payeesSummaryService.getBillPayPayeesSummary(subscriberId);
+        BillPayPayeesSummaryGetResponseBody payeesSummary =
+                        payeesSummaryService.getBillPayPayeesSummary(createFiservHeader(request, subscriberId));
         logger.debug("Get payees summary for subscriberID: {}, found summaries: {}", subscriberId, payeesSummary); 
         return createRequestProxyWrapper(request, payeesSummary);
     }

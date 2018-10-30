@@ -34,8 +34,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class PayeesServiceImpl implements PayeesService {
     
+    public static final String PAYEE_LIST_ACTION = "PayeeList";
     private static final String PAYEE_ADD_ACTION = "PayeeAdd";
-    private static final String PAYEE_LIST_ACTION = "PayeeList";
     private static final String PAYEE_MODIFY_ACTION = "PayeeModify";
     private static final String PAYEE_CANCEL_ACTION = "PayeeCancel";
     

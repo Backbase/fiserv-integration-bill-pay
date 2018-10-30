@@ -18,16 +18,16 @@ import lombok.ToString;
 @Builder
 @XmlAccessorType(XmlAccessType.FIELD)
 public class IndividualName {
-    
-    @XmlElement(name="Last")
+
+    @XmlElement(name = "Last")
     private String last;
-    
-    @XmlElement(name="Middle")
+
+    @XmlElement(name = "Middle")
     private String middle;
-    
-    @XmlElement(name="First")
+
+    @XmlElement(name = "First")
     private String first;
-    
-    @XmlElement(name="Prefix")
+
+    @XmlElement(name = "Prefix")
     private String prefix;
 }

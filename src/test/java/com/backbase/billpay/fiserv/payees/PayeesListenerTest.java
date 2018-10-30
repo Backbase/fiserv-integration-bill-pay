@@ -1,5 +1,6 @@
 package com.backbase.billpay.fiserv.payees;
 
+import static com.backbase.billpay.fiserv.payees.PaymentServicesMapper.CURRENCY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -19,7 +20,7 @@ import com.backbase.billpay.fiserv.payees.model.PayeeModifyResponse;
 import com.backbase.billpay.fiserv.payees.model.PayeeSummary;
 import com.backbase.billpay.fiserv.payees.model.PaymentServices;
 import com.backbase.billpay.fiserv.payees.model.PaymentServices.PaymentServiceType;
-import com.backbase.billpay.fiserv.payees.model.USAddress;
+import com.backbase.billpay.fiserv.payees.model.UsAddress;
 import com.backbase.billpay.fiserv.utils.AbstractWebServiceTest;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Address;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.BillPayElectronicPayeesPostRequestBody;
@@ -48,7 +49,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class PayeesListenerTest extends AbstractWebServiceTest {
-    
+
     private static final Boolean CANCEL_PENDING_PAYMENTS = true;
     
     @Autowired
@@ -123,7 +124,7 @@ public class PayeesListenerTest extends AbstractWebServiceTest {
         assertFalse(addInfo.getAddressOnFile());
         assertFalse(addInfo.getIsImageCapture());
         
-        USAddress usAddress = addInfo.getAddress();
+        UsAddress usAddress = addInfo.getAddress();
         assertEquals(request.getPayee().getAddress().getAddress1(), usAddress.getAddress1());
         assertEquals(request.getPayee().getAddress().getAddress2(), usAddress.getAddress2());
         assertEquals(request.getPayee().getAddress().getCity(), usAddress.getCity());
@@ -150,7 +151,7 @@ public class PayeesListenerTest extends AbstractWebServiceTest {
         assertEquals(payeeSummary.getAccountNumber(), payee.getAccountNumber());
         
         Address address = payee.getAddress();
-        USAddress usAddress = payeeSummary.getAddress();
+        UsAddress usAddress = payeeSummary.getAddress();
         assertEquals(usAddress.getAddress1(), address.getAddress1());
         assertEquals(usAddress.getAddress2(), address.getAddress2());
         assertEquals(usAddress.getCity(), address.getCity());
@@ -158,7 +159,7 @@ public class PayeesListenerTest extends AbstractWebServiceTest {
         assertEquals(usAddress.getZip5(), address.getPostalCode());
         
         Address overnightDeliveryAddress = payee.getOvernightDeliveryAddress();
-        USAddress deliveryAddress = payeeSummary.getOverNightAddress();
+        UsAddress deliveryAddress = payeeSummary.getOverNightAddress();
         assertEquals(deliveryAddress.getAddress1(), overnightDeliveryAddress.getAddress1());
         assertEquals(deliveryAddress.getAddress2(), overnightDeliveryAddress.getAddress2());
         assertEquals(deliveryAddress.getCity(), overnightDeliveryAddress.getCity());
@@ -180,7 +181,7 @@ public class PayeesListenerTest extends AbstractWebServiceTest {
         assertEquals(payeeSummary.getLeadDays(), overnightCheckPaymentService.getDeliveryDays());
         assertEquals(paymentServicesOvernightCheck.getFee(), overnightCheckPaymentService.getPaymentFee());
         assertEquals(paymentServicesOvernightCheck.getFee(), overnightCheckPaymentService.getFee().getAmount());
-        assertEquals("USD", overnightCheckPaymentService.getFee().getCurrencyCode());
+        assertEquals(CURRENCY, overnightCheckPaymentService.getFee().getCurrencyCode());
         
         PaymentService expeditedPaymentService = paymentServices.get(2);
         PaymentServices paymentServicesExpeditedPayment = payeeSummary.getPaymentServices().get(1);
@@ -189,7 +190,7 @@ public class PayeesListenerTest extends AbstractWebServiceTest {
         assertEquals(payeeSummary.getLeadDays(), expeditedPaymentService.getDeliveryDays());
         assertEquals(paymentServicesExpeditedPayment.getFee(), expeditedPaymentService.getPaymentFee());
         assertEquals(paymentServicesExpeditedPayment.getFee(), expeditedPaymentService.getFee().getAmount());
-        assertEquals("USD", expeditedPaymentService.getFee().getCurrencyCode());
+        assertEquals(CURRENCY, expeditedPaymentService.getFee().getCurrencyCode());
         
         PayeeListRequest listRequest = retrieveRequest(PayeeListRequest.class);
         
@@ -271,7 +272,7 @@ public class PayeesListenerTest extends AbstractWebServiceTest {
         assertNull(addInfo.getAddressOnFile());
         assertNull(addInfo.getIsImageCapture());
         
-        USAddress usAddress = addInfo.getAddress();
+        UsAddress usAddress = addInfo.getAddress();
         assertEquals(address.getAddress1(), usAddress.getAddress1());
         assertEquals(address.getAddress2(), usAddress.getAddress2());
         assertEquals(address.getCity(), usAddress.getCity());
@@ -403,7 +404,7 @@ public class PayeesListenerTest extends AbstractWebServiceTest {
         assertEquals(payeeSummary.getLeadDays(), overnightCheckPaymentService.getDeliveryDays());
         assertEquals(paymentServicesOvernightCheck.getFee(), overnightCheckPaymentService.getPaymentFee());
         assertEquals(paymentServicesOvernightCheck.getFee(), overnightCheckPaymentService.getFee().getAmount());
-        assertEquals("USD", overnightCheckPaymentService.getFee().getCurrencyCode());
+        assertEquals(CURRENCY, overnightCheckPaymentService.getFee().getCurrencyCode());
         
         PaymentService expeditedPaymentService = paymentServices.get(2);
         assertEquals(paymentServicesExpeditedPayment.getCutOffTime(), expeditedPaymentService.getCutoffTime());
@@ -411,7 +412,7 @@ public class PayeesListenerTest extends AbstractWebServiceTest {
         assertEquals(payeeSummary.getLeadDays(), expeditedPaymentService.getDeliveryDays());
         assertEquals(paymentServicesExpeditedPayment.getFee(), expeditedPaymentService.getPaymentFee());
         assertEquals(paymentServicesExpeditedPayment.getFee(), expeditedPaymentService.getFee().getAmount());
-        assertEquals("USD", expeditedPaymentService.getFee().getCurrencyCode());
+        assertEquals(CURRENCY, expeditedPaymentService.getFee().getCurrencyCode());
         
         PayeeListRequest listRequest = retrieveRequest(PayeeListRequest.class);
         // validate the request header
@@ -529,8 +530,8 @@ public class PayeesListenerTest extends AbstractWebServiceTest {
                        .build();
     }
     
-    private USAddress createAddress(String addressPrefix) {
-        return USAddress.builder()
+    private UsAddress createAddress(String addressPrefix) {
+        return UsAddress.builder()
                         .address1(addressPrefix + "1")
                         .address2(addressPrefix + "2")
                         .city(addressPrefix + "City")

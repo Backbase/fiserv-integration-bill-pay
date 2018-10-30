@@ -33,6 +33,14 @@ public class PaymentModifyResponse extends AbstractResponse {
     @XmlElement(name = "PaymentId")
     private String paymentId;
     
+    /**
+     * Constructor with result type from abstract response.
+     * @param confirmationNumber Confirmation number of the payment
+     * @param nextPaymentDate Next date of the payment
+     * @param nextRecurringPaynentDate Next date of the recurring payment
+     * @param paymentId Id of the payment
+     * @param result Details of the result of the request 
+     */
     @Builder
     public PaymentModifyResponse(String confirmationNumber, BldrDate nextPaymentDate, 
                                  BldrDate nextRecurringPaynentDate, String paymentId, ResultType result) {
