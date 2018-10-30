@@ -6,13 +6,17 @@ import com.backbase.billpay.fiserv.payments.model.PaymentAddRequest;
 import com.backbase.billpay.fiserv.payments.model.PaymentDetail;
 import com.backbase.billpay.fiserv.payments.model.PaymentListResponse;
 import com.backbase.billpay.fiserv.payments.model.PaymentModifyRequest;
-import com.backbase.billpay.fiserv.payments.model.PaymentModifyResponse;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModel;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelAddRequest;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelModifyRequest;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayPaymentsGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayPaymentsPostRequestBody;
+import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayRecurringPaymentsPostRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.OneOffPayment;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentAccount;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentByIdPutRequestBody;
-import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentByIdPutResponseBody;
+import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdGetResponseBody;
+import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutRequestBody;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -54,9 +58,6 @@ public interface PaymentsMapper {
     @Mapping(target="routingTransitNumber", source="account.routingNumber")
     @Mapping(target="accountType", source="account.accountType")
     BankAccountId map(PaymentAccount account);
-
-    @Mapping(target="additions", ignore = true)
-    PaymentByIdPutResponseBody toPaymentByIdPutResponseBody(String id, PaymentModifyResponse fiservResponse);
     
     @Mapping(target="additions", ignore = true)
     @Mapping(target="totalCount", ignore = true)
@@ -83,4 +84,45 @@ public interface PaymentsMapper {
     @Mapping(target="paymentSentAlert", ignore = true)
     @Mapping(target="modelExpirationAlert", ignore = true)
     com.backbase.billpay.integration.rest.spec.v2.billpay.payments.Payment map(Payment payment);
+
+    @Mapping(target="additions", ignore = true)
+    @Mapping(target="payment.id", source="recurringModel.recurringModelId")
+    @Mapping(target="payment.payeeID", source="recurringModel.payeeId")
+    @Mapping(target="payment.paymentScheduledAlert", source="recurringModel.paymentScheduledAlert")
+    @Mapping(target="payment.paymentSentAlert", source="recurringModel.paymentSentAlert")
+    @Mapping(target="payment.modelExpirationAlert", source="recurringModel.modelExpirationAlert")
+    @Mapping(target="payment.frequency", source="recurringModel.recurringModelInfo.frequency")
+    @Mapping(target="payment.numberOfInstances", source="recurringModel.recurringModelInfo.numberOfPayments")
+    @Mapping(target="payment.paymentAccountNumber", source="recurringModel.fundingAccount.accountNumber")
+    @Mapping(target="payment.paymentAccount", source="recurringModel.fundingAccount")
+    @Mapping(target="payment.paymentAmount", source="recurringModel.recurringModelInfo.recurringPaymentAmount")
+    RecurringPaymentByIdGetResponseBody map(RecurringModel recurringModel);
+
+    @Mapping(target="header", ignore = true)
+    @Mapping(target="payeeId", source="request.payment.payeeID")
+    @Mapping(target="accountId", source="request.payment.paymentAccount")
+    @Mapping(target="modelExpirationAlert", source="request.payment.modelExpirationAlert")
+    @Mapping(target="paymentScheduledAlert", source="request.payment.paymentScheduledAlert")
+    @Mapping(target="paymentSentAlert", source="request.payment.paymentSentAlert")
+    @Mapping(target="modelInfo.numberOfPayments", source="request.payment.numberOfInstances")
+    @Mapping(target="modelInfo.frequency", source="request.payment.frequency")
+    @Mapping(target="modelInfo.memo", ignore = true)
+    @Mapping(target="modelInfo.isIndefinite", ignore = true)
+    @Mapping(target="modelInfo.recurringPaymentAmount", source="request.payment.amount.amount")
+    @Mapping(target="modelInfo.nextPaymentDate", ignore = true)
+    RecurringModelAddRequest toRecurringModelAddRequest(BillPayRecurringPaymentsPostRequestBody request);
+
+    @Mapping(target="header", ignore = true)
+    @Mapping(target="recurringModelId", source="id")
+    @Mapping(target="accountId", source="request.payment.paymentAccount")
+    @Mapping(target="modelExpirationAlert", source="request.payment.modelExpirationAlert")
+    @Mapping(target="paymentScheduledAlert", source="request.payment.paymentScheduledAlert")
+    @Mapping(target="paymentSentAlert", source="request.payment.paymentSentAlert")
+    @Mapping(target="modelInfo.numberOfPayments", source="request.payment.numberOfInstances")
+    @Mapping(target="modelInfo.frequency", source="request.payment.frequency")
+    @Mapping(target="modelInfo.memo", ignore = true)
+    @Mapping(target="modelInfo.isIndefinite", ignore = true)
+    @Mapping(target="modelInfo.recurringPaymentAmount", source="request.payment.amount.amount")
+    @Mapping(target="modelInfo.nextPaymentDate", ignore = true)
+    RecurringModelModifyRequest toRecurringModelModifyRequest(String id, RecurringPaymentByIdPutRequestBody request);
 }

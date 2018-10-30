@@ -18,16 +18,29 @@ import com.backbase.billpay.fiserv.payments.model.PaymentListResponse;
 import com.backbase.billpay.fiserv.payments.model.PaymentModifyRequest;
 import com.backbase.billpay.fiserv.payments.model.PaymentModifyResponse;
 import com.backbase.billpay.fiserv.payments.model.StandardAddPaymentDetail;
+import com.backbase.billpay.fiserv.payments.recurring.model.ModelInfo;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModel;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelListRequest;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelListResponse;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelAddInfo.ModelFrequency;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelAddRequest;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelAddResponse;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelCancelRequest;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelCancelResponse;
 import com.backbase.billpay.fiserv.utils.AbstractWebServiceTest;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayPaymentsGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayPaymentsPostRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayPaymentsPostResponseBody;
+import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayRecurringPaymentsPostRequestBody;
+import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayRecurringPaymentsPostResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.Payment;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentAccount;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentByIdGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentByIdPutResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentRequest;
+import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPayment;
+import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdGetResponseBody;
 import com.backbase.rest.spec.common.types.Currency;
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -130,7 +143,7 @@ public class PaymentsListenerTest extends AbstractWebServiceTest {
     public void deleteRecurringPaymentsById() {
         
         // create the mock response
-        PaymentCancelResponse cancelResponse = PaymentCancelResponse.builder()
+        RecurringModelCancelResponse cancelResponse = RecurringModelCancelResponse.builder()
                                                                     .result(createSuccessResult())
                                                                     .build();
         
@@ -141,8 +154,9 @@ public class PaymentsListenerTest extends AbstractWebServiceTest {
         listener.deleteRecurringPaymentById(createRequestWrapper(null), null, PAYEE_ID, SUBSCRIBER_ID);
         
         // validate the results
-        PaymentCancelRequest cancelRequest = retrieveRequest(PaymentCancelRequest.class);
-        assertEquals(PAYEE_ID, String.valueOf(cancelRequest.getPaymentId()));
+        RecurringModelCancelRequest cancelRequest = retrieveRequest(RecurringModelCancelRequest.class);
+        assertEquals(Boolean.TRUE, cancelRequest.getCancelPendingPayments());
+        assertEquals(PAYEE_ID, cancelRequest.getRecurringModelId());
         assertHeader(SUBSCRIBER_ID, cancelRequest.getHeader());
     }
     
@@ -313,5 +327,110 @@ public class PaymentsListenerTest extends AbstractWebServiceTest {
                                   .payments(Arrays.asList(payment))
                                   .result(createSuccessResult())
                                   .build();
+    }
+    
+    @Test
+    public void getRecurringPaymentById() {
+        
+        // create the mock response
+        RecurringModelListResponse fiservResponse = createRecurringPaymentResponse();
+        
+        // set up mock server to return the response
+        setupWebServiceResponse(fiservResponse);
+        
+        // retrieve the payment
+        RecurringPaymentByIdGetResponseBody response = 
+                        listener.getRecurringPaymentById(createRequestWrapper(null), null, PAYMENT_ID, SUBSCRIBER_ID)
+                                                        .getRequest().getData();
+        
+        // validate the response
+        assertEquals(PAYMENT_ID, response.getPayment().getId());
+        assertEquals(PAYEE_ID, response.getPayment().getPayeeID());
+        assertEquals(Boolean.TRUE, response.getPayment().getModelExpirationAlert());
+        assertEquals(Boolean.TRUE, response.getPayment().getPaymentScheduledAlert());
+        assertEquals(Boolean.TRUE, response.getPayment().getPaymentSentAlert());
+        assertEquals(BigDecimal.TEN, response.getPayment().getPaymentAmount());
+        assertEquals("EVERY_2_WEEKS", response.getPayment().getFrequency());
+        assertEquals(Integer.valueOf("100"), response.getPayment().getNumberOfInstances());
+        
+        // validate the request
+        RecurringModelListRequest request = retrieveRequest(RecurringModelListRequest.class);
+        assertHeader(SUBSCRIBER_ID, request.getHeader());
+    }
+
+    private RecurringModelListResponse createRecurringPaymentResponse() {
+        RecurringModel recurringModel = RecurringModel.builder()
+                                                      .recurringModelId(PAYMENT_ID)
+                                                      .modelExpirationAlert(true)
+                                                      .paymentScheduledAlert(true)
+                                                      .paymentSentAlert(true)
+                                                      .payeeId(PAYEE_ID)
+                                                      .recurringModelInfo(ModelInfo.builder()
+                                                                              .recurringPaymentAmount(BigDecimal.TEN)
+                                                                              .frequency(ModelFrequency.EVERY_2_WEEKS)
+                                                                              .numberOfPayments(100)
+                                                                              .build())
+                                                      .fundingAccount(BankAccountId.builder()
+                                                                         .accountNumber("1234")
+                                                                         .accountType(BankAccountType.DDA)
+                                                                         .routingTransitNumber("4321")
+                                                                         .build())
+                                                      .build();
+        return RecurringModelListResponse.builder()
+                        .recurringPayments(Arrays.asList(recurringModel))
+                        .result(createSuccessResult())
+                        .build();
+    }
+    
+    @Test
+    public void postBillPayRecurringPayments() {
+        
+        // create the mock response
+        RecurringModelAddResponse fiservResponse = 
+                        RecurringModelAddResponse.builder()
+                                          .result(createSuccessResult())
+                                          .recurringModelId(PAYMENT_ID)
+                                          .build();
+
+        setupWebServiceResponse(fiservResponse);
+
+        BillPayRecurringPaymentsPostRequestBody request = new BillPayRecurringPaymentsPostRequestBody()
+                        .withSubscriberID(SUBSCRIBER_ID)
+                        .withPayment(new RecurringPayment()
+                                          .withAmount(new Currency()
+                                                          .withAmount(BigDecimal.TEN)
+                                                          .withCurrencyCode("USD"))
+                                          .withPayeeID(PAYEE_ID)
+                                          .withPaymentAccount(new PaymentAccount()
+                                                                  .withAccountNumber("1234")
+                                                                  .withAccountType("DDA")
+                                                                  .withRoutingNumber("4321"))
+                                          .withPaymentDate("2020-12-23")
+                                          .withModelExpirationAlert(true)
+                                          .withPaymentScheduledAlert(true)
+                                          .withPaymentSentAlert(true)
+                                          .withFrequency("WEEKLY")
+                                          .withNumberOfInstances(10));
+                        
+        // add a payment
+        BillPayRecurringPaymentsPostResponseBody response =
+                        listener.postBillPayRecurringPayments(createRequestWrapper(request), null).getRequest().getData();
+        
+        // validate the payment response
+        assertEquals(PAYMENT_ID, response.getId());
+        
+        // validate the request
+        RecurringModelAddRequest addRequest = retrieveRequest(RecurringModelAddRequest.class);
+        assertEquals("1234", addRequest.getAccountId().getAccountNumber());
+        assertEquals("DDA", addRequest.getAccountId().getAccountType().toString());
+        assertEquals("4321", addRequest.getAccountId().getRoutingTransitNumber());
+        assertEquals(Boolean.TRUE, addRequest.getModelExpirationAlert());
+        assertEquals(Boolean.TRUE, addRequest.getPaymentScheduledAlert());
+        assertEquals(Boolean.TRUE, addRequest.getPaymentSentAlert());
+        assertEquals(PAYEE_ID, String.valueOf(addRequest.getPayeeId()));
+        assertEquals(ModelFrequency.WEEKLY, addRequest.getModelInfo().getFrequency());
+        assertEquals(new Integer(10), addRequest.getModelInfo().getNumberOfPayments());
+        assertEquals(BigDecimal.TEN, addRequest.getModelInfo().getRecurringPaymentAmount());
+        assertHeader(SUBSCRIBER_ID, addRequest.getHeader());
     }
 }

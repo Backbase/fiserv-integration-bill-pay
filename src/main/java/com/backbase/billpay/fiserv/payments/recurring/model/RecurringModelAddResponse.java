@@ -23,7 +23,9 @@ public class RecurringModelAddResponse extends AbstractResponse {
     private String recurringModelId;
 
     @Builder
-    public RecurringModelAddResponse(ResultType result) {
+    public RecurringModelAddResponse(ResultType result, BldrDate adjustedNextPaymentDate, String recurringModelId) {
         super(result);
+        this.adjustedNextPaymentDate = adjustedNextPaymentDate;
+        this.recurringModelId = recurringModelId;
     } 
 }

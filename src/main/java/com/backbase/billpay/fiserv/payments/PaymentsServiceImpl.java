@@ -14,7 +14,13 @@ import com.backbase.billpay.fiserv.payments.model.PaymentFilter.PaymentStatusFil
 import com.backbase.billpay.fiserv.payments.model.PaymentListRequest;
 import com.backbase.billpay.fiserv.payments.model.PaymentListResponse;
 import com.backbase.billpay.fiserv.payments.model.PaymentModifyRequest;
-import com.backbase.billpay.fiserv.payments.model.PaymentModifyResponse;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModel;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelAddRequest;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelAddResponse;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelCancelRequest;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelListRequest;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelListResponse;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelModifyRequest;
 import com.backbase.billpay.fiserv.utils.FiservClient;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayPaymentsGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayPaymentsPostRequestBody;
@@ -28,11 +34,13 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentByI
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutResponseBody;
+import com.backbase.buildingblocks.presentation.errors.NotFoundException;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +59,10 @@ public class PaymentsServiceImpl implements PaymentsService {
     private static final String PAYMENT_MODIFY_ACTION = "PaymentModify";
     private static final String PAYMENT_CANCEL_ACTION = "PaymentCancel";
     private static final String PAYMENT_LIST_ACTION = "PaymentList";
+    private static final String RECURRING_ADD_ACTION = "RecurringModelAdd";
+    private static final String RECURRING_MODIFY_ACTION = "RecurringModelModify";
+    private static final String RECURRING_CANCEL_ACTION = "RecurringModelCancel";
+    private static final String RECURRING_LIST_ACTION = "RecurringModelList";
     private static final BillPayPaymentsGetResponseBody EMPTY_PAYMENT_RESPONSE = new BillPayPaymentsGetResponseBody()
                                                                                     .withTotalCount(Long.valueOf(0));
     private final PaymentsMapper mapper;
@@ -158,32 +170,52 @@ public class PaymentsServiceImpl implements PaymentsService {
     public PaymentByIdPutResponseBody putBillPayPayments(Header header, String id, PaymentByIdPutRequestBody request) {
         PaymentModifyRequest fiservRequest = mapper.toPaymentModifyRequest(id, request);
         fiservRequest.setHeader(header);
-        PaymentModifyResponse fiservResponse = client.call(fiservRequest, PAYMENT_MODIFY_ACTION);
-        return mapper.toPaymentByIdPutResponseBody(id, fiservResponse);
+        client.call(fiservRequest, PAYMENT_MODIFY_ACTION);
+        return new PaymentByIdPutResponseBody().withId(id);
     }
 
     @Override
     public RecurringPaymentByIdGetResponseBody getRecurringPaymentById(Header header, String id) {
-        // TODO Auto-generated method stub
-        return null;
+        RecurringModelListResponse response = client.call(RecurringModelListRequest.builder()
+                                                    .header(header)
+                                                    .build(), RECURRING_LIST_ACTION);
+        Optional<RecurringModel> recurringPayment = response.getRecurringPayments()
+                                                    .stream()
+                                                    .filter(payment -> StringUtils.equals(id, payment.getRecurringModelId()))
+                                                    .findFirst();
+        if (recurringPayment.isPresent()) {
+            return mapper.map(recurringPayment.get());
+        } else {
+            throw new NotFoundException();
+        }
     }
 
     @Override
     public BillPayRecurringPaymentsPostResponseBody postBillPayRecurringPayments(
                     Header header, BillPayRecurringPaymentsPostRequestBody request) {
-        // TODO Auto-generated method stub
-        return null;
+        RecurringModelAddRequest addRequest = mapper.toRecurringModelAddRequest(request);
+        addRequest.setHeader(header);
+        RecurringModelAddResponse addResponse = client.call(addRequest, RECURRING_ADD_ACTION);
+        return new BillPayRecurringPaymentsPostResponseBody()
+                        .withId(addResponse.getRecurringModelId());
     }
 
     @Override
     public void deleteRecurringPaymentById(Header header, String id) {
-        deletePaymentById(header, id);
+        RecurringModelCancelRequest cancelRequest = RecurringModelCancelRequest.builder()
+                                                        .header(header)
+                                                        .recurringModelId(id)
+                                                        .cancelPendingPayments(true)
+                                                        .build();
+        client.call(cancelRequest, RECURRING_CANCEL_ACTION);
     }
 
     @Override
     public RecurringPaymentByIdPutResponseBody putBillPayRecurringPayments(Header header, String id,
                     RecurringPaymentByIdPutRequestBody request) {
-        // TODO Auto-generated method stub
-        return null;
+        RecurringModelModifyRequest modifyRequest = mapper.toRecurringModelModifyRequest(id, request);
+        modifyRequest.setHeader(header);
+        client.call(modifyRequest, RECURRING_MODIFY_ACTION);
+        return new RecurringPaymentByIdPutResponseBody().withId(id);
     }
 }
