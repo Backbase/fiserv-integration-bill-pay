@@ -10,6 +10,16 @@ This service enables you to integrate the Bill Pay DBS capability with Fiserv to
 
 This service is based upon the guide: https://community.backbase.com/documentation/DBS/latest/bill_pay_integration_microservice
 
+# We :heart: Feedback!
+
+Ever heard of **feedbackware**? Well, we have a little proposition for you...
+
+Write to joet@backbase.com telling us how you're using this connector and we'll send you some free goodies through the post all the way from Cardiff, Wales (where the connector was written).
+
+Let us know what you DO and DON'T like about the connector; what you DO and DON'T like about our Bill Pay product; how you think we could improve; who you work for; how you're using Bill Pay; anything else you think we should know; and of course, your delivery address... We'll then get some goodies sent through the post to you :-)
+
+*This offer is limited to 1 goodie bag per company, and we reserve the right to remove the promotion at any time.*
+
 ## Components
 
 #### Fiserv Bill Pay Integration Service
