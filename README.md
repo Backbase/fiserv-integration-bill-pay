@@ -109,7 +109,11 @@ The binaries can run in web containers such as:
    - IBM Liberty Profile (Not Tested)
    - Wildfly
 
+Known Issues
+==========
 
+ - The required client IP address is currently not passed to this service via the SSDK InternalRequestContext.  This will be fixed in SSDK 7.0.0.
+ - The FiservClient.initiateSession code will need to be used when the above IP address is correctly passed.
 
 Next Steps
 ==========
