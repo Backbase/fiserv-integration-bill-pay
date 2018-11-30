@@ -414,7 +414,9 @@ public class PaymentsListenerTest extends AbstractWebServiceTest {
                         
         // add a payment
         BillPayRecurringPaymentsPostResponseBody response =
-                        listener.postBillPayRecurringPayments(createRequestWrapper(request), null).getRequest().getData();
+                        listener.postBillPayRecurringPayments(createRequestWrapper(request), null)
+                            .getRequest()
+                            .getData();
         
         // validate the payment response
         assertEquals(PAYMENT_ID, response.getId());
