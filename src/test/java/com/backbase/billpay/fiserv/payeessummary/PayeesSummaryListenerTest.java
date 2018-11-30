@@ -53,7 +53,7 @@ public class PayeesSummaryListenerTest extends AbstractWebServiceTest {
 
     @Test
     public void getBillPayPayeesSummary() {
-        // create the mock responses and setup responses
+        // create and setup the mock responses
         Long payeeId1 = Long.valueOf(1);
         Long payeeId2 = Long.valueOf(2);
         Long payeeId3 = Long.valueOf(3);
