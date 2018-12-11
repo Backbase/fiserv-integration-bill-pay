@@ -2,6 +2,7 @@ package com.backbase.billpay.fiserv.payments;
 
 import static com.backbase.billpay.fiserv.payees.PaymentServicesMapper.CURRENCY;
 import static org.junit.Assert.assertEquals;
+
 import com.backbase.billpay.fiserv.payments.model.BankAccountId;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId.BankAccountType;
 import com.backbase.billpay.fiserv.payments.model.Payee;

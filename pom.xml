@@ -30,7 +30,7 @@
     </scm>
 
     <properties>
-        <com.backbase.dbs.billpay.integration.spec.version>1.0.26</com.backbase.dbs.billpay.integration.spec.version>
+        <com.backbase.dbs.billpay.integration.spec.version>1.0.28</com.backbase.dbs.billpay.integration.spec.version>
         <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
     </properties>
 
