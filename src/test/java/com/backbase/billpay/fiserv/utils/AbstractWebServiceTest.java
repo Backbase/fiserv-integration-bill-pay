@@ -145,7 +145,7 @@ public abstract class AbstractWebServiceTest {
         InternalRequest<T> request = new InternalRequest<>();
         request.setData(bodyData);
         DefaultInternalRequestContext irc = new DefaultInternalRequestContext();
-        irc.setSourceAddress(TEST_IP_ADDRESS);
+        irc.setRemoteAddress(TEST_IP_ADDRESS);
         request.setInternalRequestContext(irc);
         return request;
     }

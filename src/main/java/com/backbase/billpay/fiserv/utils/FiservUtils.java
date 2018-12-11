@@ -40,7 +40,9 @@ public class FiservUtils {
                                .clientAppVersion(clientAppVersion)
                                .sponsorId(sponsorId)
                                .correlationId(UUID.randomUUID().toString())
-                               .subscriberIpAddress(request.getRequest().getInternalRequestContext().getSourceAddress())
+                               .subscriberIpAddress(request.getRequest()
+                                                           .getInternalRequestContext()
+                                                           .getRemoteAddress())
                                .build();
     }
     

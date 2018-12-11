@@ -4,8 +4,8 @@ import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.buildingblocks.backend.api.utils.ApiUtils;
 import com.backbase.buildingblocks.backend.communication.event.proxy.RequestProxyWrapper;
 import com.backbase.buildingblocks.backend.internalrequest.InternalRequest;
-import com.backbase.buildingblocks.logging.api.Logger;
-import com.backbase.buildingblocks.logging.api.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

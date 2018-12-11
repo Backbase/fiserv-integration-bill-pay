@@ -46,13 +46,13 @@ public interface PayeesSummaryMapper {
 
     @Named("EbillCapable")
     default Boolean toEbillCapable(EbillActivationStatusServiceType source) {
-        return source == EbillActivationStatusServiceType.EBILL_NOT_AVAILABLE ? false : true;
+        return source != EbillActivationStatusServiceType.EBILL_NOT_AVAILABLE;
     }
 
     @Named("EbillEnabled")
     default Boolean toEbillEnabled(EbillActivationStatusServiceType source) {
         return (source == EbillActivationStatusServiceType.EBILL_ACTIVE
-                        || source == EbillActivationStatusServiceType.EBILL_PENDING) ? true : false;
+                        || source == EbillActivationStatusServiceType.EBILL_PENDING);
     }
 
     @Mapping(target = "paymentDate", source = "paymentDate")

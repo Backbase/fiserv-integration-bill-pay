@@ -26,7 +26,8 @@ public class SearchListener extends AbstractListener implements BillPaySearchLis
         Header header = createFiservHeader(request, subscriberId);
         BillPaySearchGetResponseBody payees = 
                         searchService.getBillPayPayeesSearch(header, name, zipCode, accountNumber);
-        logger.debug("Get payees for name: {}, returned payees: {}", name, payees, zipCode, accountNumber);
+        logger.debug("Search payees matching name: {}, zipCode:{}, payeeAccountNumber:{}. Found matching payees: {}", 
+                        name, zipCode, accountNumber, payees);
         return createRequestProxyWrapper(request, payees);
     }
 }

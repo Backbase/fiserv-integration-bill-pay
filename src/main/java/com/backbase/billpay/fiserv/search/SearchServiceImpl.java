@@ -5,8 +5,8 @@ import com.backbase.billpay.fiserv.search.model.PayeeSearchRequest;
 import com.backbase.billpay.fiserv.search.model.PayeeSearchResponse;
 import com.backbase.billpay.fiserv.utils.FiservClient;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessearch.BillPaySearchGetResponseBody;
-import com.backbase.buildingblocks.logging.api.Logger;
-import com.backbase.buildingblocks.logging.api.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

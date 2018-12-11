@@ -53,7 +53,7 @@ public class PayeesSummaryListenerTest extends AbstractWebServiceTest {
 
     @Test
     public void getBillPayPayeesSummary() {
-        // create the mock responses
+        // create and setup the mock responses
         Long payeeId1 = Long.valueOf(1);
         Long payeeId2 = Long.valueOf(2);
         Long payeeId3 = Long.valueOf(3);
@@ -68,6 +68,7 @@ public class PayeesSummaryListenerTest extends AbstractWebServiceTest {
         PayeeListResponse payeeResponse = PayeeListResponse.builder()
                         .payees(Arrays.asList(payeeSummary1, payeeSummary2, payeeSummary3, payeeSummary4))
                         .result(createSuccessResult()).build();
+        setupWebServiceResponse(payeeResponse);
 
         Ebill ebill1 = createEbill(payeeId1);
         Ebill ebill2 = createEbill(payeeId2);
@@ -78,6 +79,7 @@ public class PayeesSummaryListenerTest extends AbstractWebServiceTest {
         EbillListResponse ebillResponse =
                         EbillListResponse.builder().ebillList(Arrays.asList(ebill1, ebill2, ebill2NotNext, ebill4))
                                         .result(createSuccessResult()).build();
+        setupWebServiceResponse(ebillResponse);
 
         Payment payment1 = createPayment(payeeId1);
         Payment payment1NotNext = createPayment(payeeId1);
@@ -86,10 +88,6 @@ public class PayeesSummaryListenerTest extends AbstractWebServiceTest {
         PaymentListResponse paymentListResponse =
                         PaymentListResponse.builder().payments(Arrays.asList(payment1, payment1NotNext, payment3))
                                         .result(createSuccessResult()).build();
-
-        // set up mock server to return the responses
-        setupWebServiceResponse(payeeResponse);
-        setupWebServiceResponse(ebillResponse);
         setupWebServiceResponse(paymentListResponse);
 
         // call the listener method
