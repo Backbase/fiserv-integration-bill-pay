@@ -144,6 +144,7 @@ public class PayeesSummaryListenerTest extends AbstractWebServiceTest {
         assertEquals(String.valueOf(expectedSummary.getPayeeId()), responseSummary.getId());
         assertEquals(expectedSummary.getName(), responseSummary.getName());
         assertEquals(expectedSummary.getNickName(), responseSummary.getNickName());
+        assertEquals(expectedSummary.getAccountNumber(), responseSummary.getAccountNumber());
         assertEquals(expectedSummary.getMerchantId() == null ? false : true, responseSummary.getElectronic());
         assertPaymentServices(expectedSummary, responseSummary.getPaymentServices());
         assertNextPayment(expectedPayment, responseSummary.getNextPayment());
@@ -180,6 +181,7 @@ public class PayeesSummaryListenerTest extends AbstractWebServiceTest {
 
     private PayeeSummary createPayeeSummary(Long payeeId) {
         return PayeeSummary.builder().name("Payee Name").nickName("Payee Nickname").payeeId(payeeId)
+                        .accountNumber("Acc" + payeeId)
                         .ebillActivationStatus(EbillActivationStatusServiceType.EBILL_ACTIVE).cutoffTime(new Date())
                         .earliestPaymentDate(todayFiservDate()).nextPaymentDate(todayFiservDate())
                         .overNightAddress(UsAddress.builder().address1("Address1").address2("Address2").city("City")

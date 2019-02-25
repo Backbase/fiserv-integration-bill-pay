@@ -24,6 +24,7 @@ public interface PayeesSummaryMapper {
 
     @Mapping(target = "id", source = "payeeSource.payeeId")
     @Mapping(target = "electronic", expression = "java(payeeSource.getMerchantId() == null ? false : true)")
+    @Mapping(target = "accountNumber", source = "payeeSource.accountNumber")
     @Mapping(target = "paymentServices", source = "payeeSource")
     @Mapping(target = "nextPayment", source = "paymentSource")
     @Mapping(target = "ebill.latestBill", source = "ebillSource")

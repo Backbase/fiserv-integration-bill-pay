@@ -18,6 +18,7 @@ public interface AccountsMapper {
     @Mapping(target = "additions", ignore = true)
     BillPayAccountsGetResponseBody toBillPayAccountsGetResponseBody(BankAccountListResponse source);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "accountNumber", source = "accountId.accountNumber")
     @Mapping(target = "accountType", source = "accountId.accountType")
     @Mapping(target = "routingNumber", source = "accountId.routingTransitNumber")
