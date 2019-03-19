@@ -1,5 +1,8 @@
 package com.backbase.billpay.fiserv.payments;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId;
 import com.backbase.billpay.fiserv.payments.model.Payment;
 import com.backbase.billpay.fiserv.payments.model.PaymentAddRequest;
@@ -17,9 +20,6 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentAcc
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutRequestBody;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR, uses = PaymentMapper.class)
 public interface PaymentsMapper {
@@ -96,6 +96,7 @@ public interface PaymentsMapper {
     @Mapping(target = "payment.paymentAccountNumber", source = "recurringModel.fundingAccount.accountNumber")
     @Mapping(target = "payment.paymentAccount", source = "recurringModel.fundingAccount")
     @Mapping(target = "payment.paymentAmount", source = "recurringModel.recurringModelInfo.recurringPaymentAmount")
+    @Mapping(target = "payment.paymentMemo", source = "recurringModel.recurringModelInfo.memo")
     RecurringPaymentByIdGetResponseBody map(RecurringModel recurringModel);
 
     @Mapping(target = "header", ignore = true)
@@ -106,7 +107,7 @@ public interface PaymentsMapper {
     @Mapping(target = "paymentSentAlert", source = "request.payment.paymentSentAlert")
     @Mapping(target = "modelInfo.numberOfPayments", source = "request.payment.numberOfInstances")
     @Mapping(target = "modelInfo.frequency", source = "request.payment.frequency")
-    @Mapping(target = "modelInfo.memo", ignore = true)
+    @Mapping(target = "modelInfo.memo", source = "request.payment.paymentMemo")
     @Mapping(target = "modelInfo.isIndefinite", ignore = true)
     @Mapping(target = "modelInfo.recurringPaymentAmount", source = "request.payment.amount.amount")
     @Mapping(target = "modelInfo.nextPaymentDate", ignore = true)
@@ -120,7 +121,7 @@ public interface PaymentsMapper {
     @Mapping(target = "paymentSentAlert", source = "request.payment.paymentSentAlert")
     @Mapping(target = "modelInfo.numberOfPayments", source = "request.payment.numberOfInstances")
     @Mapping(target = "modelInfo.frequency", source = "request.payment.frequency")
-    @Mapping(target = "modelInfo.memo", ignore = true)
+    @Mapping(target = "modelInfo.memo", source = "request.payment.paymentMemo")
     @Mapping(target = "modelInfo.isIndefinite", ignore = true)
     @Mapping(target = "modelInfo.recurringPaymentAmount", source = "request.payment.amount.amount")
     @Mapping(target = "modelInfo.nextPaymentDate", ignore = true)
