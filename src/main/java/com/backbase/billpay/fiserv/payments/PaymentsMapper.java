@@ -1,8 +1,5 @@
 package com.backbase.billpay.fiserv.payments;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId;
 import com.backbase.billpay.fiserv.payments.model.Payment;
 import com.backbase.billpay.fiserv.payments.model.PaymentAddRequest;
@@ -20,6 +17,9 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentAcc
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutRequestBody;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR, uses = PaymentMapper.class)
 public interface PaymentsMapper {
