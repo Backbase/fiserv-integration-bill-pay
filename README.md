@@ -65,7 +65,7 @@ java jar -DSIG_SECRET_KEY=**** \
     -Dbackbase.billpay.provider.clientAppText=**** \
     -Dbackbase.billpay.provider.clientAppVersion=**** \
     -Dbackbase.billpay.provider.sponsorId=**** \
-    fiserv-integration-bill-pay-1.3.0-boot.war
+    fiserv-integration-bill-pay-1.4.0-boot.war
 ```
 
 ### Build
@@ -101,7 +101,7 @@ java jar -DSIG_SECRET_KEY=**** \
     -Dbackbase.billpay.provider.clientAppText=**** \
     -Dbackbase.billpay.provider.clientAppVersion=**** \
     -Dbackbase.billpay.provider.sponsorId=**** \
-    fiserv-integration-bill-pay-1.3.0-boot.war
+    fiserv-integration-bill-pay-1.4.0-boot.war
 ```
 
 The binaries can run in web containers such as:
