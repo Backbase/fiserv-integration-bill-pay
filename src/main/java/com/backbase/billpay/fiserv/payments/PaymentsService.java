@@ -41,7 +41,7 @@ public interface PaymentsService {
      */
     BillPayPaymentsGetResponseBody getBillPayPayments(
             Header header, String status, Date startDate, Date endDate, String payeeId, 
-            Integer from, Integer size, String direction, String subscriberId);
+            Integer from, Integer size, String orderBy, String direction);
     
     /**
      * Creates a payment.
