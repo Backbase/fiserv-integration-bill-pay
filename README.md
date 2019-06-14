@@ -60,12 +60,11 @@ backbase:
 These properties can be set as environment properties.
 
 ```bash
-java -jar -DSIG_SECRET_KEY=**** \
+java -jar fiserv-integration-bill-pay-x.x.x-boot.war -DSIG_SECRET_KEY=**** \
     -Dbackbase.billpay.provider.url=**** \
     -Dbackbase.billpay.provider.clientAppText=**** \
     -Dbackbase.billpay.provider.clientAppVersion=**** \
-    -Dbackbase.billpay.provider.sponsorId=**** \
-    fiserv-integration-bill-pay-x.x.x-boot.war
+    -Dbackbase.billpay.provider.sponsorId=**** 
 ```
 
 ### Build
@@ -96,12 +95,11 @@ mvn spring-boot:run
 To run the service from the built binaries, use:
 
 ```bash
-java -jar -DSIG_SECRET_KEY=**** \
+java -jar fiserv-integration-bill-pay-x.x.x-boot.war -DSIG_SECRET_KEY=**** \
     -Dbackbase.billpay.provider.url=**** \
     -Dbackbase.billpay.provider.clientAppText=**** \
     -Dbackbase.billpay.provider.clientAppVersion=**** \
-    -Dbackbase.billpay.provider.sponsorId=**** \
-    fiserv-integration-bill-pay-x.x.x-boot.war
+    -Dbackbase.billpay.provider.sponsorId=**** 
 ```
 
 The binaries can run in web containers such as:
