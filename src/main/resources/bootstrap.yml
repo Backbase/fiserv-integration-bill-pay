@@ -1,3 +1,3 @@
 spring:
   application:
-    name: fiserv-integration-billpay
+    name: billpay-integration-external-provider-outbound-service

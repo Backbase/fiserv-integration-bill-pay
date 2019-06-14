@@ -1,6 +1,7 @@
 package com.backbase.billpay.fiserv.payments;
 
 import static com.backbase.billpay.fiserv.utils.FiservUtils.toFiservDate;
+import static com.backbase.billpay.fiserv.utils.FiservUtils.fromFiservDate;
 
 import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
@@ -38,6 +39,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringP
 import com.backbase.buildingblocks.presentation.errors.NotFoundException;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -45,11 +47,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PaymentsServiceImpl implements PaymentsService {
+    
+    private static final Logger log = LoggerFactory.getLogger(PaymentsServiceImpl.class);
     
     protected static final int POSITIVE_MAX_DAYS = 360;
     protected static final int NEGATIVE_MAX_DAYS = -10000;
@@ -66,6 +72,9 @@ public class PaymentsServiceImpl implements PaymentsService {
     private static final String RECURRING_LIST_ACTION = "RecurringModelList";
     private static final BillPayPaymentsGetResponseBody EMPTY_PAYMENT_RESPONSE = new BillPayPaymentsGetResponseBody()
                                                                                     .withTotalCount(Long.valueOf(0));
+    private static final String DIRECTION_ASC = "ASC";
+    private static final String ORDER_BY_AMOUNT = "amount";
+    
     private final PaymentsMapper mapper;
     private final PaymentMapper paymentMapper;
     private final FiservClient client;
@@ -94,7 +103,7 @@ public class PaymentsServiceImpl implements PaymentsService {
 
     @Override
     public BillPayPaymentsGetResponseBody getBillPayPayments(Header header, String status, Date startDate,
-                    Date endDate, String payeeId, Integer from, Integer size) {
+                    Date endDate, String payeeId, Integer from, Integer size, String orderBy, String direction) {
 
         int numberOfDays;
         Date calculatedStartDate = startDate;
@@ -130,6 +139,8 @@ public class PaymentsServiceImpl implements PaymentsService {
         if (filteredPayments.isEmpty()) {
             return EMPTY_PAYMENT_RESPONSE;
         }
+        
+        sortPayments(filteredPayments, orderBy, direction);
 
         // paginate the data
         int pageSize = (size == null || size == 0) ? DEFAULT_SIZE : size;
@@ -141,6 +152,22 @@ public class PaymentsServiceImpl implements PaymentsService {
         response.setPayments(payments);
         return mapper.map(response)
                      .withTotalCount(Long.valueOf(filteredPayments.size()));
+    }
+    
+    private void sortPayments(List<Payment> payments, String orderBy, String direction) {
+        log.debug("Sorting payments by field: {}, direction: {}", orderBy, direction);
+        Comparator<Payment> comparator;
+        if (ORDER_BY_AMOUNT.equals(orderBy)) {
+            comparator = (p1, p2) -> p2.getAmount().compareTo(p1.getAmount());
+        } else {
+            comparator = (p1, p2) -> fromFiservDate(p2.getPaymentDate()).compareTo(fromFiservDate(p1.getPaymentDate()));
+        }
+        
+        if (DIRECTION_ASC.equals(direction)) {
+            payments.sort(comparator.reversed());
+        } else {
+            payments.sort(comparator);
+        }
     }
     
     private Map<Integer, List<Payment>> partition(List<Payment> payments, int pageSize) {

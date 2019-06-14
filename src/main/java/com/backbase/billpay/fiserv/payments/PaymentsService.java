@@ -35,11 +35,13 @@ public interface PaymentsService {
      * @param payeeId the id of the payee to filter by.
      * @param from pagination from.
      * @param size pagination size.
+     * @param orderBy field to order the payments by
+     * @param direction direction in which to order the payments
      * @return payments response.
      */
     BillPayPaymentsGetResponseBody getBillPayPayments(
             Header header, String status, Date startDate, Date endDate, String payeeId, 
-            Integer from, Integer size);
+            Integer from, Integer size, String direction, String subscriberId);
     
     /**
      * Creates a payment.

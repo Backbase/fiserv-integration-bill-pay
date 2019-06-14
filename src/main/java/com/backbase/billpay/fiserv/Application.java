@@ -1,10 +1,12 @@
 package com.backbase.billpay.fiserv;
 
-import com.backbase.buildingblocks.backend.configuration.autoconfigure.BackbaseApplication;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
 
-@BackbaseApplication
+@SpringBootApplication
+@ComponentScan(basePackages = {"com.backbase.billpay"})
 public class Application extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
