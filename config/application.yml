@@ -1,5 +1,13 @@
 server:
   port: 8098
+  
+logging:
+  level:
+    com.backbase: DEBUG
+    
+spring:
+  activemq:
+    broker-url: tcp://localhost:61616
 
 backbase:
   billpay: 
@@ -8,3 +16,8 @@ backbase:
       clientAppText: billpay
       clientAppVersion: 1.0
       sponsorId: BankA
+      
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8080/registry/eureka/

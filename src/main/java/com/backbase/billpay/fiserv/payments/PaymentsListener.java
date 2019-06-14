@@ -43,9 +43,17 @@ public class PaymentsListener extends AbstractListener implements BillPayPayment
             RequestProxyWrapper<Void> requestWrapper, Exchange exchange, 
             String subscriberId, String status, Date startDate, Date endDate, 
             String payeeId, Integer from, Integer size) {
+        
+        
+        String orderBy = requestWrapper.getQueryParams() == null 
+                        ? null : (String) requestWrapper.getQueryParams().get("orderBy");
+        String direction = requestWrapper.getQueryParams() == null 
+                        ? null : (String) requestWrapper.getQueryParams().get("direction");
+    
         BillPayPaymentsGetResponseBody payments = 
                 paymentsService.getBillPayPayments(createFiservHeader(requestWrapper, subscriberId), 
-                                                   status, startDate, endDate, payeeId, from, size);
+                                                   status, startDate, endDate, payeeId, from, size, 
+                                                   orderBy, direction);
         logger.debug("Get payments for subscriberId: {}, status: {}, startDate: {}, endDate: {}, payeeID:{}, "
                      + "from: {}, size: {}, found payments: {}", 
                      subscriberId, status, startDate, endDate, payeeId, from, size, payments);

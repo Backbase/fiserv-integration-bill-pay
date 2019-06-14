@@ -1,21 +1,13 @@
 spring:
   jmx:
     default-domain: ${spring.application.name}
-  activemq:
-    broker-url: ${activemq.url:tcp://localhost:61616}
-
-logging:
-  level:
-    root: WARN
-    com.backbase: WARN
 
 backbase:
-  billpay: 
-    provider:
-      url: ${billpay.provider.url}
-      clientAppText: ${billpay.provider.clientAppText}
-      clientAppVersion: ${billpay.provider.clientAppVersion}
-      sponsorId: ${billpay.provider.sponsorId}
+  security:
+    public:
+      paths: /**
+    mtls:
+      enabled: true
 
 sso:
   jwt:

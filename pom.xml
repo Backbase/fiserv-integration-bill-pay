@@ -5,7 +5,7 @@
     <parent>
         <artifactId>backbase-integration-starter-parent</artifactId>
         <groupId>com.backbase.buildingblocks</groupId>
-        <version>7.3.2</version>
+        <version>8.2.4</version>
     </parent>
 
     <groupId>com.backbase.dbs.capabilities.extended</groupId>
@@ -30,7 +30,7 @@
     </scm>
 
     <properties>
-        <com.backbase.dbs.billpay.integration.spec.version>1.0.39</com.backbase.dbs.billpay.integration.spec.version>
+        <com.backbase.dbs.billpay.integration.spec.version>1.1.1</com.backbase.dbs.billpay.integration.spec.version>
         <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
     </properties>
 
@@ -68,13 +68,12 @@
         <dependency>
             <groupId>org.mock-server</groupId>
             <artifactId>mockserver-netty</artifactId>
-            <version>5.3.0</version>
+            <version>5.4.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec-http</artifactId>
-            <version>4.1.17.Final</version>
             <scope>test</scope>
         </dependency>
 

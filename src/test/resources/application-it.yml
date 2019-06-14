@@ -1,8 +1,6 @@
 spring:
   activemq:
-    broker-url: ${activemq.url:vm://localhost}
-    in-memory: true
-    pooled: false
+    broker-url: vm://localhost?broker.persistent=false&broker.useShutdownHook=false
 
 logging:
   level:
