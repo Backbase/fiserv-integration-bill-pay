@@ -10,7 +10,7 @@
 
     <groupId>com.backbase.dbs.capabilities.extended</groupId>
     <artifactId>fiserv-integration-bill-pay</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.5.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>Backbase :: Digital Banking Services :: Fiserv Bill Pay Integration Service</name>
     <url>http://www.backbase.com</url>

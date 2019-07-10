@@ -14,7 +14,7 @@ This service is based upon the guide: https://community.backbase.com/documentati
 
 Ever heard of **feedbackware**? Well, we have a little proposition for you...
 
-Write to joet@backbase.com telling us how you're using this connector and we'll send you some free goodies through the post all the way from Cardiff, Wales (where the connector was written).
+Write to michaelma@backbase.com telling us how you're using this connector and we'll send you some free goodies through the post all the way from Cardiff, Wales (where the connector was written).
 
 Let us know what you DO and DON'T like about the connector; what you DO and DON'T like about our Bill Pay product; how you think we could improve; who you work for; how you're using Bill Pay; anything else you think we should know; and of course, your delivery address... We'll then get some goodies sent through the post to you :-)
 
