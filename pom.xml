@@ -5,7 +5,7 @@
     <parent>
         <artifactId>backbase-integration-starter-parent</artifactId>
         <groupId>com.backbase.buildingblocks</groupId>
-        <version>8.2.4</version>
+        <version>8.3.0</version>
     </parent>
 
     <groupId>com.backbase.dbs.capabilities.extended</groupId>
@@ -30,7 +30,7 @@
     </scm>
 
     <properties>
-        <com.backbase.dbs.billpay.integration.spec.version>1.1.1</com.backbase.dbs.billpay.integration.spec.version>
+        <com.backbase.dbs.billpay.integration.spec.version>1.1.26</com.backbase.dbs.billpay.integration.spec.version>
         <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
     </properties>
 
