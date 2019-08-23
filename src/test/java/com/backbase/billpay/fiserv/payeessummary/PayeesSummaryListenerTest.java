@@ -5,6 +5,7 @@ import static com.backbase.billpay.fiserv.utils.FiservUtils.fromFiservDate;
 import static com.backbase.billpay.fiserv.utils.FiservUtils.toFiservDate;
 import static com.backbase.billpay.fiserv.utils.FiservUtils.todayFiservDate;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -15,14 +16,14 @@ import com.backbase.billpay.fiserv.payees.model.PayeeSummary;
 import com.backbase.billpay.fiserv.payees.model.PayeeSummary.EbillActivationStatusServiceType;
 import com.backbase.billpay.fiserv.payees.model.PaymentServices;
 import com.backbase.billpay.fiserv.payees.model.PaymentServices.PaymentServiceType;
-import com.backbase.billpay.fiserv.payees.model.UsAddress;
 import com.backbase.billpay.fiserv.payeessummary.model.Ebill;
-import com.backbase.billpay.fiserv.payeessummary.model.Ebill.BillType;
-import com.backbase.billpay.fiserv.payeessummary.model.Ebill.EbillStatus;
 import com.backbase.billpay.fiserv.payeessummary.model.EbillFilter;
-import com.backbase.billpay.fiserv.payeessummary.model.EbillFilter.BillTypeFilter;
 import com.backbase.billpay.fiserv.payeessummary.model.EbillListRequest;
 import com.backbase.billpay.fiserv.payeessummary.model.EbillListResponse;
+import com.backbase.billpay.fiserv.payeessummary.model.Ebill.BillType;
+import com.backbase.billpay.fiserv.payeessummary.model.Ebill.EbillStatus;
+import com.backbase.billpay.fiserv.payeessummary.model.EbillFilter.BillTypeFilter;
+import com.backbase.billpay.fiserv.payees.model.UsAddress;
 import com.backbase.billpay.fiserv.payments.model.Payee;
 import com.backbase.billpay.fiserv.payments.model.Payment;
 import com.backbase.billpay.fiserv.payments.model.PaymentDetail.PaymentStatus;
@@ -258,6 +259,7 @@ public class PayeesSummaryListenerTest extends AbstractWebServiceTest {
             assertEquals(CURRENCY, bill.getOutstandingBalance().getCurrencyCode());
             assertEquals(expectedEbill.getStatus().name(), bill.getStatus());
             assertEquals(expectedEbill.getBillReferenceLinkUrl(), bill.getUrl());
+            assertFalse(bill.getStatementAvailable());
         }
     }
 

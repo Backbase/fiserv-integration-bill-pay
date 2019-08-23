@@ -1,7 +1,8 @@
 package com.backbase.billpay.fiserv.payments;
 
-import static com.backbase.billpay.fiserv.utils.FiservUtils.toFiservDate;
 import static com.backbase.billpay.fiserv.utils.FiservUtils.fromFiservDate;
+import static com.backbase.billpay.fiserv.utils.FiservUtils.toFiservDate;
+import static com.backbase.billpay.fiserv.utils.PaginationUtils.paginateList;
 
 import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
@@ -42,10 +43,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,8 +58,6 @@ public class PaymentsServiceImpl implements PaymentsService {
     
     protected static final int POSITIVE_MAX_DAYS = 360;
     protected static final int NEGATIVE_MAX_DAYS = -10000;
-    private static final int DEFAULT_FROM = 0;
-    private static final int DEFAULT_SIZE = 1000;
     private static final String PAYMENT_DETAIL_ACTION = "PaymentDetail";
     private static final String PAYMENT_ADD_ACTION = "PaymentAdd";
     private static final String PAYMENT_MODIFY_ACTION = "PaymentModify";
@@ -143,12 +140,7 @@ public class PaymentsServiceImpl implements PaymentsService {
         sortPayments(filteredPayments, orderBy, direction);
 
         // paginate the data
-        int pageSize = (size == null || size == 0) ? DEFAULT_SIZE : size;
-        int pageFrom = from == null ? DEFAULT_FROM : from;
-        Map<Integer, List<Payment>> paymentsMap = partition(filteredPayments, pageSize);
-        int numberOfPages = paymentsMap.size();
-        List<Payment> payments =
-                        pageFrom > numberOfPages ? paymentsMap.get(numberOfPages - 1) : paymentsMap.get(pageFrom);
+        List<Payment> payments = paginateList(filteredPayments, from, size);
         response.setPayments(payments);
         return mapper.map(response)
                      .withTotalCount(Long.valueOf(filteredPayments.size()));
@@ -168,13 +160,6 @@ public class PaymentsServiceImpl implements PaymentsService {
         } else {
             payments.sort(comparator);
         }
-    }
-    
-    private Map<Integer, List<Payment>> partition(List<Payment> payments, int pageSize) {
-        return IntStream.range(0, (payments.size() + pageSize - 1) / pageSize)
-                        .boxed()
-                        .collect(Collectors.toMap(i -> i, i -> payments
-                                        .subList(i * pageSize, Math.min(pageSize * (i + 1), payments.size()))));
     }
 
     @Override

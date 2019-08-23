@@ -3,8 +3,8 @@ package com.backbase.billpay.fiserv.payeessummary;
 import com.backbase.billpay.fiserv.payees.PaymentServicesMapper;
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
 import com.backbase.billpay.fiserv.payees.model.PayeeSummary.EbillActivationStatusServiceType;
-import com.backbase.billpay.fiserv.payees.model.UsAddress;
 import com.backbase.billpay.fiserv.payeessummary.model.Ebill;
+import com.backbase.billpay.fiserv.payees.model.UsAddress;
 import com.backbase.billpay.fiserv.payments.model.Payment;
 import com.backbase.billpay.fiserv.utils.FiservUtils;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Address;
@@ -43,6 +43,7 @@ public interface PayeesSummaryMapper {
     @Mapping(target = "outstandingBalance", source = "balance")
     @Mapping(target = "url", source = "billReferenceLinkUrl")
     @Mapping(target = "additions", ignore = true)
+    @Mapping(target = "statementAvailable", constant = "false")
     LatestBill toLatestBill(com.backbase.billpay.fiserv.payeessummary.model.Ebill source);
 
     @Named("EbillCapable")
