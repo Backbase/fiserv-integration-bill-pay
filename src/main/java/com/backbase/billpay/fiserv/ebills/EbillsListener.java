@@ -61,8 +61,8 @@ public class EbillsListener extends AbstractListener implements BillPayEbillsLis
     
     @Override
     public RequestProxyWrapper<EbillByIdPutResponseBody> putEbillById(
-                    RequestProxyWrapper<EbillByIdPutRequestBody> ebillByIdPutRequestBody, Exchange exchange, String payeeId,
-                    String ebillId) {
+                    RequestProxyWrapper<EbillByIdPutRequestBody> ebillByIdPutRequestBody, Exchange exchange,
+                    String payeeId, String ebillId) {
         EbillByIdPutRequestBody request = ebillByIdPutRequestBody.getRequest().getData();
         logger.debug("Updating eBill with id: {} for payee: {} with request: {}", ebillId, payeeId, request);
         
@@ -72,7 +72,8 @@ public class EbillsListener extends AbstractListener implements BillPayEbillsLis
         
         Header header = createFiservHeader(ebillByIdPutRequestBody, request.getSubscriberID());
         EbillByIdPutResponseBody response = ebillsService.updateEbillStatus(header, request, ebillId);
-        logger.debug("Updated eBill with id: {} for payee: {} with request: {} and response: {}", ebillId, payeeId, request, response);
+        logger.debug("Updated eBill with id: {} for payee: {} with request: {} and response: {}", ebillId, payeeId,
+                        request, response);
         return createRequestProxyWrapper(ebillByIdPutRequestBody, response);
     }
 

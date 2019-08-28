@@ -29,7 +29,7 @@ public interface EbillsMapper {
     Ebill toEbill(com.backbase.billpay.fiserv.payeessummary.model.Ebill source);
     
     default String toStatus(EbillStatus status) {
-        switch(status) {
+        switch (status) {
             case FILED:
                 return "PAID";
             case PAID:
