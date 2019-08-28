@@ -37,20 +37,26 @@ public class EbillsListener extends AbstractListener implements BillPayEbillsLis
     public RequestProxyWrapper<BillPayEbillsGetResponseBody> getBillPayEbills(RequestProxyWrapper<Void> request,
                     Exchange exchange, String payeeId, String subscriberId, String status, Date startDate, Date endDate,
                     Integer from, Integer size, String orderBy, String direction) {
-        logger.debug("Retrieving eBills for payee with id: {}, status: {}, startDate: {}, endDate: {}, from: {}, size: {}, orderBy: {}, direction: {}",
-                        payeeId, status, startDate, endDate, from, size, orderBy, direction);
+        logger.debug("Retrieving eBills for payee with id: {}, status: {}, startDate: {}, endDate: {}, from: {}, "
+                        + "size: {}, orderBy: {}, direction: {}", payeeId, status, startDate, endDate, from, size,
+                        orderBy, direction);
         Header header = createFiservHeader(request, subscriberId);
-        BillPayEbillsGetResponseBody response = ebillsService.getEbills(header, payeeId, status, startDate, endDate, from, size, orderBy, direction);
-        logger.debug("Retrieved eBills for payee with id: {}, status: {}, startDate: {}, endDate: {}, from: {}, size: {}, orderBy: {}, direction: {}, response: {}",
-                        payeeId, status, startDate, endDate, from, size, orderBy, direction, response);
+        BillPayEbillsGetResponseBody response = ebillsService.getEbills(header, payeeId, status, startDate, endDate,
+                        from, size, orderBy, direction);
+        logger.debug("Retrieved eBills for payee with id: {}, status: {}, startDate: {}, endDate: {}, from: {}, "
+                        + "size: {}, orderBy: {}, direction: {}, response: {}", payeeId, status, startDate, endDate,
+                        from, size, orderBy, direction, response);
         return createRequestProxyWrapper(request, response);
     }
     
     @Override
     public RequestProxyWrapper<BillPayEbillStatementsGetResponseBody> getBillPayEbillStatements(
-                    RequestProxyWrapper<Void> request, Exchange exchange, String id, String ebillId,
+                    RequestProxyWrapper<Void> request, Exchange exchange, String payeeId, String ebillId,
                     String subscriberId) {
-        throw new UnsupportedOperationException("Retrieval of eBill statements is not supported by the Bill Pay provider");
+        logger.debug("Unable to retrieve statement for eBill with id: {} for payee: {}, this functionality is not "
+                        + "supported by the Bill Pay provider", ebillId, payeeId);
+        throw new UnsupportedOperationException(
+                        "Retrieval of eBill statements is not supported by the Bill Pay provider");
     }
     
     @Override

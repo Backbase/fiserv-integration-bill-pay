@@ -85,7 +85,7 @@ public class EbillsServiceImpl implements EbillsService {
         
         List<Ebill> ebills = ebillListResponse.getEbillList();
         
-        // return empty response is no eBills found
+        // return empty response if no eBills found
         if (ebills == null || ebills.isEmpty()) {
             return new BillPayEbillsGetResponseBody().withTotalCount(Long.valueOf(0));
         }

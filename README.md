@@ -7,6 +7,7 @@ This service enables you to integrate the Bill Pay DBS capability with Fiserv to
 - Manage your payees
 - Manage your payments
 - Retrieve your Bill Pay accounts
+- Retrieve and file your eBills
 
 This service is based upon the guide: https://community.backbase.com/documentation/DBS/latest/bill_pay_integration_microservice
 

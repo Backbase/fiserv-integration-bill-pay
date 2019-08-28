@@ -1,7 +1,7 @@
 package com.backbase.billpay.fiserv.ebills;
 
 import com.backbase.billpay.fiserv.ebills.model.EbillFileRequest;
-import com.backbase.billpay.fiserv.ebills.model.FileEbillPaymentMethod;
+import com.backbase.billpay.fiserv.ebills.model.EbillFileRequest.FileEbillPaymentMethod;
 import com.backbase.billpay.fiserv.payeessummary.model.Ebill.EbillStatus;
 import com.backbase.billpay.fiserv.payments.PaymentMapper;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.Ebill;
@@ -54,23 +54,23 @@ public interface EbillsMapper {
     default FileEbillPaymentMethod toFileEbillPaymentMethod(String source) {
         switch (source) {
             case "BANK":
-                return FileEbillPaymentMethod.Bank;
+                return FileEbillPaymentMethod.BANK;
             case "CHECK":
-                return FileEbillPaymentMethod.Check;
+                return FileEbillPaymentMethod.CHECK;
             case "CASH":
-                return FileEbillPaymentMethod.Cash;
+                return FileEbillPaymentMethod.CASH;
             case "NOT_PAID":
-                return FileEbillPaymentMethod.NotPaid;
+                return FileEbillPaymentMethod.NOT_PAID;
             case "BILLER_WEBSITE":
-                return FileEbillPaymentMethod.BillerWebSite;
+                return FileEbillPaymentMethod.BILLER_WEBSITE;
             case "PHONE":
-                return FileEbillPaymentMethod.Phone;
+                return FileEbillPaymentMethod.PHONE;
             case "MAIL":
-                return FileEbillPaymentMethod.Mail;
+                return FileEbillPaymentMethod.MAIL;
             case "OTHER":
-                return FileEbillPaymentMethod.Other;
+                return FileEbillPaymentMethod.OTHER;
             default:
-                return FileEbillPaymentMethod.NoneSpecified;
+                return FileEbillPaymentMethod.NONE_SPECIFIED;
         }
     }
 

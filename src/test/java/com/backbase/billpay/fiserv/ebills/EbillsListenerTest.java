@@ -9,8 +9,8 @@ import static org.junit.Assert.fail;
 import com.backbase.billpay.fiserv.ebills.model.EbillAccountCancelRequest;
 import com.backbase.billpay.fiserv.ebills.model.EbillAccountCancelResponse;
 import com.backbase.billpay.fiserv.ebills.model.EbillFileRequest;
+import com.backbase.billpay.fiserv.ebills.model.EbillFileRequest.FileEbillPaymentMethod;
 import com.backbase.billpay.fiserv.ebills.model.EbillFileResponse;
-import com.backbase.billpay.fiserv.ebills.model.FileEbillPaymentMethod;
 import com.backbase.billpay.fiserv.payeessummary.model.Ebill.EbillStatus;
 import com.backbase.billpay.fiserv.payeessummary.model.EbillFilter;
 import com.backbase.billpay.fiserv.payeessummary.model.EbillListRequest;
@@ -203,7 +203,7 @@ public class EbillsListenerTest extends AbstractWebServiceTest {
         // validate the request data
         EbillFileRequest fileRequest = retrieveRequest(EbillFileRequest.class);
         assertEquals(EBILL_ID, fileRequest.getEbillId());
-        assertEquals(FileEbillPaymentMethod.Check, fileRequest.getFiledBillReason());
+        assertEquals(FileEbillPaymentMethod.CHECK, fileRequest.getFiledBillReason());
         assertEquals(request.getNote(), fileRequest.getBillNote());
 
         // validate the request header
