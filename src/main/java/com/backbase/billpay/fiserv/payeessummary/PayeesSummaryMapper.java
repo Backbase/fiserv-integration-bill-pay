@@ -43,6 +43,7 @@ public interface PayeesSummaryMapper {
     @Mapping(target = "outstandingBalance", source = "balance")
     @Mapping(target = "url", source = "billReferenceLinkUrl")
     @Mapping(target = "additions", ignore = true)
+    @Mapping(target = "statementAvailable", constant = "false")
     LatestBill toLatestBill(com.backbase.billpay.fiserv.payeessummary.model.Ebill source);
 
     @Named("EbillCapable")

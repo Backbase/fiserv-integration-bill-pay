@@ -5,6 +5,7 @@ import static com.backbase.billpay.fiserv.utils.FiservUtils.fromFiservDate;
 import static com.backbase.billpay.fiserv.utils.FiservUtils.toFiservDate;
 import static com.backbase.billpay.fiserv.utils.FiservUtils.todayFiservDate;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -258,6 +259,7 @@ public class PayeesSummaryListenerTest extends AbstractWebServiceTest {
             assertEquals(CURRENCY, bill.getOutstandingBalance().getCurrencyCode());
             assertEquals(expectedEbill.getStatus().name(), bill.getStatus());
             assertEquals(expectedEbill.getBillReferenceLinkUrl(), bill.getUrl());
+            assertFalse(bill.getStatementAvailable());
         }
     }
 
