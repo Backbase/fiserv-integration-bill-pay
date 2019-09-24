@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -30,10 +31,14 @@ public class FiservUtils {
 
     /**
      * Creates a header for the specified subscriber from the request context.
+     * 
+     * @deprecated please use {@link #createHeader(HttpServletRequest, String)}. Will be removed in DBS 2.17.0.
+     * 
      * @param request the request wrapper
      * @param subscriberId the subscriber for the user
      * @return
      */
+    @Deprecated
     public Header createHeader(RequestProxyWrapper<?> request, String subscriberId) {
         return Header.builder().subscriberId(subscriberId)
                                .clientAppText(clientAppText)
@@ -44,6 +49,22 @@ public class FiservUtils {
                                                            .getInternalRequestContext()
                                                            .getRemoteAddress())
                                .build();
+    }
+    
+    /**
+     * Creates a header for the specified subscriber from the request context.
+     * @param request the http servlet request
+     * @param subscriberId the subscriber for the user
+     * @return
+     */
+    public Header createHeader(HttpServletRequest request, String subscriberId) {
+        return Header.builder().subscriberId(subscriberId)
+                        .clientAppText(clientAppText)
+                        .clientAppVersion(clientAppVersion)
+                        .sponsorId(sponsorId)
+                        .correlationId(UUID.randomUUID().toString())
+                        .subscriberIpAddress(request.getRemoteAddr())
+                        .build();
     }
     
     /**

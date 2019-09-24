@@ -16,13 +16,18 @@ import com.backbase.buildingblocks.backend.communication.event.annotations.Reque
 import com.backbase.buildingblocks.backend.communication.event.proxy.RequestProxyWrapper;
 import org.apache.camel.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 /**
  * JMS consumer for Billpay Payees.
+ * 
+ * @deprecated please use {@link PayeesController}. Will be removed in DBS 2.17.0.
  */
 @Service
+@Deprecated
 @RequestListener
+@ConditionalOnProperty(name = "backbase.communication.inbound", havingValue = "JMS", matchIfMissing = true)
 public class PayeesListener extends AbstractListener implements BillPayPayeesListener {
 
     @Autowired

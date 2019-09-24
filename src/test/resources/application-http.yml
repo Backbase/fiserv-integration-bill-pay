@@ -1,0 +1,4 @@
+backbase:
+  communication:
+    inbound: HTTP
+    outbound: HTTP

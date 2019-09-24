@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Abstract class for JMS consumers.
+ * 
+ * @deprecated Will be removed in DBS 2.17.0.
  */
+@Deprecated
 public abstract class AbstractListener {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
