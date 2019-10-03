@@ -30,16 +30,22 @@
     </scm>
 
     <properties>
-        <com.backbase.dbs.billpay.integration.spec.version>1.1.59</com.backbase.dbs.billpay.integration.spec.version>
+        <com.backbase.dbs.billpay.integration.provider.spec.version>1.1.19</com.backbase.dbs.billpay.integration.provider.spec.version>
+        <com.backbase.dbs.billpay.integration.enrolment.spec.version>1.1.8</com.backbase.dbs.billpay.integration.enrolment.spec.version>
         <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.backbase.dbs.billpay</groupId>
+            <artifactId>billpay-integration-external-enrolment-outbound-spec</artifactId>
+            <version>${com.backbase.dbs.billpay.integration.enrolment.spec.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.backbase.dbs.billpay</groupId>
-            <artifactId>billpay-integration-spec</artifactId>
-            <version>${com.backbase.dbs.billpay.integration.spec.version}</version>
+            <artifactId>billpay-integration-external-provider-outbound-spec</artifactId>
+            <version>${com.backbase.dbs.billpay.integration.provider.spec.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
