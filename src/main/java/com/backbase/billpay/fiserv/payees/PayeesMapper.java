@@ -19,6 +19,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.BillPayPayee
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.ElectronicPayee;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.ElectronicPayeeByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.ElectronicPayeeByIdPutResponseBody;
+import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.LatestBill;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Payee;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.PayeeByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.PayeeByIdPutResponseBody;
@@ -132,5 +133,16 @@ public interface PayeesMapper {
     ElectronicPayee toElectronicPayee(Ebill ebillSource,
                     EbillAutoPayListResultInfo autopaySource,
                     PayeeSummary payeeSource);
+
+
+    @Mapping(target = "id", source = "ebillId")
+    @Mapping(target = "paymentDate", source = "dueDate")
+    @Mapping(target = "amount", source = "amountDue")
+    @Mapping(target = "minAmountDue", source = "minimumAmountDue")
+    @Mapping(target = "outstandingBalance", source = "balance")
+    @Mapping(target = "url", source = "billReferenceLinkUrl")
+    @Mapping(target = "additions", ignore = true)
+    @Mapping(target = "statementAvailable", constant = "false")
+    LatestBill toLatestBill(com.backbase.billpay.fiserv.payeessummary.model.Ebill source);
 
 }

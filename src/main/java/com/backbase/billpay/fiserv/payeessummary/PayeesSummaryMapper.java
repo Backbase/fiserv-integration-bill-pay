@@ -10,6 +10,7 @@ import com.backbase.billpay.fiserv.payeessummary.model.Ebill;
 import com.backbase.billpay.fiserv.payments.model.Payment;
 import com.backbase.billpay.fiserv.utils.FiservUtils;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Address;
+import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessummary.LatestBill;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessummary.NextPayment;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessummary.PayeeSummary;
 import com.backbase.rest.spec.common.types.Currency;
@@ -36,6 +37,17 @@ public interface PayeesSummaryMapper {
     @Mapping(target = "additions", ignore = true)
     PayeeSummary toPayeeSummary(com.backbase.billpay.fiserv.payees.model.PayeeSummary payeeSource, Ebill ebillSource,
                     EbillAutoPayListResultInfo autopaySource, Payment paymentSource);
+
+
+    @Mapping(target = "id", source = "ebillId")
+    @Mapping(target = "paymentDate", source = "dueDate")
+    @Mapping(target = "amount", source = "amountDue")
+    @Mapping(target = "minAmountDue", source = "minimumAmountDue")
+    @Mapping(target = "outstandingBalance", source = "balance")
+    @Mapping(target = "url", source = "billReferenceLinkUrl")
+    @Mapping(target = "additions", ignore = true)
+    @Mapping(target = "statementAvailable", constant = "false")
+    LatestBill toLatestBill(com.backbase.billpay.fiserv.payeessummary.model.Ebill source);
 
     @Mapping(target = "paymentDate", source = "paymentDate")
     @Mapping(target = "amount", source = "amount")
