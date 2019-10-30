@@ -22,7 +22,6 @@ public interface AccountsMapper {
     @Mapping(target = "accountNumber", source = "accountId.accountNumber")
     @Mapping(target = "accountType", source = "accountId.accountType")
     @Mapping(target = "routingNumber", source = "accountId.routingTransitNumber")
-    @Mapping(target = "balance", ignore = true)
     @Mapping(target = "accountBalance", ignore = true)
     @Mapping(target = "additions", ignore = true)
     Account toAccount(BankAccountSummary source);

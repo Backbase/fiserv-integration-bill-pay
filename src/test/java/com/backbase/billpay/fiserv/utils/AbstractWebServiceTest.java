@@ -11,9 +11,6 @@ import com.backbase.billpay.fiserv.Application;
 import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.fiserv.common.model.ResultType;
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
-import com.backbase.buildingblocks.backend.communication.event.proxy.RequestProxyWrapper;
-import com.backbase.buildingblocks.backend.internalrequest.DefaultInternalRequestContext;
-import com.backbase.buildingblocks.backend.internalrequest.InternalRequest;
 import com.google.common.net.MediaType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -133,23 +130,7 @@ public abstract class AbstractWebServiceTest {
         assertEquals("BankA", header.getSponsorId());
         assertTrue(header.getCorrelationId().length() > 0);
     }
-    
-    protected <T> RequestProxyWrapper<T> createRequestWrapper(T data) {
-        InternalRequest<T> internalRequest = createInternalRequest(data);
-        RequestProxyWrapper<T> requestWrapper = new RequestProxyWrapper<>();
-        requestWrapper.setRequest(internalRequest);
-        return requestWrapper;
-    }
-    
-    private <T> InternalRequest<T> createInternalRequest(T bodyData) {
-        InternalRequest<T> request = new InternalRequest<>();
-        request.setData(bodyData);
-        DefaultInternalRequestContext irc = new DefaultInternalRequestContext();
-        irc.setRemoteAddress(TEST_IP_ADDRESS);
-        request.setInternalRequestContext(irc);
-        return request;
-    }
-    
+
     protected ResultType createSuccessResult() {
         return ResultType.builder()
                          .success(true)

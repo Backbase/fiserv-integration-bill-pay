@@ -6,19 +6,21 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessummary.BillP
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for Bill Pay payees summary operations.
  */
 @RestController
-@ConditionalOnProperty(name = "backbase.communication.inbound", havingValue = "HTTP")
 public class PayeesSummaryController extends AbstractController implements BillPayPayeesSummaryApi {
     
-    @Autowired
     private PayeesSummaryService payeesSummaryService;
-    
+
+    @Autowired
+    public PayeesSummaryController(PayeesSummaryService payeesSummaryService) {
+        this.payeesSummaryService = payeesSummaryService;
+    }
+
     @Override
     public BillPayPayeesSummaryGetResponseBody getBillPayPayeesSummary(String subscriberId,
                     HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {

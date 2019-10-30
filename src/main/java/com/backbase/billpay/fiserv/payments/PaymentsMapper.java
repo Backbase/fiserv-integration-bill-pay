@@ -25,21 +25,18 @@ import org.mapstruct.ReportingPolicy;
 public interface PaymentsMapper {
 
     @Mapping(target = "additions", ignore = true)
-    @Mapping(target = "paymentFee", ignore = true)
-    @Mapping(target = "paymentAccountNickName", ignore = true)
     @Mapping(target = "fee", ignore = true)
+    @Mapping(target = "paymentAccount", source = "paymentDetail.bankAccountId")
     @Mapping(target = "payeeElectronic", ignore = true)
     @Mapping(target = "id", source = "paymentDetail.paymentId")
     @Mapping(target = "paymentMemo", source = "paymentDetail.memo")
     @Mapping(target = "ebillID", source = "paymentDetail.ebillId")
-    @Mapping(target = "paymentAccountNumber", source = "paymentDetail.bankAccountId.accountNumber")
     @Mapping(target = "recurring", source = "paymentDetail.recurringModelPayment")
     @Mapping(target = "payeeAccountNumber", source = "paymentDetail.payee.accountNumber")
-    @Mapping(target = "paymentAccount", source = "paymentDetail.bankAccountId")
     @Mapping(target = "payeeName", source = "paymentDetail.payee.name")
     @Mapping(target = "payeeNickName", source = "paymentDetail.payee.nickName")
     @Mapping(target = "payeeID", source = "paymentDetail.payee.payeeId")
-    @Mapping(target = "paymentAmount", source = "paymentDetail.amount")
+    @Mapping(target = "amount", source = "paymentDetail.amount")
     OneOffPayment toOneOffPayment(PaymentDetail paymentDetail);
 
     @Mapping(target = "header", ignore = true)
@@ -65,21 +62,18 @@ public interface PaymentsMapper {
     BillPayPaymentsGetResponseBody map(PaymentListResponse fiservResponse);
 
     @Mapping(target = "additions", ignore = true)
-    @Mapping(target = "paymentFee", ignore = true)
-    @Mapping(target = "paymentAccountNickName", ignore = true)
     @Mapping(target = "fee", ignore = true)
     @Mapping(target = "payeeElectronic", ignore = true)
     @Mapping(target = "id", source = "payment.paymentId")
     @Mapping(target = "paymentMemo", source = "payment.memo")
     @Mapping(target = "ebillID", source = "payment.ebillId")
-    @Mapping(target = "paymentAccountNumber", source = "payment.bankAccountId.accountNumber")
     @Mapping(target = "recurring", source = "payment.recurringModelPayment")
     @Mapping(target = "payeeAccountNumber", source = "payment.payee.accountNumber")
     @Mapping(target = "paymentAccount", source = "payment.bankAccountId")
     @Mapping(target = "payeeName", source = "payment.payee.name")
     @Mapping(target = "payeeNickName", source = "payment.payee.nickName")
     @Mapping(target = "payeeID", source = "payment.payee.payeeId")
-    @Mapping(target = "paymentAmount", source = "payment.amount")
+    @Mapping(target = "amount", source = "payment.amount")
     @Mapping(target = "numberOfInstances", ignore = true)
     @Mapping(target = "frequency", ignore = true)
     @Mapping(target = "paymentScheduledAlert", ignore = true)
@@ -95,9 +89,9 @@ public interface PaymentsMapper {
     @Mapping(target = "payment.modelExpirationAlert", source = "recurringModel.modelExpirationAlert")
     @Mapping(target = "payment.frequency", source = "recurringModel.recurringModelInfo.frequency")
     @Mapping(target = "payment.numberOfInstances", source = "recurringModel.recurringModelInfo.numberOfPayments")
-    @Mapping(target = "payment.paymentAccountNumber", source = "recurringModel.fundingAccount.accountNumber")
+    @Mapping(target = "payment.paymentAccount.accountNumber", source = "recurringModel.fundingAccount.accountNumber")
     @Mapping(target = "payment.paymentAccount", source = "recurringModel.fundingAccount")
-    @Mapping(target = "payment.paymentAmount", source = "recurringModel.recurringModelInfo.recurringPaymentAmount")
+    @Mapping(target = "payment.amount", source = "recurringModel.recurringModelInfo.recurringPaymentAmount")
     @Mapping(target = "payment.paymentMemo", source = "recurringModel.recurringModelInfo.memo")
     RecurringPaymentByIdGetResponseBody map(RecurringModel recurringModel);
 

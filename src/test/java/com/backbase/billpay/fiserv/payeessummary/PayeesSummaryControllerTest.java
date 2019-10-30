@@ -12,10 +12,18 @@ import static org.junit.Assert.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.backbase.billpay.fiserv.autopay.model.AutoPayInfo;
+import com.backbase.billpay.fiserv.autopay.model.AutoPayInfo.AutoPayAmount;
+import com.backbase.billpay.fiserv.autopay.model.AutoPayInfo.AutoPayDaysBefore;
+import com.backbase.billpay.fiserv.autopay.model.AutoPayInfo.AutoPayOn;
+import com.backbase.billpay.fiserv.autopay.model.EbillAutoPayListRequest;
+import com.backbase.billpay.fiserv.autopay.model.EbillAutoPayListResponse;
+import com.backbase.billpay.fiserv.autopay.model.EbillAutoPayListResultInfo;
 import com.backbase.billpay.fiserv.payees.model.PayeeListRequest;
 import com.backbase.billpay.fiserv.payees.model.PayeeListResponse;
 import com.backbase.billpay.fiserv.payees.model.PayeeSummary;
 import com.backbase.billpay.fiserv.payees.model.PayeeSummary.EbillActivationStatusServiceType;
+import com.backbase.billpay.fiserv.payees.model.PayeeSummary.EbillAutopayStatusType;
 import com.backbase.billpay.fiserv.payees.model.PaymentServices;
 import com.backbase.billpay.fiserv.payees.model.PaymentServices.PaymentServiceType;
 import com.backbase.billpay.fiserv.payees.model.UsAddress;
@@ -26,6 +34,8 @@ import com.backbase.billpay.fiserv.payeessummary.model.EbillFilter;
 import com.backbase.billpay.fiserv.payeessummary.model.EbillFilter.BillTypeFilter;
 import com.backbase.billpay.fiserv.payeessummary.model.EbillListRequest;
 import com.backbase.billpay.fiserv.payeessummary.model.EbillListResponse;
+import com.backbase.billpay.fiserv.payments.model.BankAccountId;
+import com.backbase.billpay.fiserv.payments.model.BankAccountId.BankAccountType;
 import com.backbase.billpay.fiserv.payments.model.Payee;
 import com.backbase.billpay.fiserv.payments.model.Payment;
 import com.backbase.billpay.fiserv.payments.model.PaymentDetail.PaymentStatus;
@@ -35,6 +45,7 @@ import com.backbase.billpay.fiserv.payments.model.PaymentListRequest;
 import com.backbase.billpay.fiserv.payments.model.PaymentListResponse;
 import com.backbase.billpay.fiserv.utils.AbstractHTTPWebServiceTest;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Address;
+import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Autopay;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessummary.BillPayPayeesSummaryGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessummary.LatestBill;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessummary.NextPayment;
@@ -45,12 +56,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.binary.StringUtils;
 import org.junit.Test;
 
 public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
-    
+
+    private Random random = new Random();
+
     private static final String URL = "/service-api/v2/bill-pay/payees-summary";
     
     @Test
@@ -83,6 +97,12 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
                                         .result(createSuccessResult()).build();
         setupWebServiceResponse(ebillResponse);
 
+        EbillAutoPayListResultInfo autopay1 = createAutopay(payeeId1);
+        EbillAutoPayListResponse autopayResponse = EbillAutoPayListResponse.builder()
+                        .ebillAutoPayList(Arrays.asList(autopay1))
+                        .result(createSuccessResult()).build();
+        setupWebServiceResponse(autopayResponse);
+
         Payment payment1 = createPayment(payeeId1);
         Payment payment1NotNext = createPayment(payeeId1);
         payment1NotNext.setPaymentDate(toFiservDate(Date.from(Instant.now().plusSeconds(TimeUnit.DAYS.toSeconds(2)))));
@@ -111,16 +131,16 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
                         payeeSummary : responseSummaries) {
             switch (payeeSummary.getId()) {
                 case "1":
-                    assertPayeeSummary(ebill1, payment1, payeeSummary1, payeeSummary);
+                    assertPayeeSummary(ebill1, autopay1, payment1, payeeSummary1, payeeSummary);
                     break;
                 case "2":
-                    assertPayeeSummary(ebill2, null, payeeSummary2, payeeSummary);
+                    assertPayeeSummary(ebill2, null,  null, payeeSummary2, payeeSummary);
                     break;
                 case "3":
-                    assertPayeeSummary(null, payment3, payeeSummary3, payeeSummary);
+                    assertPayeeSummary(null, null, payment3, payeeSummary3, payeeSummary);
                     break;
                 case "4":
-                    assertPayeeSummary(null, null, payeeSummary4, payeeSummary);
+                    assertPayeeSummary(null, null, null, payeeSummary4, payeeSummary);
                     break;
                 default:
                     fail("Unknown payee id in payee summaries");
@@ -138,7 +158,11 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
         assertEquals(todayFiservDate().getDate(), filter.getStartingDate().getDate());
         assertEquals(Integer.valueOf("100"), filter.getNumberOfDays());
 
-        PaymentListRequest paymentRequest = retrieveSpecificRequest(2, PaymentListRequest.class);
+        EbillAutoPayListRequest autopayRequest = retrieveSpecificRequest(2, EbillAutoPayListRequest.class);
+        assertHeader(SUBSCRIBER_ID, autopayRequest.getHeader());
+        assertNull(autopayRequest.getFilter());
+
+        PaymentListRequest paymentRequest = retrieveSpecificRequest(3, PaymentListRequest.class);
         assertHeader(SUBSCRIBER_ID, paymentRequest.getHeader());
         PaymentFilter paymentFilter = paymentRequest.getFilter();
         assertEquals(PaymentStatusFilter.PENDING, paymentFilter.getStatusFilter());
@@ -146,23 +170,50 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
         assertEquals(Integer.valueOf("100"), filter.getNumberOfDays());
     }
 
-    private void assertPayeeSummary(Ebill expectedEbill, Payment expectedPayment, PayeeSummary expectedSummary,
+    private EbillAutoPayListResultInfo createAutopay(Long payeeId) {
+        BankAccountId bankAccountId = BankAccountId.builder()
+                        .accountNumber("accNum")
+                        .accountType(BankAccountType.DDA)
+                        .routingTransitNumber("routingTransitNumber")
+                        .build();
+        AutoPayInfo autoPayInfo = AutoPayInfo.builder()
+                        .autoPayAmount(AutoPayAmount.AMOUNT_DUE)
+                        .autoPayOn(AutoPayOn.DUE_DATE)
+                        .daysBefore(AutoPayDaysBefore.FOUR)
+                        .fixedAmount(BigDecimal.ONE)
+                        .maxAuthorizedAmount(BigDecimal.TEN)
+                        .build();
+
+        return EbillAutoPayListResultInfo.builder()
+                        .payeeId(payeeId)
+                        .bankAccountId(bankAccountId)
+                        .autoPay(autoPayInfo)
+                        .paymentScheduledAlert(random.nextBoolean())
+                        .paymentSentAlert(random.nextBoolean())
+                        .build();
+    }
+
+    private void assertPayeeSummary(Ebill expectedEbill,
+                    EbillAutoPayListResultInfo autopay,
+                    Payment expectedPayment, PayeeSummary expectedSummary,
                     com.backbase.billpay.integration.rest.spec.v2.billpay.payeessummary.PayeeSummary responseSummary) {
         assertEquals(String.valueOf(expectedSummary.getPayeeId()), responseSummary.getId());
         assertEquals(expectedSummary.getName(), responseSummary.getName());
         assertEquals(expectedSummary.getNickName(), responseSummary.getNickName());
         assertEquals(expectedSummary.getAccountNumber(), responseSummary.getAccountNumber());
-        assertEquals(expectedSummary.getMerchantId() == null ? false : true, responseSummary.getElectronic());
+        assertEquals(expectedSummary.getMerchantId() != null, responseSummary.getElectronic());
         assertPaymentServices(expectedSummary, responseSummary.getPaymentServices());
         assertNextPayment(expectedPayment, responseSummary.getNextPayment());
 
         EbillActivationStatusServiceType ebillActivationStatus = expectedSummary.getEbillActivationStatus();
-        assertEquals(ebillActivationStatus == EbillActivationStatusServiceType.EBILL_NOT_AVAILABLE ? false : true,
+        assertEquals(ebillActivationStatus != EbillActivationStatusServiceType.EBILL_NOT_AVAILABLE,
                         responseSummary.getEbill().getCapable());
-        assertEquals((ebillActivationStatus == EbillActivationStatusServiceType.EBILL_ACTIVE
-                        || ebillActivationStatus == EbillActivationStatusServiceType.EBILL_PENDING) ? true : false,
+        assertEquals(ebillActivationStatus == EbillActivationStatusServiceType.EBILL_ACTIVE
+                                        || ebillActivationStatus == EbillActivationStatusServiceType.EBILL_PENDING,
                         responseSummary.getEbill().getEnabled());
         assertLatestBill(expectedEbill, responseSummary.getEbill().getLatestBill());
+
+        assertAutopay(autopay, responseSummary);
 
         UsAddress expectedAddress = expectedSummary.getOverNightAddress();
         Address address = responseSummary.getOvernightDeliveryAddress();
@@ -172,6 +223,32 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
         assertEquals(expectedAddress.getState(), address.getState());
         assertEquals(expectedAddress.getZip5(), address.getPostalCode());
     }
+
+    private void assertAutopay(EbillAutoPayListResultInfo autopay,
+                    com.backbase.billpay.integration.rest.spec.v2.billpay.payeessummary.PayeeSummary responseSummary) {
+        if (autopay == null) {
+            if (responseSummary.getEbill() != null) {
+                assertNull(responseSummary.getEbill().getAutopay());
+            }
+        } else {
+            Autopay responseSummaryAutopay = responseSummary.getEbill().getAutopay();
+            assertEquals(String.valueOf(autopay.getPayeeId()), responseSummary.getId());
+            assertEquals(autopay.getBankAccountId().getAccountNumber(),
+                            responseSummaryAutopay.getPaymentAccount().getAccountNumber());
+            assertEquals(autopay.getBankAccountId().getAccountType().toString(),
+                            responseSummaryAutopay.getPaymentAccount().getAccountType());
+            assertEquals(autopay.getBankAccountId().getRoutingTransitNumber(),
+                            responseSummaryAutopay.getPaymentAccount().getRoutingNumber());
+            assertEquals("FULL_AMOUNT", responseSummaryAutopay.getPayAmount());
+            assertEquals("BILL_DUE_DATE", responseSummaryAutopay.getPayOn());
+            assertEquals(Integer.valueOf(4), responseSummaryAutopay.getDaysBeforePayOn());
+            assertEquals(autopay.getAutoPay().getMaxAuthorizedAmount(),
+                            responseSummaryAutopay.getMaxPaymentAmount().getAmount());
+            assertEquals(autopay.getPaymentScheduledAlert(), responseSummaryAutopay.getPaymentScheduledAlert());
+            assertEquals(autopay.getPaymentSentAlert(), responseSummaryAutopay.getPaymentSentAlert());
+        }
+    }
+
 
     private Payment createPayment(Long payeeId) {
         return Payment.builder().payee(Payee.builder().payeeId(payeeId).build()).paymentId("paymentId")
@@ -189,11 +266,16 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
     private PayeeSummary createPayeeSummary(Long payeeId) {
         return PayeeSummary.builder().name("Payee Name").nickName("Payee Nickname").payeeId(payeeId)
                         .accountNumber("Acc" + payeeId)
-                        .ebillActivationStatus(EbillActivationStatusServiceType.EBILL_ACTIVE).cutoffTime(new Date())
-                        .earliestPaymentDate(todayFiservDate()).nextPaymentDate(todayFiservDate())
+                        .ebillActivationStatus(EbillActivationStatusServiceType.EBILL_ACTIVE)
+                        .cutoffTime(new Date())
+                        .earliestPaymentDate(todayFiservDate())
+                        .nextPaymentDate(todayFiservDate())
                         .overNightAddress(UsAddress.builder().address1("Address1").address2("Address2").city("City")
                                         .state("State").zip5("ZIPCODE").build())
-                        .paymentServices(createPaymentServices()).build();
+                        .paymentServices(createPaymentServices())
+                        .isAutopayEnabled(true)
+                        .ebillAutopayStatus(EbillAutopayStatusType.ENABLED)
+                        .build();
     }
 
     private List<PaymentServices> createPaymentServices() {
@@ -216,7 +298,6 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
                 assertEquals(fromFiservDate(payeeSummary.getNextPaymentDate()), responseService.getNextPaymentDate());
                 assertEquals(payeeSummary.getLeadDays(), responseService.getDeliveryDays());
                 assertNull(responseService.getFee());
-                assertNull(responseService.getPaymentFee());
             } else {
                 PaymentServices expectedService = StringUtils.equals("OVERNIGHT_CHECK", responseService.getPaymentServiceType())
                                 ? payeeSummary.getPaymentServices().get(0)
@@ -228,7 +309,6 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
                 assertEquals(payeeSummary.getLeadDays(), responseService.getDeliveryDays());
                 assertEquals(expectedService.getFee(), responseService.getFee().getAmount());
                 assertEquals(CURRENCY, responseService.getFee().getCurrencyCode());
-                assertEquals(expectedService.getFee(), responseService.getPaymentFee());
             }
         }
     }
@@ -240,10 +320,8 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
             assertEquals(fromFiservDate(expectedPayment.getPaymentDate()), nextPayment.getPaymentDate());
             assertEquals(expectedPayment.getAmount(), nextPayment.getAmount().getAmount());
             assertEquals(CURRENCY, nextPayment.getAmount().getCurrencyCode());
-            assertEquals(expectedPayment.getAmount(), nextPayment.getPaymentAmount());
             assertEquals(expectedPayment.getRecurringModelPayment(), nextPayment.getRecurring());
             assertNull(nextPayment.getFee());
-            assertNull(nextPayment.getPaymentFee());
         }
 
     }
@@ -254,13 +332,10 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
         } else {
             assertEquals(expectedEbill.getEbillId(), bill.getId());
             assertEquals(expectedEbill.getDueDate(), bill.getPaymentDate());
-            assertEquals(expectedEbill.getAmountDue(), bill.getPaymentAmount());
             assertEquals(expectedEbill.getAmountDue(), bill.getAmount().getAmount());
             assertEquals(CURRENCY, bill.getAmount().getCurrencyCode());
-            assertEquals(expectedEbill.getMinimumAmountDue(), bill.getMinimumAmountDue());
             assertEquals(expectedEbill.getMinimumAmountDue(), bill.getMinAmountDue().getAmount());
             assertEquals(CURRENCY, bill.getMinAmountDue().getCurrencyCode());
-            assertEquals(expectedEbill.getBalance(), bill.getBalance());
             assertEquals(expectedEbill.getBalance(), bill.getOutstandingBalance().getAmount());
             assertEquals(CURRENCY, bill.getOutstandingBalance().getCurrencyCode());
             assertEquals(expectedEbill.getStatus().name(), bill.getStatus());

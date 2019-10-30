@@ -7,19 +7,21 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.accounts.BillPayAcc
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for Bill Pay account operations.
  */
 @RestController
-@ConditionalOnProperty(name = "backbase.communication.inbound", havingValue = "HTTP")
 public class AccountsController extends AbstractController implements BillPayAccountsApi {
     
-    @Autowired
     private AccountsService accountsService;
-    
+
+    @Autowired
+    public AccountsController(AccountsService accountsService) {
+        this.accountsService = accountsService;
+    }
+
     @Override
     public BillPayAccountsGetResponseBody getBillPayAccounts(String subscriberId, HttpServletRequest httpServletRequest,
                     HttpServletResponse httpServletResponse) {

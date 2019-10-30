@@ -107,7 +107,6 @@ public class PaymentsControllerTest extends AbstractHTTPWebServiceTest {
         
         // validate the response
         PaymentDetail fiservPayment = fiservResponse.getPaymentDetailResult().get(0);
-        assertEquals(fiservPayment.getAmount(), response.getPayment().getPaymentAmount());
         assertEquals(fiservPayment.getAmount(), response.getPayment().getAmount().getAmount());
         assertEquals(CURRENCY, response.getPayment().getAmount().getCurrencyCode());
         assertEquals(fiservPayment.getEbillId(), response.getPayment().getEbillID());
@@ -319,7 +318,6 @@ public class PaymentsControllerTest extends AbstractHTTPWebServiceTest {
         assertEquals(1, response.getPayments().size());
         com.backbase.billpay.fiserv.payments.model.Payment fiservPayment = fiservResponse.getPayments().get(0);
         Payment servicePayment = response.getPayments().get(0);
-        assertEquals(fiservPayment.getAmount(), servicePayment.getPaymentAmount());
         assertEquals(fiservPayment.getAmount(), servicePayment.getAmount().getAmount());
         assertEquals(CURRENCY, servicePayment.getAmount().getCurrencyCode());
         assertEquals(fiservPayment.getEbillId(), servicePayment.getEbillID());
@@ -396,7 +394,6 @@ public class PaymentsControllerTest extends AbstractHTTPWebServiceTest {
         assertEquals(Boolean.TRUE, response.getPayment().getModelExpirationAlert());
         assertEquals(Boolean.TRUE, response.getPayment().getPaymentScheduledAlert());
         assertEquals(Boolean.TRUE, response.getPayment().getPaymentSentAlert());
-        assertEquals(BigDecimal.TEN, response.getPayment().getPaymentAmount());
         assertEquals("EVERY_2_WEEKS", response.getPayment().getFrequency());
         assertEquals(Integer.valueOf("100"), response.getPayment().getNumberOfInstances());
         assertEquals("Payment memo", response.getPayment().getPaymentMemo());

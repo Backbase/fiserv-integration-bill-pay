@@ -11,19 +11,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for Bill Pay enrolment operations.
  */
 @RestController
-@ConditionalOnProperty(name = "backbase.communication.inbound", havingValue = "HTTP")
 public class EnrolmentController extends AbstractController implements BillPayEnrolmentApi {
     
-    @Autowired
     private EnrolmentService enrolmentService;
-    
+
+    @Autowired
+    public EnrolmentController(EnrolmentService enrolmentService) {
+        this.enrolmentService = enrolmentService;
+    }
+
     @Override
     public MigrationGetResponseBody getMigration(String user, HttpServletRequest httpServletRequest,
                     HttpServletResponse httpServletResponse) {
