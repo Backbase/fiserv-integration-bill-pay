@@ -89,7 +89,6 @@ public interface PaymentsMapper {
     @Mapping(target = "payment.modelExpirationAlert", source = "recurringModel.modelExpirationAlert")
     @Mapping(target = "payment.frequency", source = "recurringModel.recurringModelInfo.frequency")
     @Mapping(target = "payment.numberOfInstances", source = "recurringModel.recurringModelInfo.numberOfPayments")
-    @Mapping(target = "payment.paymentAccount.accountNumber", source = "recurringModel.fundingAccount.accountNumber")
     @Mapping(target = "payment.paymentAccount", source = "recurringModel.fundingAccount")
     @Mapping(target = "payment.amount", source = "recurringModel.recurringModelInfo.recurringPaymentAmount")
     @Mapping(target = "payment.paymentMemo", source = "recurringModel.recurringModelInfo.memo")

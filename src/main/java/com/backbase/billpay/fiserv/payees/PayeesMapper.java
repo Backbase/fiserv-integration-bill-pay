@@ -134,7 +134,6 @@ public interface PayeesMapper {
                     EbillAutoPayListResultInfo autopaySource,
                     PayeeSummary payeeSource);
 
-
     @Mapping(target = "id", source = "ebillId")
     @Mapping(target = "paymentDate", source = "dueDate")
     @Mapping(target = "amount", source = "amountDue")
