@@ -1,5 +1,12 @@
 package com.backbase.billpay.fiserv.payees;
 
+import static com.backbase.billpay.fiserv.autopay.AutopayServiceImpl.AUTOPAY_LIST_ACTION;
+import static com.backbase.billpay.fiserv.payeessummary.PayeesSummaryServiceImpl.EBILL_LIST_ACTION;
+
+import com.backbase.billpay.fiserv.autopay.model.EbillAutoPayFilter;
+import com.backbase.billpay.fiserv.autopay.model.EbillAutoPayListRequest;
+import com.backbase.billpay.fiserv.autopay.model.EbillAutoPayListResponse;
+import com.backbase.billpay.fiserv.autopay.model.EbillAutoPayListResultInfo;
 import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.fiserv.payees.model.PayeeAddRequest;
 import com.backbase.billpay.fiserv.payees.model.PayeeAddResponse;
@@ -9,7 +16,14 @@ import com.backbase.billpay.fiserv.payees.model.PayeeListResponse;
 import com.backbase.billpay.fiserv.payees.model.PayeeModifyRequest;
 import com.backbase.billpay.fiserv.payees.model.PayeeModifyResponse;
 import com.backbase.billpay.fiserv.payees.model.PayeeSummary;
+import com.backbase.billpay.fiserv.payeessummary.model.Ebill;
+import com.backbase.billpay.fiserv.payeessummary.model.Ebill.EbillStatus;
+import com.backbase.billpay.fiserv.payeessummary.model.EbillFilter;
+import com.backbase.billpay.fiserv.payeessummary.model.EbillFilter.BillTypeFilter;
+import com.backbase.billpay.fiserv.payeessummary.model.EbillListRequest;
+import com.backbase.billpay.fiserv.payeessummary.model.EbillListResponse;
 import com.backbase.billpay.fiserv.utils.FiservClient;
+import com.backbase.billpay.fiserv.utils.FiservUtils;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.BillPayElectronicPayeesPostRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.BillPayElectronicPayeesPostResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.BillPayPayeesPostRequestBody;
@@ -40,7 +54,6 @@ public class PayeesServiceImpl implements PayeesService {
     private static final String PAYEE_CANCEL_ACTION = "PayeeCancel";
     
     private PayeesMapper mapper;
-    
     private FiservClient client;
     
     @Autowired
@@ -95,7 +108,35 @@ public class PayeesServiceImpl implements PayeesService {
     @Override
     public ElectronicPayeeByIdGetResponseBody getBillPayElectronicPayee(Header header, String id) {
         PayeeSummary payeeSummary = getPayee(header, id);
-        ElectronicPayee payee = mapper.toElectronicPayee(payeeSummary);
+
+        //Ebill
+        EbillFilter ebillFilter = EbillFilter.builder()
+                        .billType(BillTypeFilter.BILLER)
+                        .startingDate(FiservUtils.todayFiservDate())
+                        .numberOfDays(Integer.valueOf(100))
+                        .build();
+        EbillListRequest ebillRequest = EbillListRequest.builder()
+                        .filter(ebillFilter)
+                        .header(header)
+                        .build();
+        EbillListResponse ebillResponse = client.call(ebillRequest, EBILL_LIST_ACTION);
+        Ebill ebill = ebillResponse.getEbillList().stream()
+                                        .filter(e -> e.getStatus() == EbillStatus.UNPAID)
+                                        .filter(e -> e.getPayee().getPayeeId().equals(Long.valueOf(id)))
+                                        .findFirst().orElse(null);
+        //Autopay
+        EbillAutoPayFilter autoPayFilter = EbillAutoPayFilter.builder().payeeId(Long.valueOf(id)).build();
+        EbillAutoPayListRequest listRequest = EbillAutoPayListRequest.builder()
+                        .filter(autoPayFilter)
+                        .header(header)
+                        .build();
+        EbillAutoPayListResponse autopayResponse = client.call(listRequest, AUTOPAY_LIST_ACTION);
+        EbillAutoPayListResultInfo autopay =
+                        autopayResponse.getEbillAutoPayList().stream()
+                                        .filter(a -> a.getPayeeId().equals(Long.valueOf(id)))
+                                        .findFirst().orElse(null);
+
+        ElectronicPayee payee = mapper.toElectronicPayee(ebill, autopay, payeeSummary);
         return new ElectronicPayeeByIdGetResponseBody().withPayee(payee);
     }
 

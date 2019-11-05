@@ -1,5 +1,8 @@
 package com.backbase.billpay.fiserv.payees;
 
+import com.backbase.billpay.fiserv.autopay.AutopayMapper;
+import com.backbase.billpay.fiserv.autopay.model.EbillAutoPayListResultInfo;
+import com.backbase.billpay.fiserv.ebills.EbillsMapper;
 import com.backbase.billpay.fiserv.payees.model.PayeeAddInfo;
 import com.backbase.billpay.fiserv.payees.model.PayeeAddRequest;
 import com.backbase.billpay.fiserv.payees.model.PayeeAddResponse;
@@ -7,6 +10,7 @@ import com.backbase.billpay.fiserv.payees.model.PayeeModifyRequest;
 import com.backbase.billpay.fiserv.payees.model.PayeeModifyResponse;
 import com.backbase.billpay.fiserv.payees.model.PayeeSummary;
 import com.backbase.billpay.fiserv.payees.model.UsAddress;
+import com.backbase.billpay.fiserv.payeessummary.model.Ebill;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Address;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.BillPayElectronicPayeesPostRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.BillPayElectronicPayeesPostResponseBody;
@@ -15,6 +19,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.BillPayPayee
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.ElectronicPayee;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.ElectronicPayeeByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.ElectronicPayeeByIdPutResponseBody;
+import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.LatestBill;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Payee;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.PayeeByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.PayeeByIdPutResponseBody;
@@ -28,7 +33,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR, uses = PaymentServicesMapper.class)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR, uses = {PaymentServicesMapper.class,
+                EbillsMapper.class, AutopayMapper.class})
 public interface PayeesMapper {
 
     @Mapping(target = "header", ignore = true)
@@ -116,10 +122,26 @@ public interface PayeesMapper {
     @Mapping(target = "additions", ignore = true)
     ElectronicPayeeByIdPutResponseBody toElectronicPayeeByIdPutResponseBody(PayeeModifyResponse source);
 
-    @Mapping(target = "id", source = "payeeId")
-    @Mapping(target = "overnightDeliveryAddress", source = "overNightAddress")
-    @Mapping(target = "paymentServices", source = "source")
+    @Mapping(target = "id", source = "payeeSource.payeeId")
+    @Mapping(target = "overnightDeliveryAddress", source = "payeeSource.overNightAddress")
+    @Mapping(target = "paymentServices", source = "payeeSource")
+    @Mapping(target = "ebill.latestBill", source = "ebillSource")
+    @Mapping(target = "ebill.capable", source = "payeeSource.ebillActivationStatus", qualifiedByName = "EbillCapable")
+    @Mapping(target = "ebill.enabled", source = "payeeSource.ebillActivationStatus", qualifiedByName = "EbillEnabled")
+    @Mapping(target = "ebill.autopay", source = "autopaySource")
     @Mapping(target = "additions", ignore = true)
-    ElectronicPayee toElectronicPayee(PayeeSummary source);
+    ElectronicPayee toElectronicPayee(Ebill ebillSource,
+                    EbillAutoPayListResultInfo autopaySource,
+                    PayeeSummary payeeSource);
+
+    @Mapping(target = "id", source = "ebillId")
+    @Mapping(target = "paymentDate", source = "dueDate")
+    @Mapping(target = "amount", source = "amountDue")
+    @Mapping(target = "minAmountDue", source = "minimumAmountDue")
+    @Mapping(target = "outstandingBalance", source = "balance")
+    @Mapping(target = "url", source = "billReferenceLinkUrl")
+    @Mapping(target = "additions", ignore = true)
+    @Mapping(target = "statementAvailable", constant = "false")
+    LatestBill toLatestBill(com.backbase.billpay.fiserv.payeessummary.model.Ebill source);
 
 }

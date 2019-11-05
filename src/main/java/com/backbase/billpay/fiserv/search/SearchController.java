@@ -7,19 +7,21 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessearch.BillPa
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for Bill Pay payees search operations.
  */
 @RestController
-@ConditionalOnProperty(name = "backbase.communication.inbound", havingValue = "HTTP")
 public class SearchController extends AbstractController implements BillPaySearchApi {
     
-    @Autowired
     private SearchService searchService;
-    
+
+    @Autowired
+    public SearchController(SearchService searchService) {
+        this.searchService = searchService;
+    }
+
     @Override
     public BillPaySearchGetResponseBody getBillPaySearch(String subscriberId, String name, String zipCode,
                     String accountNumber, HttpServletRequest httpServletRequest,

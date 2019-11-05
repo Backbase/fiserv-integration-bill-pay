@@ -2,6 +2,7 @@ package com.backbase.billpay.fiserv.ebills;
 
 import com.backbase.billpay.fiserv.ebills.model.EbillFileRequest;
 import com.backbase.billpay.fiserv.ebills.model.EbillFileRequest.FileEbillPaymentMethod;
+import com.backbase.billpay.fiserv.payees.model.PayeeSummary.EbillActivationStatusServiceType;
 import com.backbase.billpay.fiserv.payeessummary.model.Ebill.EbillStatus;
 import com.backbase.billpay.fiserv.payments.PaymentMapper;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.Ebill;
@@ -9,11 +10,12 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.i
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR, uses = PaymentMapper.class)
 public interface EbillsMapper {
-    
+
     List<Ebill> toEbillList(List<com.backbase.billpay.fiserv.payeessummary.model.Ebill> source);
     
     @Mapping(target = "id", source = "ebillId")
@@ -72,6 +74,17 @@ public interface EbillsMapper {
             default:
                 return FileEbillPaymentMethod.NONE_SPECIFIED;
         }
+    }
+
+    @Named("EbillCapable")
+    default Boolean toEbillCapable(EbillActivationStatusServiceType source) {
+        return source != EbillActivationStatusServiceType.EBILL_NOT_AVAILABLE;
+    }
+
+    @Named("EbillEnabled")
+    default Boolean toEbillEnabled(EbillActivationStatusServiceType source) {
+        return (source == EbillActivationStatusServiceType.EBILL_ACTIVE
+                        || source == EbillActivationStatusServiceType.EBILL_PENDING);
     }
 
 }

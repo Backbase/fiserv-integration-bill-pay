@@ -37,7 +37,6 @@ public class PaymentServicesMapper {
                                 .withEarliestPaymentDate(fromFiservDate(service.getEarliestDate()))
                                 .withNextPaymentDate(fromFiservDate(service.getNextDate()))
                                 .withDeliveryDays(source.getLeadDays())
-                                .withPaymentFee(service.getFee())
                                 .withFee(new Currency().withAmount(service.getFee()).withCurrencyCode(CURRENCY));
                 if (service.getPaymentService() == PaymentServiceType.OVERNIGHT_CHECK) {
                     paymentService.setPaymentServiceType("OVERNIGHT_CHECK");
@@ -71,7 +70,6 @@ public class PaymentServicesMapper {
                         .withEarliestPaymentDate(service.getEarliestPaymentDate())
                         .withFee(service.getFee())
                         .withNextPaymentDate(service.getNextPaymentDate())
-                        .withPaymentFee(service.getPaymentFee())
                         .withPaymentServiceType(service.getPaymentServiceType());
     }
 

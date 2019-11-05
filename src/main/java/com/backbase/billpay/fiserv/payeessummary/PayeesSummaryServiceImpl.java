@@ -1,9 +1,13 @@
 package com.backbase.billpay.fiserv.payeessummary;
 
+import static com.backbase.billpay.fiserv.autopay.AutopayServiceImpl.AUTOPAY_LIST_ACTION;
 import static com.backbase.billpay.fiserv.payees.PayeesServiceImpl.PAYEE_LIST_ACTION;
 import static com.backbase.billpay.fiserv.payments.PaymentsServiceImpl.PAYMENT_LIST_ACTION;
 import static com.backbase.billpay.fiserv.utils.FiservUtils.fromFiservDate;
 
+import com.backbase.billpay.fiserv.autopay.model.EbillAutoPayListRequest;
+import com.backbase.billpay.fiserv.autopay.model.EbillAutoPayListResponse;
+import com.backbase.billpay.fiserv.autopay.model.EbillAutoPayListResultInfo;
 import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.fiserv.payees.model.PayeeListRequest;
 import com.backbase.billpay.fiserv.payees.model.PayeeListResponse;
@@ -37,7 +41,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PayeesSummaryServiceImpl implements PayeesSummaryService {
 
-    private static final String EBILL_LIST_ACTION = "EbillList";
+    public static final String EBILL_LIST_ACTION = "EbillList";
 
     private PayeesSummaryMapper mapper;
 
@@ -55,6 +59,7 @@ public class PayeesSummaryServiceImpl implements PayeesSummaryService {
         PayeeListRequest payeeRequest = PayeeListRequest.builder().header(header).build();
         PayeeListResponse payeeResponse = client.call(payeeRequest, PAYEE_LIST_ACTION);
 
+        //Ebill
         EbillFilter ebillFilter = EbillFilter.builder()
                         .billType(BillTypeFilter.ALL)
                         .startingDate(FiservUtils.todayFiservDate())
@@ -65,8 +70,15 @@ public class PayeesSummaryServiceImpl implements PayeesSummaryService {
         Map<Long, List<Ebill>> ebillMap =
                         ebillResponse.getEbillList().stream().filter(e -> e.getStatus() == EbillStatus.UNPAID)
                                         .collect(Collectors.groupingBy(ebill -> ebill.getPayee().getPayeeId()));
-
-
+        //Autopay
+        EbillAutoPayListRequest listRequest = EbillAutoPayListRequest.builder()
+                        .header(header)
+                        .build();
+        EbillAutoPayListResponse autopayResponse = client.call(listRequest, AUTOPAY_LIST_ACTION);
+        Map<Long, List<EbillAutoPayListResultInfo>> autopayMap =
+                        autopayResponse.getEbillAutoPayList().stream()
+                                        .collect(Collectors.groupingBy(EbillAutoPayListResultInfo::getPayeeId));
+        //Payments
         PaymentFilter paymentFilter = PaymentFilter.builder()
                         .statusFilter(PaymentStatusFilter.PENDING)
                         .startingPaymentDate(FiservUtils.todayFiservDate())
@@ -83,8 +95,9 @@ public class PayeesSummaryServiceImpl implements PayeesSummaryService {
             for (PayeeSummary summary : payeeResponse.getPayees()) {
                 Long payeeId = summary.getPayeeId();
                 Ebill ebill = getLatestEbill(ebillMap.get(payeeId));
+                EbillAutoPayListResultInfo autopay = getAutopay(autopayMap.get(payeeId));
                 Payment payment = getNextPayment(paymentMap.get(payeeId));
-                summaries.add(mapper.toPayeeSummary(summary, ebill, payment));
+                summaries.add(mapper.toPayeeSummary(summary, ebill, autopay ,payment));
             }
         }
 
@@ -95,8 +108,8 @@ public class PayeesSummaryServiceImpl implements PayeesSummaryService {
         if (payments != null) {
             Optional<Payment> optionalPayment =
                             payments.stream()
-                                            .sorted((payment1, payment2) -> fromFiservDate(payment1.getPaymentDate())
-                                                            .compareTo(fromFiservDate(payment2.getPaymentDate())))
+                                            .sorted(Comparator.comparing(payment -> fromFiservDate(
+                                                            payment.getPaymentDate())))
                                             .findFirst();
             return optionalPayment.orElse(null);
 
@@ -104,9 +117,18 @@ public class PayeesSummaryServiceImpl implements PayeesSummaryService {
         return null;
     }
 
+    private EbillAutoPayListResultInfo getAutopay(List<EbillAutoPayListResultInfo> autopays) {
+        if (autopays != null) {
+            Optional<EbillAutoPayListResultInfo> optionalAutopay = autopays.stream().findFirst();
+            return optionalAutopay.orElse(null);
+        }
+        return null;
+    }
+
     private Ebill getLatestEbill(List<Ebill> ebills) {
         if (ebills != null) {
-            Optional<Ebill> optionalEbill = ebills.stream().sorted(Comparator.comparing(Ebill::getDueDate)).findFirst();
+            Optional<Ebill> optionalEbill = ebills.stream().sorted(Comparator.comparing(Ebill::getDueDate))
+                            .findFirst();
             return optionalEbill.orElse(null);
         }
         return null;

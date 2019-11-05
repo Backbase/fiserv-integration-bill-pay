@@ -12,19 +12,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for Bill Pay eBill functionality.
  */
 @RestController
-@ConditionalOnProperty(name = "backbase.communication.inbound", havingValue = "HTTP")
 public class EbillsController extends AbstractController implements BillPayEbillsApi {
-    
-    @Autowired
+
     private EbillsService ebillsService;
-    
+
+    @Autowired
+    public EbillsController(EbillsService ebillsService) {
+        this.ebillsService = ebillsService;
+    }
+
     @Override
     public void deleteBillPayEbills(String payeeId, String subscriberId, HttpServletRequest httpServletRequest,
                     HttpServletResponse httpServletResponse) {

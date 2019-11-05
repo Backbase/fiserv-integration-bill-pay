@@ -16,19 +16,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for Bill Pay payees operations.
  */
 @RestController
-@ConditionalOnProperty(name = "backbase.communication.inbound", havingValue = "HTTP")
 public class PayeesController extends AbstractController implements BillPayPayeesApi {
     
-    @Autowired
     private PayeesService payeesService;
-    
+
+    @Autowired
+    public PayeesController(PayeesService payeesService) {
+        this.payeesService = payeesService;
+    }
+
     @Override
     public BillPayPayeesPostResponseBody postBillPayPayees(
                     @Valid BillPayPayeesPostRequestBody request,
