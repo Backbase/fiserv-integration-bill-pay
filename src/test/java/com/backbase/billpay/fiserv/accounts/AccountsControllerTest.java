@@ -11,14 +11,14 @@ import com.backbase.billpay.fiserv.accounts.model.BankAccountSummary;
 import com.backbase.billpay.fiserv.common.model.ResultType;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId.BankAccountType;
-import com.backbase.billpay.fiserv.utils.AbstractHTTPWebServiceTest;
+import com.backbase.billpay.fiserv.utils.AbstractWebServiceTest;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.accounts.Account;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.accounts.BillPayAccountsGetResponseBody;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
 
-public class AccountsControllerTest extends AbstractHTTPWebServiceTest {
+public class AccountsControllerTest extends AbstractWebServiceTest {
     
     private static final String URL = "/service-api/v2/bill-pay/accounts";
     

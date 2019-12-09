@@ -35,6 +35,7 @@ public interface PayeesSummaryMapper {
     @Mapping(target = "ebill.autopay", source = "autopaySource")
     @Mapping(target = "overnightDeliveryAddress", source = "payeeSource.overNightAddress")
     @Mapping(target = "additions", ignore = true)
+    @Mapping(target = "hasRecurringPayments", source = "payeeSource.isRecurringModelEnabled")
     PayeeSummary toPayeeSummary(com.backbase.billpay.fiserv.payees.model.PayeeSummary payeeSource, Ebill ebillSource,
                     EbillAutoPayListResultInfo autopaySource, Payment paymentSource);
 
@@ -54,6 +55,7 @@ public interface PayeesSummaryMapper {
     @Mapping(target = "recurring", source = "recurringModelPayment")
     @Mapping(target = "fee", ignore = true)
     @Mapping(target = "additions", ignore = true)
+    @Mapping(target = "automaticPayment", source = "ebillAutoPayment")
     NextPayment toNextPayment(Payment source);
 
     @Mapping(target = "postalCode", source = "zip5")

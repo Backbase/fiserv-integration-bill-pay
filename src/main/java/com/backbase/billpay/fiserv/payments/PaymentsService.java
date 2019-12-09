@@ -33,6 +33,7 @@ public interface PaymentsService {
      * @param startDate the start date for payments to filter by.
      * @param endDate the end date for payments to filter by.
      * @param payeeId the id of the payee to filter by.
+     * @param paymentType the type of payment to filter by.
      * @param from pagination from.
      * @param size pagination size.
      * @param orderBy field to order the payments by
@@ -40,7 +41,7 @@ public interface PaymentsService {
      * @return payments response.
      */
     BillPayPaymentsGetResponseBody getBillPayPayments(
-            Header header, String status, Date startDate, Date endDate, String payeeId, 
+            Header header, String status, Date startDate, Date endDate, String payeeId, String paymentType,
             Integer from, Integer size, String orderBy, String direction);
     
     /**

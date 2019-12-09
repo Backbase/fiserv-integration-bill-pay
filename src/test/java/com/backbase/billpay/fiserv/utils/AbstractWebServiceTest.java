@@ -11,6 +11,7 @@ import com.backbase.billpay.fiserv.Application;
 import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.fiserv.common.model.ResultType;
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.MediaType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -28,12 +29,17 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.verify.VerificationTimes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 @ActiveProfiles("it")
+@AutoConfigureMockMvc
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(initializers = TestApplicationContextInitializer.class)
 @SpringBootTest(classes = Application.class)
@@ -47,8 +53,14 @@ public abstract class AbstractWebServiceTest {
     private static final String METHOD_POST = "POST";
     private static final int PORT = 1080;
     private static final String HOST = "localhost";
+    
     private ClientAndServer mockServer;
-
+    
+    @Autowired
+    protected MockMvc mockMvc;
+    
+    protected ObjectMapper objectMapper;
+    
     public AbstractWebServiceTest() {
         super();
     }
@@ -56,6 +68,11 @@ public abstract class AbstractWebServiceTest {
     @Before
     public void startServer() {
         mockServer = startClientAndServer(1080);
+    }
+    
+    @Before
+    public void setup() {
+        this.objectMapper = new ObjectMapper();
     }
 
     @After
@@ -120,6 +137,13 @@ public abstract class AbstractWebServiceTest {
         } catch (IOException | SOAPException | JAXBException exception) {
             throw new IllegalArgumentException("Cannot convert soap message to object due to: " + exception);
         }
+    }
+    
+    protected RequestPostProcessor setRemoteAddress() {
+        return request -> {
+            request.setRemoteAddr(TEST_IP_ADDRESS);
+            return request;
+        };
     }
     
     protected void assertHeader(String subscriberId, Header header) {

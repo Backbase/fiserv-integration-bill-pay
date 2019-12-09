@@ -97,7 +97,7 @@ public class PayeesSummaryServiceImpl implements PayeesSummaryService {
                 Ebill ebill = getLatestEbill(ebillMap.get(payeeId));
                 EbillAutoPayListResultInfo autopay = getAutopay(autopayMap.get(payeeId));
                 Payment payment = getNextPayment(paymentMap.get(payeeId));
-                summaries.add(mapper.toPayeeSummary(summary, ebill, autopay ,payment));
+                summaries.add(mapper.toPayeeSummary(summary, ebill, autopay, payment));
             }
         }
 

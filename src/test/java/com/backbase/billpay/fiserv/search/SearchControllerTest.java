@@ -9,7 +9,7 @@ import com.backbase.billpay.fiserv.common.model.ResultType;
 import com.backbase.billpay.fiserv.search.model.PayeeSearchRequest;
 import com.backbase.billpay.fiserv.search.model.PayeeSearchResponse;
 import com.backbase.billpay.fiserv.search.model.PayeeSearchResultInfo;
-import com.backbase.billpay.fiserv.utils.AbstractHTTPWebServiceTest;
+import com.backbase.billpay.fiserv.utils.AbstractWebServiceTest;
 import com.backbase.billpay.fiserv.utils.TestUtil;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessearch.BillPaySearchGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessearch.Payee;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
 
-public class SearchControllerTest extends AbstractHTTPWebServiceTest {
+public class SearchControllerTest extends AbstractWebServiceTest {
     
     private static final String URL = "/service-api/v2/bill-pay/payees-search";
     private static final String PAYEE_SEARCH_NAME = "payee1";
