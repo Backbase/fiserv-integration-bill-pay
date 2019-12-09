@@ -43,7 +43,7 @@ import com.backbase.billpay.fiserv.payments.model.PaymentFilter;
 import com.backbase.billpay.fiserv.payments.model.PaymentFilter.PaymentStatusFilter;
 import com.backbase.billpay.fiserv.payments.model.PaymentListRequest;
 import com.backbase.billpay.fiserv.payments.model.PaymentListResponse;
-import com.backbase.billpay.fiserv.utils.AbstractHTTPWebServiceTest;
+import com.backbase.billpay.fiserv.utils.AbstractWebServiceTest;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Address;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Autopay;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessummary.BillPayPayeesSummaryGetResponseBody;
@@ -61,7 +61,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.binary.StringUtils;
 import org.junit.Test;
 
-public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
+public class PayeesSummaryControllerTest extends AbstractWebServiceTest {
 
     private Random random = new Random();
 
@@ -204,6 +204,7 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
         assertEquals(expectedSummary.getMerchantId() != null, responseSummary.getElectronic());
         assertPaymentServices(expectedSummary, responseSummary.getPaymentServices());
         assertNextPayment(expectedPayment, responseSummary.getNextPayment());
+        assertEquals(expectedSummary.getIsRecurringModelEnabled(), responseSummary.getHasRecurringPayments());
 
         EbillActivationStatusServiceType ebillActivationStatus = expectedSummary.getEbillActivationStatus();
         assertEquals(ebillActivationStatus != EbillActivationStatusServiceType.EBILL_NOT_AVAILABLE,
@@ -253,7 +254,7 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
     private Payment createPayment(Long payeeId) {
         return Payment.builder().payee(Payee.builder().payeeId(payeeId).build()).paymentId("paymentId")
                         .amount(new BigDecimal("35")).paymentDate(todayFiservDate()).status(PaymentStatus.PENDING)
-                        .build();
+                        .ebillAutoPayment(true).build();
     }
 
     private Ebill createEbill(Long payeeId) {
@@ -275,6 +276,7 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
                         .paymentServices(createPaymentServices())
                         .isAutopayEnabled(true)
                         .ebillAutopayStatus(EbillAutopayStatusType.ENABLED)
+                        .isRecurringModelEnabled(true)
                         .build();
     }
 
@@ -322,6 +324,7 @@ public class PayeesSummaryControllerTest extends AbstractHTTPWebServiceTest {
             assertEquals(CURRENCY, nextPayment.getAmount().getCurrencyCode());
             assertEquals(expectedPayment.getRecurringModelPayment(), nextPayment.getRecurring());
             assertNull(nextPayment.getFee());
+            assertEquals(expectedPayment.getEbillAutoPayment(), nextPayment.getAutomaticPayment());
         }
 
     }

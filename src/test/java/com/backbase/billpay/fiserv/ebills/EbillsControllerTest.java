@@ -20,7 +20,7 @@ import com.backbase.billpay.fiserv.payeessummary.model.EbillFilter;
 import com.backbase.billpay.fiserv.payeessummary.model.EbillListRequest;
 import com.backbase.billpay.fiserv.payeessummary.model.EbillListResponse;
 import com.backbase.billpay.fiserv.payments.model.Payee;
-import com.backbase.billpay.fiserv.utils.AbstractHTTPWebServiceTest;
+import com.backbase.billpay.fiserv.utils.AbstractWebServiceTest;
 import com.backbase.billpay.fiserv.utils.FiservUtils;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.BillPayEbillsGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.Ebill;
@@ -37,7 +37,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
-public class EbillsControllerTest extends AbstractHTTPWebServiceTest {
+public class EbillsControllerTest extends AbstractWebServiceTest {
     
     private static final String URL = "/service-api/v2/bill-pay/payees/electronic/{id}/ebills";
     private static final String STATEMENTS_ENDPOINT = "/statements";

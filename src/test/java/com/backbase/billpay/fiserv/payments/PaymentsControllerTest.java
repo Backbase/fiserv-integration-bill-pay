@@ -2,6 +2,7 @@ package com.backbase.billpay.fiserv.payments;
 
 import static com.backbase.billpay.fiserv.payees.PaymentServicesMapper.CURRENCY;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,12 +10,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.backbase.billpay.fiserv.payments.model.BankAccountId;
+import com.backbase.billpay.fiserv.payments.model.BankAccountId.BankAccountType;
 import com.backbase.billpay.fiserv.payments.model.Payee;
 import com.backbase.billpay.fiserv.payments.model.PaymentAddRequest;
 import com.backbase.billpay.fiserv.payments.model.PaymentAddResponse;
 import com.backbase.billpay.fiserv.payments.model.PaymentCancelRequest;
 import com.backbase.billpay.fiserv.payments.model.PaymentCancelResponse;
 import com.backbase.billpay.fiserv.payments.model.PaymentDetail;
+import com.backbase.billpay.fiserv.payments.model.PaymentDetail.PaymentStatus;
 import com.backbase.billpay.fiserv.payments.model.PaymentDetailRequest;
 import com.backbase.billpay.fiserv.payments.model.PaymentDetailResponse;
 import com.backbase.billpay.fiserv.payments.model.PaymentListRequest;
@@ -22,10 +25,9 @@ import com.backbase.billpay.fiserv.payments.model.PaymentListResponse;
 import com.backbase.billpay.fiserv.payments.model.PaymentModifyRequest;
 import com.backbase.billpay.fiserv.payments.model.PaymentModifyResponse;
 import com.backbase.billpay.fiserv.payments.model.StandardAddPaymentDetail;
-import com.backbase.billpay.fiserv.payments.model.BankAccountId.BankAccountType;
-import com.backbase.billpay.fiserv.payments.model.PaymentDetail.PaymentStatus;
 import com.backbase.billpay.fiserv.payments.recurring.model.ModelInfo;
 import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModel;
+import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelAddInfo.ModelFrequency;
 import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelAddRequest;
 import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelAddResponse;
 import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelCancelRequest;
@@ -34,8 +36,7 @@ import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelListRe
 import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelListResponse;
 import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelModifyRequest;
 import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelModifyResponse;
-import com.backbase.billpay.fiserv.payments.recurring.model.RecurringModelAddInfo.ModelFrequency;
-import com.backbase.billpay.fiserv.utils.AbstractHTTPWebServiceTest;
+import com.backbase.billpay.fiserv.utils.AbstractWebServiceTest;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayPaymentsGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayPaymentsPostRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayPaymentsPostResponseBody;
@@ -57,7 +58,7 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
-public class PaymentsControllerTest extends AbstractHTTPWebServiceTest {
+public class PaymentsControllerTest extends AbstractWebServiceTest {
     
     private static final String URL = "/service-api/v2/bill-pay/payments";
     private static final String RECURRING_ENDPOINT = "/recurring";
@@ -123,6 +124,7 @@ public class PaymentsControllerTest extends AbstractHTTPWebServiceTest {
         assertEquals(fiservPayment.getMemo(), response.getPayment().getPaymentMemo());
         assertEquals(fiservPayment.getRecurringModelPayment(), response.getPayment().getRecurring());
         assertEquals("PENDING", response.getPayment().getStatus());
+        assertEquals(fiservPayment.getEbillAutoPayment(), response.getPayment().getAutomaticPayment());
         
         // validate the request
         PaymentDetailRequest request = retrieveRequest(PaymentDetailRequest.class);
@@ -148,6 +150,7 @@ public class PaymentsControllerTest extends AbstractHTTPWebServiceTest {
                                                                          .accountType(BankAccountType.DDA)
                                                                          .routingTransitNumber("4321")
                                                                          .build())
+                                             .ebillAutoPayment(true)
                                              .build();
         PaymentDetailResponse response = PaymentDetailResponse.builder()
                                                               .result(createSuccessResult())
@@ -181,7 +184,7 @@ public class PaymentsControllerTest extends AbstractHTTPWebServiceTest {
     }
     
     @Test
-    public void postBillPayPayees() throws Exception {
+    public void postBillPayPayment() throws Exception {
         
         // create the mock response
         PaymentAddResponse fiservResponse = 
@@ -306,7 +309,9 @@ public class PaymentsControllerTest extends AbstractHTTPWebServiceTest {
         String stringResponse = mockMvc.perform(get(URL)
                         .with(setRemoteAddress())
                         .param("subscriberID", SUBSCRIBER_ID)
-                        .param("status", "PENDING"))
+                        .param("status", "PENDING")
+                        .param("payeeID", PAYEE_ID)
+                        .param("paymentType", "ONE_OFF"))
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString();
         
@@ -334,6 +339,7 @@ public class PaymentsControllerTest extends AbstractHTTPWebServiceTest {
         assertEquals(fiservPayment.getMemo(), servicePayment.getPaymentMemo());
         assertEquals(fiservPayment.getRecurringModelPayment(), servicePayment.getRecurring());
         assertEquals("PENDING", servicePayment.getStatus());
+        assertEquals(fiservPayment.getEbillAutoPayment(), servicePayment.getAutomaticPayment());
         
         // validate the request
         PaymentListRequest request = retrieveRequest(PaymentListRequest.class);
@@ -362,9 +368,50 @@ public class PaymentsControllerTest extends AbstractHTTPWebServiceTest {
                                                                          .accountType(BankAccountType.DDA)
                                                                          .routingTransitNumber("4321")
                                                                          .build())
+                                             .ebillAutoPayment(false)
                                              .build();
+        com.backbase.billpay.fiserv.payments.model.Payment payment2 = 
+                        com.backbase.billpay.fiserv.payments.model.Payment.builder()
+                                  .amount(BigDecimal.ONE)
+                                  .ebillId("2")
+                                  .payee(Payee.builder()
+                                              .accountNumber("acc1")
+                                              .name("name")
+                                              .payeeId(Long.valueOf("1"))
+                                              .build())
+                                  .memo("memo")
+                                  .recurringModelPayment(false)
+                                  .status(PaymentStatus.PENDING)
+                                  .paymentDate(createBldrDate("2020-12-25"))
+                                  .bankAccountId(BankAccountId.builder()
+                                                              .accountNumber("1234")
+                                                              .accountType(BankAccountType.DDA)
+                                                              .routingTransitNumber("4321")
+                                                              .build())
+                                  .ebillAutoPayment(false)
+                                  .build();
+        com.backbase.billpay.fiserv.payments.model.Payment payment3 = 
+                        com.backbase.billpay.fiserv.payments.model.Payment.builder()
+                                  .amount(BigDecimal.ONE)
+                                  .ebillId("3")
+                                  .payee(Payee.builder()
+                                              .accountNumber("acc1")
+                                              .name("name")
+                                              .payeeId(Long.valueOf(PAYEE_ID))
+                                              .build())
+                                  .memo("memo")
+                                  .recurringModelPayment(true)
+                                  .status(PaymentStatus.PENDING)
+                                  .paymentDate(createBldrDate("2020-12-25"))
+                                  .bankAccountId(BankAccountId.builder()
+                                                              .accountNumber("1234")
+                                                              .accountType(BankAccountType.DDA)
+                                                              .routingTransitNumber("4321")
+                                                              .build())
+                                  .ebillAutoPayment(false)
+                                  .build();
         return PaymentListResponse.builder()
-                                  .payments(Arrays.asList(payment))
+                                  .payments(Arrays.asList(payment, payment2, payment3))
                                   .result(createSuccessResult())
                                   .build();
     }
@@ -397,6 +444,7 @@ public class PaymentsControllerTest extends AbstractHTTPWebServiceTest {
         assertEquals("EVERY_2_WEEKS", response.getPayment().getFrequency());
         assertEquals(Integer.valueOf("100"), response.getPayment().getNumberOfInstances());
         assertEquals("Payment memo", response.getPayment().getPaymentMemo());
+        assertFalse(response.getPayment().getAutomaticPayment());
         
         // validate the request
         RecurringModelListRequest request = retrieveRequest(RecurringModelListRequest.class);

@@ -37,6 +37,7 @@ public interface PaymentsMapper {
     @Mapping(target = "payeeNickName", source = "paymentDetail.payee.nickName")
     @Mapping(target = "payeeID", source = "paymentDetail.payee.payeeId")
     @Mapping(target = "amount", source = "paymentDetail.amount")
+    @Mapping(target = "automaticPayment", source = "paymentDetail.ebillAutoPayment")
     OneOffPayment toOneOffPayment(PaymentDetail paymentDetail);
 
     @Mapping(target = "header", ignore = true)
@@ -79,6 +80,7 @@ public interface PaymentsMapper {
     @Mapping(target = "paymentScheduledAlert", ignore = true)
     @Mapping(target = "paymentSentAlert", ignore = true)
     @Mapping(target = "modelExpirationAlert", ignore = true)
+    @Mapping(target = "automaticPayment", source = "payment.ebillAutoPayment")
     com.backbase.billpay.integration.rest.spec.v2.billpay.payments.Payment map(Payment payment);
 
     @Mapping(target = "additions", ignore = true)
@@ -92,6 +94,7 @@ public interface PaymentsMapper {
     @Mapping(target = "payment.paymentAccount", source = "recurringModel.fundingAccount")
     @Mapping(target = "payment.amount", source = "recurringModel.recurringModelInfo.recurringPaymentAmount")
     @Mapping(target = "payment.paymentMemo", source = "recurringModel.recurringModelInfo.memo")
+    @Mapping(target = "payment.automaticPayment", constant = "false")
     RecurringPaymentByIdGetResponseBody map(RecurringModel recurringModel);
 
     @Mapping(target = "header", ignore = true)

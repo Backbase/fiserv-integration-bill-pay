@@ -7,13 +7,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.backbase.billpay.fiserv.common.model.ResultType;
 import com.backbase.billpay.fiserv.enrolment.model.SubscriberEnrollRequest;
 import com.backbase.billpay.fiserv.enrolment.model.SubscriberEnrollResponse;
-import com.backbase.billpay.fiserv.utils.AbstractHTTPWebServiceTest;
+import com.backbase.billpay.fiserv.utils.AbstractWebServiceTest;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.enrolment.BillPayEnrolmentPostRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.enrolment.BillPayEnrolmentPostResponseBody;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
-public class EnrolmentControllerTest extends AbstractHTTPWebServiceTest {
+public class EnrolmentControllerTest extends AbstractWebServiceTest {
     
     private static final String URL = "/service-api/v2/bill-pay/enrolment";
     

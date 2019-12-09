@@ -20,7 +20,7 @@ import com.backbase.billpay.fiserv.autopay.model.EbillAutoPayModifyRequest;
 import com.backbase.billpay.fiserv.autopay.model.EbillAutoPayModifyResponse;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId.BankAccountType;
-import com.backbase.billpay.fiserv.utils.AbstractHTTPWebServiceTest;
+import com.backbase.billpay.fiserv.utils.AbstractWebServiceTest;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.accounts.Account;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Autopay;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.autopay.BillPayAutopayPutRequestBody;
@@ -32,7 +32,7 @@ import java.util.Random;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
-public class AutopayControllerTest extends AbstractHTTPWebServiceTest {
+public class AutopayControllerTest extends AbstractWebServiceTest {
 
     private static final String URL = "/service-api/v2/bill-pay/payees/electronic/{id}/autopay";
     private static final String FULL_AMOUNT = "FULL_AMOUNT";

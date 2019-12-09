@@ -54,6 +54,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class PaymentsServiceImpl implements PaymentsService {
     
+    private static final String RECURRING = "RECURRING";
+
+    private static final String ONE_OFF = "ONE_OFF";
+
     private static final Logger log = LoggerFactory.getLogger(PaymentsServiceImpl.class);
     
     protected static final int POSITIVE_MAX_DAYS = 360;
@@ -99,8 +103,8 @@ public class PaymentsServiceImpl implements PaymentsService {
     }
 
     @Override
-    public BillPayPaymentsGetResponseBody getBillPayPayments(Header header, String status, Date startDate,
-                    Date endDate, String payeeId, Integer from, Integer size, String orderBy, String direction) {
+    public BillPayPaymentsGetResponseBody getBillPayPayments(Header header, String status, Date startDate, Date endDate,
+                    String payeeId, String paymentType, Integer from, Integer size, String orderBy, String direction) {
 
         int numberOfDays;
         Date calculatedStartDate = startDate;
@@ -125,12 +129,20 @@ public class PaymentsServiceImpl implements PaymentsService {
                                                                    .build())
                                               .header(header)
                                               .build(), PAYMENT_LIST_ACTION);
-        
+
         // filter payments by payee ID if supplied
         List<Payment> filteredPayments = StringUtils.isEmpty(payeeId) ? response.getPayments()
                         : response.getPayments().stream().filter(
                             payment -> String.valueOf(payment.getPayee().getPayeeId()).equals(payeeId))
                                         .collect(Collectors.toList());
+
+        // filter payments by paymentType if supplied
+        if (!StringUtils.isEmpty(paymentType) && 
+                        (StringUtils.equals(ONE_OFF, paymentType) || StringUtils.equals(RECURRING, paymentType))) {
+            filteredPayments = filteredPayments.stream().filter(
+                            payment -> payment.getRecurringModelPayment() == StringUtils.equals(RECURRING, paymentType))
+                            .collect(Collectors.toList());
+        }
 
         // return empty response if no payment found
         if (filteredPayments.isEmpty()) {

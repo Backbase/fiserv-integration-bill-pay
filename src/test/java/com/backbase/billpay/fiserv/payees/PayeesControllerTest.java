@@ -44,7 +44,7 @@ import com.backbase.billpay.fiserv.payeessummary.model.EbillListRequest;
 import com.backbase.billpay.fiserv.payeessummary.model.EbillListResponse;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId;
 import com.backbase.billpay.fiserv.payments.model.BankAccountId.BankAccountType;
-import com.backbase.billpay.fiserv.utils.AbstractHTTPWebServiceTest;
+import com.backbase.billpay.fiserv.utils.AbstractWebServiceTest;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Address;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Autopay;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.BillPayElectronicPayeesPostRequestBody;
@@ -74,7 +74,7 @@ import java.util.Random;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
-public class PayeesControllerTest extends AbstractHTTPWebServiceTest {
+public class PayeesControllerTest extends AbstractWebServiceTest {
     
     private static final String URL = "/service-api/v2/bill-pay/payees";
     private static final String ELECTRONIC_ENDPOINT = "/electronic";
