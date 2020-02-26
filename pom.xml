@@ -30,8 +30,8 @@
     </scm>
 
     <properties>
-        <com.backbase.dbs.billpay.integration.provider.spec.version>1.2.21</com.backbase.dbs.billpay.integration.provider.spec.version>
-        <com.backbase.dbs.billpay.integration.enrolment.spec.version>1.2.14</com.backbase.dbs.billpay.integration.enrolment.spec.version>
+        <com.backbase.dbs.billpay.integration.provider.spec.version>1.2.25</com.backbase.dbs.billpay.integration.provider.spec.version>
+        <com.backbase.dbs.billpay.integration.enrolment.spec.version>1.2.15</com.backbase.dbs.billpay.integration.enrolment.spec.version>
         <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
     </properties>
 
@@ -56,7 +56,7 @@
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-jdk8</artifactId>
+            <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
         <dependency>

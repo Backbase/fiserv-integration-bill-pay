@@ -12,36 +12,43 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.accounts.Account;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.Autopay;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR, uses = PaymentMapper.class)
 public interface AutopayMapper {
 
-    @Mapping(target = "autopayInfo.bankAccountId", source = "paymentAccount")
-    @Mapping(target = "autopayInfo.paymentScheduledAlert", source = "paymentScheduledAlert")
-    @Mapping(target = "autopayInfo.paymentSentAlert", source = "paymentSentAlert")
-    @Mapping(target = "autopayInfo.autoPay.daysBefore", source = "daysBeforePayOn")
-    @Mapping(target = "autopayInfo.autoPay.autoPayOn", source = "payOn")
-    @Mapping(target = "autopayInfo.autoPay.autoPayAmount", source = "payAmount")
-    @Mapping(target = "autopayInfo.autoPay.maxAuthorizedAmount", source = "maxPaymentAmount.amount")
-    @Mapping(target = "autopayInfo.autoPay.fixedAmount", ignore = true)
-    @Mapping(target = "header", ignore = true)
+    @Mappings({
+        @Mapping(target = "autopayInfo.bankAccountId", source = "paymentAccount"),
+        @Mapping(target = "autopayInfo.paymentScheduledAlert", source = "paymentScheduledAlert"),
+        @Mapping(target = "autopayInfo.paymentSentAlert", source = "paymentSentAlert"),
+        @Mapping(target = "autopayInfo.autoPay.daysBefore", source = "daysBeforePayOn"),
+        @Mapping(target = "autopayInfo.autoPay.autoPayOn", source = "payOn"),
+        @Mapping(target = "autopayInfo.autoPay.autoPayAmount", source = "payAmount"),
+        @Mapping(target = "autopayInfo.autoPay.maxAuthorizedAmount", source = "maxPaymentAmount.amount"),
+        @Mapping(target = "autopayInfo.autoPay.fixedAmount", ignore = true),
+        @Mapping(target = "header", ignore = true)
+    })
     EbillAutoPayAddRequest toEbillAutoPayAddRequest(Autopay source);
 
-    @Mapping(target = "autopayInfo.bankAccountId", source = "paymentAccount")
-    @Mapping(target = "autopayInfo.paymentScheduledAlert", source = "paymentScheduledAlert")
-    @Mapping(target = "autopayInfo.paymentSentAlert", source = "paymentSentAlert")
-    @Mapping(target = "autopayInfo.autoPay.daysBefore", source = "daysBeforePayOn")
-    @Mapping(target = "autopayInfo.autoPay.autoPayOn", source = "payOn")
-    @Mapping(target = "autopayInfo.autoPay.autoPayAmount", source = "payAmount")
-    @Mapping(target = "autopayInfo.autoPay.maxAuthorizedAmount", source = "maxPaymentAmount.amount")
-    @Mapping(target = "autopayInfo.autoPay.fixedAmount", ignore = true)
-    @Mapping(target = "header", ignore = true)
+    @Mappings({
+        @Mapping(target = "autopayInfo.bankAccountId", source = "paymentAccount"),
+        @Mapping(target = "autopayInfo.paymentScheduledAlert", source = "paymentScheduledAlert"),
+        @Mapping(target = "autopayInfo.paymentSentAlert", source = "paymentSentAlert"),
+        @Mapping(target = "autopayInfo.autoPay.daysBefore", source = "daysBeforePayOn"),
+        @Mapping(target = "autopayInfo.autoPay.autoPayOn", source = "payOn"),
+        @Mapping(target = "autopayInfo.autoPay.autoPayAmount", source = "payAmount"),
+        @Mapping(target = "autopayInfo.autoPay.maxAuthorizedAmount", source = "maxPaymentAmount.amount"),
+        @Mapping(target = "autopayInfo.autoPay.fixedAmount", ignore = true),
+        @Mapping(target = "header", ignore = true)
+    })
     EbillAutoPayModifyRequest toEbillAutoPayModifyRequest(Autopay source);
 
-    @Mapping(target = "accountNumber", source = "accountNumber")
-    @Mapping(target = "accountType", source = "accountType")
-    @Mapping(target = "routingTransitNumber", source = "routingNumber")
+    @Mappings({
+        @Mapping(target = "accountNumber", source = "accountNumber"),
+        @Mapping(target = "accountType", source = "accountType"),
+        @Mapping(target = "routingTransitNumber", source = "routingNumber")
+    })   
     BankAccountId toBankAccountId(Account source);
 
     default AutoPayDaysBefore toAutoPayDaysBefore(Integer source) {
@@ -90,15 +97,17 @@ public interface AutopayMapper {
         }
     }
 
-    @Mapping(target = "paymentAccount", source = "bankAccountId")
-    @Mapping(target = "daysBeforePayOn", source = "autoPay.daysBefore")
-    @Mapping(target = "maxPaymentAmount", source = "autoPay.maxAuthorizedAmount")
-    @Mapping(target = "payOn", source = "autoPay.autoPayOn")
-    @Mapping(target = "payAmount", source = "autoPay.autoPayAmount")
-    @Mapping(target = "paymentScheduledAlert", source = "paymentScheduledAlert")
-    @Mapping(target = "paymentSentAlert", source = "paymentSentAlert")
-    @Mapping(target = "paymentCompleteAlert", ignore = true)
-    @Mapping(target = "additions", ignore = true)
+    @Mappings({
+        @Mapping(target = "paymentAccount", source = "bankAccountId"),
+        @Mapping(target = "daysBeforePayOn", source = "autoPay.daysBefore"),
+        @Mapping(target = "maxPaymentAmount", source = "autoPay.maxAuthorizedAmount"),
+        @Mapping(target = "payOn", source = "autoPay.autoPayOn"),
+        @Mapping(target = "payAmount", source = "autoPay.autoPayAmount"),
+        @Mapping(target = "paymentScheduledAlert", source = "paymentScheduledAlert"),
+        @Mapping(target = "paymentSentAlert", source = "paymentSentAlert"),
+        @Mapping(target = "paymentCompleteAlert", ignore = true),
+        @Mapping(target = "additions", ignore = true)
+    })
     Autopay toAutopay(EbillAutoPayListResultInfo source);
 
     default String toPayOn(AutoPayOn source) {
