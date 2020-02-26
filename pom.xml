@@ -32,7 +32,6 @@
     <properties>
         <com.backbase.dbs.billpay.integration.provider.spec.version>1.2.25</com.backbase.dbs.billpay.integration.provider.spec.version>
         <com.backbase.dbs.billpay.integration.enrolment.spec.version>1.2.15</com.backbase.dbs.billpay.integration.enrolment.spec.version>
-        <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
     </properties>
 
     <dependencies>
@@ -55,19 +54,12 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${org.mapstruct.version}</version>
+            <groupId>com.backbase.buildingblocks</groupId>
+            <artifactId>service-sdk-starter-mapping</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web-services</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>${org.mapstruct.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

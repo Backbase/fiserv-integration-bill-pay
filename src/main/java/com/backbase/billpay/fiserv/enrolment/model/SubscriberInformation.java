@@ -35,6 +35,9 @@ public class SubscriberInformation {
 
     @XmlElement(name = "EveningPhone")
     private String eveningPhone;
+    
+    @XmlElement(name = "LanguageCode")
+    private String languageCode;
 
     @XmlElement(name = "TaxId")
     private String taxId;

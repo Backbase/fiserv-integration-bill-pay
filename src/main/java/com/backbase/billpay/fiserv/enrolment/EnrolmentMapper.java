@@ -1,9 +1,9 @@
 package com.backbase.billpay.fiserv.enrolment;
 
-import com.backbase.billpay.integration.enrolment.PhoneNumber;
 import com.backbase.billpay.fiserv.enrolment.model.SubscriberInfoResponse;
+import com.backbase.billpay.integration.enrolment.PhoneNumber;
+import com.backbase.billpay.integration.enrolment.PhoneNumber.Type;
 import com.backbase.billpay.integration.enrolment.Subscriber;
-import com.backbase.billpay.integration.rest.spec.v2.billpay.enrolment.UserByIdGetResponseBody;
 import java.util.ArrayList;
 import java.util.List;
 import org.mapstruct.Mapper;
@@ -37,7 +37,7 @@ public interface EnrolmentMapper {
         @Mapping(target = "phoneNumbers", source = "subscriberInformation.dayPhone"),
         @Mapping(target = "accounts", ignore = true),
         @Mapping(target = "business", ignore = true),
-        @Mapping(target = "language", ignore = true),
+        @Mapping(target = "language", source = "subscriberInformation.languageCode"),
         @Mapping(target = "additions", ignore = true),
         @Mapping(target = "firstName", source = "subscriberInformation.name.first")
     })
@@ -51,7 +51,7 @@ public interface EnrolmentMapper {
     default List<PhoneNumber> mapPhoneNumber(String dayPhone) {
         
         List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>();
-        phoneNumbers.add(new PhoneNumber().withNumber(dayPhone));
+        phoneNumbers.add(new PhoneNumber().withNumber(dayPhone).withType(Type.DAY));
         return phoneNumbers;
         
     }

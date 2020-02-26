@@ -113,7 +113,7 @@ public class EnrolmentServiceImpl implements EnrolmentService {
         SubscriberInfoRequest request = createSubscriberInfoRequest(header);
         LOGGER.debug("Request: {}", request);
         SubscriberInfoResponse response = client.call(request, SOAP_ACTION_INFO);
-        LOGGER.debug("Received response: {}", response);
+        LOGGER.debug("Received response for user: {}", userId);
         return new UserByIdGetResponseBody().withSubscriber(mapper.toSubscriber(response));
     }
     

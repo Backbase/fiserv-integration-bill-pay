@@ -14,6 +14,10 @@ import com.backbase.billpay.fiserv.enrolment.model.SubscriberInfoResponse;
 import com.backbase.billpay.fiserv.enrolment.model.SubscriberInformation;
 import com.backbase.billpay.fiserv.payees.model.UsAddress;
 import com.backbase.billpay.fiserv.utils.AbstractWebServiceTest;
+import com.backbase.billpay.integration.enrolment.Address;
+import com.backbase.billpay.integration.enrolment.PhoneNumber;
+import com.backbase.billpay.integration.enrolment.PhoneNumber.Type;
+import com.backbase.billpay.integration.enrolment.Subscriber;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.enrolment.BillPayEnrolmentPostRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.enrolment.BillPayEnrolmentPostResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.enroluser.UserByIdGetResponseBody;
@@ -34,6 +38,7 @@ public class EnrolmentControllerTest extends AbstractWebServiceTest {
     private static final String LAST = "Doe";
     private static final String FIRST = "John";
     private static final String URL = "/service-api/v2/bill-pay/enrolment";
+    private static final String LANGUAGE_CODE = "en";
     
     @Test
     public void postBillPayEnrolment() throws Exception {
@@ -90,6 +95,7 @@ public class EnrolmentControllerTest extends AbstractWebServiceTest {
                     .zip5(ZIP)
                     .build())
                 .dayPhone(DAY_PHONE)
+                .languageCode(LANGUAGE_CODE)
                 .emailAddress(EMAIL)
                 .name(IndividualName.builder()
                     .first(FIRST)
@@ -114,11 +120,40 @@ public class EnrolmentControllerTest extends AbstractWebServiceTest {
                         objectMapper.readValue(stringResponse, UserByIdGetResponseBody.class);
 
         // validate the subscriber returned matches
-        assertEquals(FIRST, response.getSubscriber().getFirstName());
+        assertSubscriber(response.getSubscriber());
+        
 
         // validate the request
         SubscriberInfoRequest request = retrieveRequest(SubscriberInfoRequest.class);
         assertHeader(SUBSCRIBER_ID, request.getHeader());
+    }
+
+    private void assertSubscriber(Subscriber subscriber) {
+        assertAddress(subscriber.getAddress());
+        assertPhone(subscriber.getPhoneNumbers().get(0));
+        assertEquals(LANGUAGE_CODE, subscriber.getLanguage());
+        assertEquals(EMAIL, subscriber.getEmail());
+        assertName(subscriber);
+        assertEquals(TAX_ID, subscriber.getTaxIdentifier());     
+    }
+
+    private void assertName(Subscriber subscriber) {
+        assertEquals(FIRST, subscriber.getFirstName());
+        assertEquals(LAST, subscriber.getLastName());
+        assertEquals(PREFIX, subscriber.getPrefix());
+    }
+
+    private void assertPhone(PhoneNumber phoneNumber) {
+        assertEquals(DAY_PHONE, phoneNumber.getNumber());
+        assertEquals(Type.DAY, phoneNumber.getType());
+    }
+
+    private void assertAddress(Address address) {
+        assertEquals(ADDRESS_1, address.getAddress1());
+        assertEquals(ADDRESS_2, address.getAddress2());
+        assertEquals(CITY, address.getCity());
+        assertEquals(STATE, address.getState());
+        assertEquals(ZIP, address.getPostalCode());
     }
 
 }
