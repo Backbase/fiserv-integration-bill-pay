@@ -10,6 +10,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.i
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
@@ -18,16 +19,19 @@ public interface EbillsMapper {
 
     List<Ebill> toEbillList(List<com.backbase.billpay.fiserv.payeessummary.model.Ebill> source);
     
-    @Mapping(target = "id", source = "ebillId")
-    @Mapping(target = "payeeID", source = "payee.payeeId")
-    @Mapping(target = "paymentDate", source = "dueDate")
-    @Mapping(target = "amount", source = "amountDue")
-    @Mapping(target = "minAmountDue", source = "minimumAmountDue")
-    @Mapping(target = "outstandingBalance", source = "balance")
-    @Mapping(target = "status", source = "status")
-    @Mapping(target = "url", source = "billReferenceLinkUrl")
-    @Mapping(target = "statementAvailable", constant = "false")
-    @Mapping(target = "additions", ignore = true)
+    @Mappings({
+        @Mapping(target = "id", source = "ebillId"),
+        @Mapping(target = "payeeID", source = "payee.payeeId"),
+        @Mapping(target = "paymentDate", source = "dueDate"),
+        @Mapping(target = "amount", source = "amountDue"),
+        @Mapping(target = "minAmountDue", source = "minimumAmountDue"),
+        @Mapping(target = "outstandingBalance", source = "balance"),
+        @Mapping(target = "status", source = "status"),
+        @Mapping(target = "url", source = "billReferenceLinkUrl"),
+        @Mapping(target = "statementAvailable", constant = "false"),
+        @Mapping(target = "additions", ignore = true),
+        @Mapping(target = "paymentId", ignore = true)
+    })
     Ebill toEbill(com.backbase.billpay.fiserv.payeessummary.model.Ebill source);
     
     default String toStatus(EbillStatus status) {
@@ -47,10 +51,12 @@ public interface EbillsMapper {
         }
     }
     
-    @Mapping(target = "header", ignore = true)
-    @Mapping(target = "billNote", source = "source.note")
-    @Mapping(target = "ebillId", source = "ebillId")
-    @Mapping(target = "filedBillReason", source = "source.paymentMethod")
+    @Mappings({
+        @Mapping(target = "header", ignore = true),
+        @Mapping(target = "billNote", source = "source.note"),
+        @Mapping(target = "ebillId", source = "ebillId"),
+        @Mapping(target = "filedBillReason", source = "source.paymentMethod")
+    })
     EbillFileRequest toEbillFileRequest(EbillByIdPutRequestBody source, String ebillId);
     
     default FileEbillPaymentMethod toFileEbillPaymentMethod(String source) {

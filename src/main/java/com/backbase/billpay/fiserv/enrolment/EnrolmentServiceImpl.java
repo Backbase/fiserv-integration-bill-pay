@@ -5,6 +5,8 @@ import com.backbase.billpay.fiserv.enrolment.model.BankAccountInformation;
 import com.backbase.billpay.fiserv.enrolment.model.IndividualName;
 import com.backbase.billpay.fiserv.enrolment.model.SubscriberEnrollRequest;
 import com.backbase.billpay.fiserv.enrolment.model.SubscriberEnrollResponse;
+import com.backbase.billpay.fiserv.enrolment.model.SubscriberInfoRequest;
+import com.backbase.billpay.fiserv.enrolment.model.SubscriberInfoResponse;
 import com.backbase.billpay.fiserv.enrolment.model.SubscriberInformation;
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
 import com.backbase.billpay.fiserv.payees.model.UsAddress;
@@ -14,6 +16,7 @@ import com.backbase.billpay.fiserv.search.SearchServiceImpl;
 import com.backbase.billpay.fiserv.utils.FiservClient;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.enrolment.BillPayEnrolmentPostResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.enrolment.MigrationGetResponseBody;
+import com.backbase.billpay.integration.rest.spec.v2.billpay.enrolment.UserByIdGetResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +29,19 @@ import org.springframework.stereotype.Service;
 public class EnrolmentServiceImpl implements EnrolmentService {
 
     private static final String SOAP_ACTION = "SubscriberEnroll";
+    private static final String SOAP_ACTION_INFO = "SubscriberInfo";
     private static final Logger LOGGER = LoggerFactory.getLogger(SearchServiceImpl.class);
     private final FiservClient client;
+    private final EnrolmentMapper mapper;
     
     /**
      * Setup client.
      * @param client provider client service
      */
     @Autowired
-    public EnrolmentServiceImpl(FiservClient client) {
+    public EnrolmentServiceImpl(FiservClient client, EnrolmentMapper mapper) {
         this.client = client;
+        this.mapper = mapper;
     }
     
     @Override
@@ -100,5 +106,25 @@ public class EnrolmentServiceImpl implements EnrolmentService {
                                                                                   .build())
                                                           .build())
             .build();
+    }
+
+    @Override
+    public UserByIdGetResponseBody getSubscriberInfo(Header header, String userId) {
+        SubscriberInfoRequest request = createSubscriberInfoRequest(header);
+        LOGGER.debug("Request: {}", request);
+        SubscriberInfoResponse response = client.call(request, SOAP_ACTION_INFO);
+        LOGGER.debug("Received response for user: {}", userId);
+        return new UserByIdGetResponseBody().withSubscriber(mapper.toSubscriber(response));
+    }
+    
+    /**
+     * This method creates a subscriber info request.
+     * @param Header header.
+     * @return SubscriberInfoRequest subscriber info request.
+     */
+    private SubscriberInfoRequest createSubscriberInfoRequest(Header header) {
+        
+        return SubscriberInfoRequest.builder()
+            .header(header).build();
     }
 }

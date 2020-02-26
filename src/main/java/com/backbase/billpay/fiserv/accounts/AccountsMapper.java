@@ -6,6 +6,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.accounts.Account;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.accounts.BillPayAccountsGetResponseBody;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 
 /**
@@ -14,15 +15,19 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface AccountsMapper {
 
-    @Mapping(target = "accounts", source = "summaries")
-    @Mapping(target = "additions", ignore = true)
+    @Mappings({
+        @Mapping(target = "accounts", source = "summaries"),
+        @Mapping(target = "additions", ignore = true)        
+    })
     BillPayAccountsGetResponseBody toBillPayAccountsGetResponseBody(BankAccountListResponse source);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "accountNumber", source = "accountId.accountNumber")
-    @Mapping(target = "accountType", source = "accountId.accountType")
-    @Mapping(target = "routingNumber", source = "accountId.routingTransitNumber")
-    @Mapping(target = "accountBalance", ignore = true)
-    @Mapping(target = "additions", ignore = true)
+    @Mappings({
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "accountNumber", source = "accountId.accountNumber"),
+        @Mapping(target = "accountType", source = "accountId.accountType"),
+        @Mapping(target = "routingNumber", source = "accountId.routingTransitNumber"),
+        @Mapping(target = "accountBalance", ignore = true),
+        @Mapping(target = "additions", ignore = true)      
+    })  
     Account toAccount(BankAccountSummary source);
 }
