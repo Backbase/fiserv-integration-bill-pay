@@ -113,7 +113,7 @@ public class EnrolmentControllerTest extends AbstractWebServiceTest {
         UserByIdGetResponseBody response =
                         objectMapper.readValue(stringResponse, UserByIdGetResponseBody.class);
 
-        // validate the subscriber returned matches the passed ID
+        // validate the subscriber returned matches
         assertEquals(FIRST, response.getSubscriber().getFirstName());
 
         // validate the request
