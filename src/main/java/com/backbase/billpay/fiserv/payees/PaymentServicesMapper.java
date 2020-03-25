@@ -27,9 +27,10 @@ public class PaymentServicesMapper {
         ArrayList<PaymentService> paymentServices = new ArrayList<>();
         PaymentService regularPaymentService = new PaymentService()
                         .withCutoffTime(toZonedDateTime(source.getCutoffTime()))
-                        .withEarliestPaymentDate(LocalDate.parse(fromFiservDate(
-                            source.getEarliestPaymentDate()).toString()))
-                        .withNextPaymentDate(LocalDate.parse(fromFiservDate(source.getNextPaymentDate()).toString()))
+                        .withEarliestPaymentDate(toZonedDateTime(fromFiservDate(
+                            source.getEarliestPaymentDate())).toLocalDate())
+                        .withNextPaymentDate(toZonedDateTime(fromFiservDate(
+                            source.getNextPaymentDate())).toLocalDate())
                         .withDeliveryDays(source.getLeadDays())
                         .withPaymentServiceType("REGULAR_PAYMENT");
         paymentServices.add(regularPaymentService);
@@ -37,9 +38,10 @@ public class PaymentServicesMapper {
             for (PaymentServices service : source.getPaymentServices()) {
                 PaymentService paymentService = new PaymentService()
                                 .withCutoffTime(toZonedDateTime(service.getCutOffTime()))
-                                .withEarliestPaymentDate(LocalDate.parse(fromFiservDate(
-                                    service.getEarliestDate()).toString()))
-                                .withNextPaymentDate(LocalDate.parse(fromFiservDate(service.getNextDate()).toString()))
+                                .withEarliestPaymentDate(toZonedDateTime(fromFiservDate(
+                                    service.getEarliestDate())).toLocalDate())
+                                .withNextPaymentDate(toZonedDateTime(fromFiservDate(
+                                    service.getNextDate())).toLocalDate())
                                 .withDeliveryDays(source.getLeadDays())
                                 .withFee(new Currency().withAmount(service.getFee()).withCurrencyCode(CURRENCY));
                 if (service.getPaymentService() == PaymentServiceType.OVERNIGHT_CHECK) {

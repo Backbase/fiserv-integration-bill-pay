@@ -1,4 +1,5 @@
 package com.backbase.billpay.fiserv.ebills;
+import static com.backbase.billpay.fiserv.utils.FiservUtils.toZonedDateTime;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -143,8 +144,8 @@ public class EbillsControllerTest extends AbstractWebServiceTest {
         Ebill ebill = response.getEbills().get(0);
         assertEbill(fiservResponse.getEbillList().get(3), ebill);
         assertEquals("PAID", ebill.getStatus());
-        assertTrue(ebill.getPaymentDate().isAfter(LocalDate.parse(startDate.toString())));
-        assertTrue(ebill.getPaymentDate().isBefore(LocalDate.parse(endDate.toString())));
+        assertTrue(ebill.getPaymentDate().isAfter(toZonedDateTime(startDate).toLocalDate()));
+        assertTrue(ebill.getPaymentDate().isBefore(toZonedDateTime(endDate).toLocalDate()));
 
         // validate the request data
         EbillListRequest ebillRequest = retrieveRequest(EbillListRequest.class);

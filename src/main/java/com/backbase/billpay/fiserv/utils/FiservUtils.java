@@ -82,9 +82,8 @@ public class FiservUtils {
      * @return a ZonedDateTime object with Eastern time zone
      */
     public static ZonedDateTime toZonedDateTime(Date date) {
-        ZonedDateTime zdt = ZonedDateTime.parse(date.toString());
         ZoneId est = ZoneId.of("America/New_York");
-        return zdt.withZoneSameLocal(est);
+        return ZonedDateTime.ofInstant(date.toInstant(), est);
     }
 
     /**
