@@ -1,6 +1,7 @@
 package com.backbase.billpay.fiserv.ebills;
-import static com.backbase.billpay.fiserv.utils.FiservUtils.toZonedDateTime;
+import static com.backbase.billpay.fiserv.utils.FiservUtils.fromLocalDate;
 
+import static com.backbase.billpay.fiserv.utils.FiservUtils.toZonedDateTime;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -31,6 +32,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -115,8 +117,8 @@ public class EbillsControllerTest extends AbstractWebServiceTest {
 
         // call the endpoint
         String status = "PAID";
-        Date startDate = DateUtils.addDays(new Date(), -10);
-        Date endDate = DateUtils.addDays(new Date(), 10);
+        LocalDate startDate = LocalDate.now().minusDays(10);
+        LocalDate endDate = LocalDate.now().plusDays(10);
         Integer from = 2;
         Integer size = 1;
         String orderBy = "paymentDate";
@@ -126,8 +128,8 @@ public class EbillsControllerTest extends AbstractWebServiceTest {
                         .with(setRemoteAddress())
                         .param("subscriberID", SUBSCRIBER_ID)
                         .param("status", status)
-                        .param("startDate", formatter.format(startDate))
-                        .param("endDate", formatter.format(endDate))
+                        .param("startDate", formatter.format(fromLocalDate(startDate)))
+                        .param("endDate", formatter.format(fromLocalDate(endDate)))
                         .param("from", from.toString())
                         .param("size",size.toString())
                         .param("orderBy", orderBy)
@@ -144,13 +146,13 @@ public class EbillsControllerTest extends AbstractWebServiceTest {
         Ebill ebill = response.getEbills().get(0);
         assertEbill(fiservResponse.getEbillList().get(3), ebill);
         assertEquals("PAID", ebill.getStatus());
-        assertTrue(ebill.getPaymentDate().isAfter(toZonedDateTime(startDate).toLocalDate()));
-        assertTrue(ebill.getPaymentDate().isBefore(toZonedDateTime(endDate).toLocalDate()));
+        assertTrue(ebill.getPaymentDate().isAfter(startDate));
+        assertTrue(ebill.getPaymentDate().isBefore(endDate));
 
         // validate the request data
         EbillListRequest ebillRequest = retrieveRequest(EbillListRequest.class);
         EbillFilter filter = ebillRequest.getFilter();
-        assertEquals(FiservUtils.toFiservDate(startDate).getDate(), filter.getStartingDate().getDate());
+        assertEquals(FiservUtils.toFiservDate(fromLocalDate(startDate)).getDate(), filter.getStartingDate().getDate());
         assertEquals(Integer.valueOf(20), filter.getNumberOfDays());
 
         // validate the request header
@@ -278,7 +280,7 @@ public class EbillsControllerTest extends AbstractWebServiceTest {
     private void assertEbill(com.backbase.billpay.fiserv.payeessummary.model.Ebill expectedEbill, Ebill actualEbill) {
         assertEquals(expectedEbill.getEbillId(), actualEbill.getId());
         assertEquals(String.valueOf(expectedEbill.getPayee().getPayeeId()), actualEbill.getPayeeID());
-        assertEquals(expectedEbill.getDueDate(), actualEbill.getPaymentDate());
+        assertEquals(toZonedDateTime(expectedEbill.getDueDate()).toLocalDate(), actualEbill.getPaymentDate());
         assertEquals(expectedEbill.getAmountDue(), actualEbill.getAmount().getAmount());
         assertEquals(USD, actualEbill.getAmount().getCurrencyCode());
         assertEquals(expectedEbill.getBalance(), actualEbill.getOutstandingBalance().getAmount());

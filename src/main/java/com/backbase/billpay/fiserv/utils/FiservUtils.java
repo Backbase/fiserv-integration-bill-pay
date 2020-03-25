@@ -92,6 +92,9 @@ public class FiservUtils {
      * @return a Date object with Eastern time zone
      */
     public static Date fromLocalDate(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
         ZoneId est = ZoneId.of("America/New_York");
         return Date.from(date.atStartOfDay(est).toInstant());
     }
