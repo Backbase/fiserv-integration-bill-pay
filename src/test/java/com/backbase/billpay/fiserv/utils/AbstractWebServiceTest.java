@@ -12,6 +12,7 @@ import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.fiserv.common.model.ResultType;
 import com.backbase.billpay.fiserv.payees.model.BldrDate;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.net.MediaType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -72,7 +73,7 @@ public abstract class AbstractWebServiceTest {
     
     @Before
     public void setup() {
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
     @After
