@@ -5,6 +5,9 @@ import com.backbase.billpay.fiserv.payees.model.BldrDate;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
@@ -71,5 +74,26 @@ public class FiservUtils {
     
     public static BldrDate todayFiservDate() {
         return toFiservDate(new Date());
+    }
+
+    /**
+     * Covert a Date to a ZonedDateTime object with Eastern time zone.
+     * @param date the date to convert
+     * @return a ZonedDateTime object with Eastern time zone
+     */
+    public static ZonedDateTime toZonedDateTime(Date date) {
+        ZonedDateTime zdt = ZonedDateTime.parse(date.toString());
+        ZoneId est = ZoneId.of("America/New_York");
+        return zdt.withZoneSameLocal(est);
+    }
+
+    /**
+     * Convert LocalDate to Date object with Eastern time zone.
+     * @param date the date to be converted
+     * @return a Date object with Eastern time zone
+     */
+    public static Date fromLocalDate(LocalDate date) {
+        ZoneId est = ZoneId.of("America/New_York");
+        return Date.from(date.atStartOfDay(est).toInstant());
     }
 }

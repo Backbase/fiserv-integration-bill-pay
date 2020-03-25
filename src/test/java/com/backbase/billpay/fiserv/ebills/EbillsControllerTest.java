@@ -29,6 +29,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.i
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -142,8 +143,8 @@ public class EbillsControllerTest extends AbstractWebServiceTest {
         Ebill ebill = response.getEbills().get(0);
         assertEbill(fiservResponse.getEbillList().get(3), ebill);
         assertEquals("PAID", ebill.getStatus());
-        assertTrue(ebill.getPaymentDate().after(startDate));
-        assertTrue(ebill.getPaymentDate().before(endDate));
+        assertTrue(ebill.getPaymentDate().isAfter(LocalDate.parse(startDate.toString())));
+        assertTrue(ebill.getPaymentDate().isBefore(LocalDate.parse(endDate.toString())));
 
         // validate the request data
         EbillListRequest ebillRequest = retrieveRequest(EbillListRequest.class);

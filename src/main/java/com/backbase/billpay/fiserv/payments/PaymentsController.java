@@ -1,5 +1,7 @@
 package com.backbase.billpay.fiserv.payments;
 
+import static com.backbase.billpay.fiserv.utils.FiservUtils.fromLocalDate;
+
 import com.backbase.billpay.fiserv.utils.AbstractController;
 import com.backbase.billpay.integration.rest.spec.serviceapi.v2.billpay.payments.BillPayPaymentsApi;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.BillPayPaymentsGetResponseBody;
@@ -13,7 +15,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentByI
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutResponseBody;
-import java.util.Date;
+import java.time.LocalDate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -36,13 +38,13 @@ public class PaymentsController extends AbstractController implements BillPayPay
     }
 
     @Override
-    public BillPayPaymentsGetResponseBody getBillPayPayments(String subscriberId, String status, Date startDate,
-                    Date endDate, String payeeId, Integer from, Integer size, String orderBy, String direction,
+    public BillPayPaymentsGetResponseBody getBillPayPayments(String subscriberId, String status, LocalDate startDate,
+                    LocalDate endDate, String payeeId, Integer from, Integer size, String orderBy, String direction,
                     HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         String paymentType = httpServletRequest.getParameter(PAYMENT_TYPE);
         BillPayPaymentsGetResponseBody response = 
                 paymentsService.getBillPayPayments(fiservUtils.createHeader(httpServletRequest, subscriberId), 
-                                                   status, startDate, endDate, payeeId, paymentType, from, size, 
+                                                   status, fromLocalDate(startDate), fromLocalDate(endDate), payeeId, paymentType, from, size,
                                                    orderBy, direction);
         logger.debug("Get payments for subscriberId: {}, status: {}, startDate: {}, endDate: {}, payeeID:{}, "
                      + "paymentType: {}, from: {}, size: {}, found payments: {}", 

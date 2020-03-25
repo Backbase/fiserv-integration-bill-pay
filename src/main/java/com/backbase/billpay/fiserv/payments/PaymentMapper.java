@@ -80,7 +80,7 @@ public class PaymentMapper {
                                         .build())
                         .payeeId(Long.valueOf(paymentRequest.getPayeeID()))
                         .paymentAmount(paymentRequest.getAmount().getAmount())
-                        .paymentDate(BldrDate.builder().date(paymentRequest.getPaymentDate()).build())
+                        .paymentDate(BldrDate.builder().date(paymentRequest.getPaymentDate().toString()).build())
                         .paymentMemo(paymentRequest.getPaymentMemo()).listItemId(0)
                         .build();
     }
