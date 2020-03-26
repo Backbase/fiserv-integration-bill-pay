@@ -46,7 +46,7 @@ public class EbillsController extends AbstractController implements BillPayEbill
                         + "size: {}, orderBy: {}, direction: {}", payeeId, status, startDate, endDate, from, size,
                         orderBy, direction);
         Header header = fiservUtils.createHeader(httpServletRequest, subscriberId);
-        BillPayEbillsGetResponseBody response = ebillsService.getEbills(header, payeeId, status, fromLocalDate(startDate), fromLocalDate(endDate),
+        BillPayEbillsGetResponseBody response = ebillsService.getEbills(header, payeeId, status, startDate, endDate,
                         from, size, orderBy, direction);
         logger.debug("Retrieved eBills for payee with id: {}, status: {}, startDate: {}, endDate: {}, from: {}, "
                         + "size: {}, orderBy: {}, direction: {}, response: {}", payeeId, status, startDate, endDate,

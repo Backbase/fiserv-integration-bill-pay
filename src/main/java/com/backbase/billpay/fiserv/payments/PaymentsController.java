@@ -44,7 +44,7 @@ public class PaymentsController extends AbstractController implements BillPayPay
         String paymentType = httpServletRequest.getParameter(PAYMENT_TYPE);
         BillPayPaymentsGetResponseBody response = 
                 paymentsService.getBillPayPayments(fiservUtils.createHeader(httpServletRequest, subscriberId), 
-                                                   status, fromLocalDate(startDate), fromLocalDate(endDate), payeeId, paymentType, from, size,
+                                                   status, startDate, endDate, payeeId, paymentType, from, size,
                                                    orderBy, direction);
         logger.debug("Get payments for subscriberId: {}, status: {}, startDate: {}, endDate: {}, payeeID:{}, "
                      + "paymentType: {}, from: {}, size: {}, found payments: {}", 

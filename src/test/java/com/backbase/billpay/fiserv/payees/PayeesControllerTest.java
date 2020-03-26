@@ -77,7 +77,8 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 
 public class PayeesControllerTest extends AbstractWebServiceTest {
-    
+
+    private static final ZoneId EST = ZoneId.of("America/New_York");;
     private static final String URL = "/service-api/v2/bill-pay/payees";
     private static final String ELECTRONIC_ENDPOINT = "/electronic";
     private static final String ID_ENDPOINT = "/{id}";
@@ -222,7 +223,7 @@ public class PayeesControllerTest extends AbstractWebServiceTest {
         List<PaymentService> paymentServices = payee.getPaymentServices();
         PaymentService regularPaymentService = paymentServices.get(0);
         assertEquals(toZonedDateTime(payeeSummary.getCutoffTime()), regularPaymentService.getCutoffTime()
-            .withZoneSameInstant(ZoneId.of("America/New_York")));
+            .withZoneSameInstant(EST));
         assertEquals("REGULAR_PAYMENT", regularPaymentService.getPaymentServiceType());
         assertEquals(payeeSummary.getLeadDays(), regularPaymentService.getDeliveryDays());
         assertNull(regularPaymentService.getFee());
@@ -230,7 +231,7 @@ public class PayeesControllerTest extends AbstractWebServiceTest {
         PaymentService overnightCheckPaymentService = paymentServices.get(1);
         PaymentServices paymentServicesOvernightCheck = payeeSummary.getPaymentServices().get(0);
         assertEquals(toZonedDateTime(paymentServicesOvernightCheck.getCutOffTime()), overnightCheckPaymentService
-            .getCutoffTime().withZoneSameInstant(ZoneId.of("America/New_York")));
+            .getCutoffTime().withZoneSameInstant(EST));
         assertEquals("OVERNIGHT_CHECK", overnightCheckPaymentService.getPaymentServiceType());
         assertEquals(payeeSummary.getLeadDays(), overnightCheckPaymentService.getDeliveryDays());
         assertEquals(paymentServicesOvernightCheck.getFee(), overnightCheckPaymentService.getFee().getAmount());
@@ -239,7 +240,7 @@ public class PayeesControllerTest extends AbstractWebServiceTest {
         PaymentService expeditedPaymentService = paymentServices.get(2);
         PaymentServices paymentServicesExpeditedPayment = payeeSummary.getPaymentServices().get(1);
         assertEquals(toZonedDateTime(paymentServicesExpeditedPayment.getCutOffTime()), expeditedPaymentService.
-            getCutoffTime().withZoneSameInstant(ZoneId.of("America/New_York")));
+            getCutoffTime().withZoneSameInstant(EST));
         assertEquals("EXPEDITED_PAYMENT", expeditedPaymentService.getPaymentServiceType());
         assertEquals(payeeSummary.getLeadDays(), expeditedPaymentService.getDeliveryDays());
         assertEquals(paymentServicesExpeditedPayment.getFee(), expeditedPaymentService.getFee().getAmount());
@@ -543,14 +544,14 @@ public class PayeesControllerTest extends AbstractWebServiceTest {
         List<PaymentService> paymentServices = payee.getPaymentServices();
         PaymentService regularPaymentService = paymentServices.get(0);
         assertEquals(toZonedDateTime(payeeSummary.getCutoffTime()), regularPaymentService.getCutoffTime()
-            .withZoneSameInstant(ZoneId.of("America/New_York")));
+            .withZoneSameInstant(EST));
         assertEquals("REGULAR_PAYMENT", regularPaymentService.getPaymentServiceType());
         assertEquals(payeeSummary.getLeadDays(), regularPaymentService.getDeliveryDays());
         assertNull(regularPaymentService.getFee());
         
         PaymentService overnightCheckPaymentService = paymentServices.get(1);
         assertEquals(toZonedDateTime(paymentServicesOvernightCheck.getCutOffTime()),
-            overnightCheckPaymentService.getCutoffTime().withZoneSameInstant(ZoneId.of("America/New_York")));
+            overnightCheckPaymentService.getCutoffTime().withZoneSameInstant(EST));
         assertEquals("OVERNIGHT_CHECK", overnightCheckPaymentService.getPaymentServiceType());
         assertEquals(payeeSummary.getLeadDays(), overnightCheckPaymentService.getDeliveryDays());
         assertEquals(paymentServicesOvernightCheck.getFee(), overnightCheckPaymentService.getFee().getAmount());
@@ -558,7 +559,7 @@ public class PayeesControllerTest extends AbstractWebServiceTest {
         
         PaymentService expeditedPaymentService = paymentServices.get(2);
         assertEquals(toZonedDateTime(paymentServicesExpeditedPayment.getCutOffTime()), expeditedPaymentService
-            .getCutoffTime().withZoneSameInstant(ZoneId.of("America/New_York")));
+            .getCutoffTime().withZoneSameInstant(EST));
         assertEquals("EXPEDITED_PAYMENT", expeditedPaymentService.getPaymentServiceType());
         assertEquals(payeeSummary.getLeadDays(), expeditedPaymentService.getDeliveryDays());
         assertEquals(paymentServicesExpeditedPayment.getFee(), expeditedPaymentService.getFee().getAmount());

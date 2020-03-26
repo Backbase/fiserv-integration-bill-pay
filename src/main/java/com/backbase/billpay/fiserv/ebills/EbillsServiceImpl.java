@@ -1,5 +1,6 @@
 package com.backbase.billpay.fiserv.ebills;
 
+import static com.backbase.billpay.fiserv.utils.FiservUtils.fromLocalDate;
 import static com.backbase.billpay.fiserv.utils.FiservUtils.toFiservDate;
 import static com.backbase.billpay.fiserv.utils.PaginationUtils.paginateList;
 
@@ -16,6 +17,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.i
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.EbillByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.EbillByIdPutResponseBody;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -58,9 +60,11 @@ public class EbillsServiceImpl implements EbillsService {
     }
     
     @Override
-    public BillPayEbillsGetResponseBody getEbills(Header header, String payeeId, String status, Date startDate,
-                    Date endDate, Integer from, Integer size, String orderBy, String direction) {
-        
+    public BillPayEbillsGetResponseBody getEbills(Header header, String payeeId, String status, LocalDate sDate,
+                    LocalDate eDate, Integer from, Integer size, String orderBy, String direction) {
+        Date startDate = fromLocalDate(sDate);
+        Date endDate = fromLocalDate(eDate);
+
         EbillFilter ebillFilter = null;
         if (startDate != null || endDate != null) {
             ebillFilter = new EbillFilter();

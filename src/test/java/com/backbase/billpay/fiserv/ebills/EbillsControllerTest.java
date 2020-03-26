@@ -128,8 +128,8 @@ public class EbillsControllerTest extends AbstractWebServiceTest {
                         .with(setRemoteAddress())
                         .param("subscriberID", SUBSCRIBER_ID)
                         .param("status", status)
-                        .param("startDate", formatter.format(fromLocalDate(startDate)))
-                        .param("endDate", formatter.format(fromLocalDate(endDate)))
+                        .param("startDate", startDate.toString())
+                        .param("endDate", endDate.toString())
                         .param("from", from.toString())
                         .param("size",size.toString())
                         .param("orderBy", orderBy)
@@ -152,7 +152,7 @@ public class EbillsControllerTest extends AbstractWebServiceTest {
         // validate the request data
         EbillListRequest ebillRequest = retrieveRequest(EbillListRequest.class);
         EbillFilter filter = ebillRequest.getFilter();
-        assertEquals(FiservUtils.toFiservDate(fromLocalDate(startDate)).getDate(), filter.getStartingDate().getDate());
+        assertEquals(startDate.toString(), filter.getStartingDate().getDate());
         assertEquals(Integer.valueOf(20), filter.getNumberOfDays());
 
         // validate the request header

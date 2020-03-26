@@ -2,6 +2,7 @@ package com.backbase.billpay.fiserv.payees;
 
 import static com.backbase.billpay.fiserv.utils.FiservUtils.fromFiservDate;
 import static com.backbase.billpay.fiserv.utils.FiservUtils.toZonedDateTime;
+import static com.backbase.billpay.fiserv.utils.FiservUtils.toLocalDate;
 
 import com.backbase.billpay.fiserv.payees.model.PayeeSummary;
 import com.backbase.billpay.fiserv.payees.model.PaymentServices;
@@ -27,10 +28,8 @@ public class PaymentServicesMapper {
         ArrayList<PaymentService> paymentServices = new ArrayList<>();
         PaymentService regularPaymentService = new PaymentService()
                         .withCutoffTime(toZonedDateTime(source.getCutoffTime()))
-                        .withEarliestPaymentDate(toZonedDateTime(fromFiservDate(
-                            source.getEarliestPaymentDate())).toLocalDate())
-                        .withNextPaymentDate(toZonedDateTime(fromFiservDate(
-                            source.getNextPaymentDate())).toLocalDate())
+                        .withEarliestPaymentDate(toLocalDate(source.getEarliestPaymentDate()))
+                        .withNextPaymentDate(toLocalDate(source.getNextPaymentDate()))
                         .withDeliveryDays(source.getLeadDays())
                         .withPaymentServiceType("REGULAR_PAYMENT");
         paymentServices.add(regularPaymentService);
@@ -38,10 +37,8 @@ public class PaymentServicesMapper {
             for (PaymentServices service : source.getPaymentServices()) {
                 PaymentService paymentService = new PaymentService()
                                 .withCutoffTime(toZonedDateTime(service.getCutOffTime()))
-                                .withEarliestPaymentDate(toZonedDateTime(fromFiservDate(
-                                    service.getEarliestDate())).toLocalDate())
-                                .withNextPaymentDate(toZonedDateTime(fromFiservDate(
-                                    service.getNextDate())).toLocalDate())
+                                .withEarliestPaymentDate(toLocalDate(service.getEarliestDate()))
+                                .withNextPaymentDate(toLocalDate(service.getNextDate()))
                                 .withDeliveryDays(source.getLeadDays())
                                 .withFee(new Currency().withAmount(service.getFee()).withCurrencyCode(CURRENCY));
                 if (service.getPaymentService() == PaymentServiceType.OVERNIGHT_CHECK) {

@@ -1,6 +1,7 @@
 package com.backbase.billpay.fiserv.payments;
 
 import static com.backbase.billpay.fiserv.utils.FiservUtils.fromFiservDate;
+import static com.backbase.billpay.fiserv.utils.FiservUtils.fromLocalDate;
 import static com.backbase.billpay.fiserv.utils.FiservUtils.toFiservDate;
 import static com.backbase.billpay.fiserv.utils.PaginationUtils.paginateList;
 
@@ -38,6 +39,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringP
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutResponseBody;
 import com.backbase.buildingblocks.presentation.errors.NotFoundException;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
@@ -103,8 +105,10 @@ public class PaymentsServiceImpl implements PaymentsService {
     }
 
     @Override
-    public BillPayPaymentsGetResponseBody getBillPayPayments(Header header, String status, Date startDate, Date endDate,
+    public BillPayPaymentsGetResponseBody getBillPayPayments(Header header, String status, LocalDate sDate, LocalDate eDate,
                     String payeeId, String paymentType, Integer from, Integer size, String orderBy, String direction) {
+        Date startDate = fromLocalDate(sDate);
+        Date endDate = fromLocalDate(eDate);
 
         int numberOfDays;
         Date calculatedStartDate = startDate;

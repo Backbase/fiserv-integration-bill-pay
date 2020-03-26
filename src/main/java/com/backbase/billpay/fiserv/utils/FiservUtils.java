@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 public class FiservUtils {
     
     private static final String FISERV_DATE_FORMAT = "yyyy-MM-dd";
+    private static final ZoneId EST = ZoneId.of("America/New_York");
 
     @Value("${backbase.billpay.provider.clientAppText}")
     private String clientAppText;
@@ -82,8 +83,7 @@ public class FiservUtils {
      * @return a ZonedDateTime object with Eastern time zone
      */
     public static ZonedDateTime toZonedDateTime(Date date) {
-        ZoneId est = ZoneId.of("America/New_York");
-        return ZonedDateTime.ofInstant(date.toInstant(), est);
+        return ZonedDateTime.ofInstant(date.toInstant(), EST);
     }
 
     /**
@@ -95,7 +95,15 @@ public class FiservUtils {
         if (date == null) {
             return null;
         }
-        ZoneId est = ZoneId.of("America/New_York");
-        return Date.from(date.atStartOfDay(est).toInstant());
+        return Date.from(date.atStartOfDay(EST).toInstant());
+    }
+
+    /**
+     * Convert Fiserv Bldr date to LocalDate
+     * @param date the Fiserv date string
+     * @return The Local Date object
+     */
+    public static LocalDate toLocalDate(BldrDate date) {
+        return LocalDate.parse(date.getDate());
     }
 }
