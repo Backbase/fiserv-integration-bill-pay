@@ -328,8 +328,8 @@ public class PayeesSummaryControllerTest extends AbstractWebServiceTest {
         if (expectedPayment == null) {
             assertNull(nextPayment);
         } else {
-            assertEquals(LocalDate.parse(expectedPayment.getPaymentDate().getDate()),
-                nextPayment.getPaymentDate());
+            assertEquals(expectedPayment.getPaymentDate().getDate(),
+                nextPayment.getPaymentDate().toString());
             assertEquals(expectedPayment.getAmount(), nextPayment.getAmount().getAmount());
             assertEquals(CURRENCY, nextPayment.getAmount().getCurrencyCode());
             assertEquals(expectedPayment.getRecurringModelPayment(), nextPayment.getRecurring());

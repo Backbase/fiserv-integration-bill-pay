@@ -15,6 +15,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessummary.NextP
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payeessummary.PayeeSummary;
 import com.backbase.rest.spec.common.types.Currency;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -82,7 +83,7 @@ public interface PayeesSummaryMapper {
     })
     Currency toCurrency(BigDecimal source);
 
-    default Date toDate(BldrDate source) {
-        return FiservUtils.fromFiservDate(source);
+    default LocalDate toDate(BldrDate source) {
+        return FiservUtils.toLocalDate(source);
     }
 }

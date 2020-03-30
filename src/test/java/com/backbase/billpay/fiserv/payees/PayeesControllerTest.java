@@ -78,7 +78,7 @@ import org.springframework.http.MediaType;
 
 public class PayeesControllerTest extends AbstractWebServiceTest {
 
-    private static final ZoneId EST = ZoneId.of("America/New_York");;
+    private static final ZoneId EST = ZoneId.of("America/New_York");
     private static final String URL = "/service-api/v2/bill-pay/payees";
     private static final String ELECTRONIC_ENDPOINT = "/electronic";
     private static final String ID_ENDPOINT = "/{id}";

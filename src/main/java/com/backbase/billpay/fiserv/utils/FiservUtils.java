@@ -83,6 +83,9 @@ public class FiservUtils {
      * @return a ZonedDateTime object with Eastern time zone
      */
     public static ZonedDateTime toZonedDateTime(Date date) {
+        if (date == null) {
+            return null;
+        }
         return ZonedDateTime.ofInstant(date.toInstant(), EST);
     }
 
@@ -104,6 +107,9 @@ public class FiservUtils {
      * @return The Local Date object
      */
     public static LocalDate toLocalDate(BldrDate date) {
+        if (date == null) {
+            return null;
+        }
         return LocalDate.parse(date.getDate());
     }
 }

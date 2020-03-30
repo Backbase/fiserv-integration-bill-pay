@@ -7,6 +7,7 @@ import static com.backbase.billpay.fiserv.utils.PaginationUtils.paginateList;
 import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.fiserv.ebills.model.EbillAccountCancelRequest;
 import com.backbase.billpay.fiserv.ebills.model.EbillFileRequest;
+import com.backbase.billpay.fiserv.payees.model.BldrDate;
 import com.backbase.billpay.fiserv.payeessummary.model.Ebill;
 import com.backbase.billpay.fiserv.payeessummary.model.Ebill.EbillStatus;
 import com.backbase.billpay.fiserv.payeessummary.model.EbillFilter;
@@ -60,23 +61,21 @@ public class EbillsServiceImpl implements EbillsService {
     }
     
     @Override
-    public BillPayEbillsGetResponseBody getEbills(Header header, String payeeId, String status, LocalDate sDate,
-                    LocalDate eDate, Integer from, Integer size, String orderBy, String direction) {
-        Date startDate = fromLocalDate(sDate);
-        Date endDate = fromLocalDate(eDate);
+    public BillPayEbillsGetResponseBody getEbills(Header header, String payeeId, String status, LocalDate startDate,
+                    LocalDate endDate, Integer from, Integer size, String orderBy, String direction) {
 
         EbillFilter ebillFilter = null;
         if (startDate != null || endDate != null) {
             ebillFilter = new EbillFilter();
             if (startDate != null && endDate != null) {
-                ebillFilter.setStartingDate(toFiservDate(startDate));
+                ebillFilter.setStartingDate(BldrDate.builder().date(startDate.toString()).build());
                 ebillFilter.setNumberOfDays(
-                                (int) Duration.between(startDate.toInstant(), endDate.toInstant()).toDays());
+                                (int) Duration.between(startDate.atStartOfDay(), endDate.atStartOfDay()).toDays());
             } else if (startDate == null) {
-                ebillFilter.setStartingDate(toFiservDate(endDate));
+                ebillFilter.setStartingDate(BldrDate.builder().date(endDate.toString()).build());
                 ebillFilter.setNumberOfDays(NEGATIVE_MAX_DAYS);
             } else {
-                ebillFilter.setStartingDate(toFiservDate(startDate));
+                ebillFilter.setStartingDate(BldrDate.builder().date(startDate.toString()).build());
                 ebillFilter.setNumberOfDays(POSITIVE_MAX_DAYS);
             }
         }

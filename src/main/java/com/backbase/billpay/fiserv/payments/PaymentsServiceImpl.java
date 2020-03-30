@@ -105,15 +105,13 @@ public class PaymentsServiceImpl implements PaymentsService {
     }
 
     @Override
-    public BillPayPaymentsGetResponseBody getBillPayPayments(Header header, String status, LocalDate sDate, LocalDate eDate,
+    public BillPayPaymentsGetResponseBody getBillPayPayments(Header header, String status, LocalDate startDate, LocalDate endDate,
                     String payeeId, String paymentType, Integer from, Integer size, String orderBy, String direction) {
-        Date startDate = fromLocalDate(sDate);
-        Date endDate = fromLocalDate(eDate);
 
         int numberOfDays;
-        Date calculatedStartDate = startDate;
+        LocalDate calculatedStartDate = startDate;
         if (calculatedStartDate == null && endDate == null) {
-            calculatedStartDate = Date.from(ZonedDateTime.now().plusDays(POSITIVE_MAX_DAYS).toInstant());
+            calculatedStartDate = LocalDate.now().plusDays(POSITIVE_MAX_DAYS);
             numberOfDays = NEGATIVE_MAX_DAYS;
         } else if (calculatedStartDate == null) {
             calculatedStartDate = endDate;
@@ -121,10 +119,10 @@ public class PaymentsServiceImpl implements PaymentsService {
         } else if (endDate == null) {
             numberOfDays = POSITIVE_MAX_DAYS;
         } else {
-            numberOfDays = (int) ChronoUnit.DAYS.between(calculatedStartDate.toInstant(), endDate.toInstant());
+            numberOfDays = (int) ChronoUnit.DAYS.between(calculatedStartDate, endDate);
         }
 
-        BldrDate bldrStartDate = toFiservDate(calculatedStartDate);
+        BldrDate bldrStartDate = BldrDate.builder().date(calculatedStartDate.toString()).build();
         PaymentListResponse response = client.call(PaymentListRequest.builder()
                                               .filter(PaymentFilter.builder()
                                                                    .numberOfDays(numberOfDays)
