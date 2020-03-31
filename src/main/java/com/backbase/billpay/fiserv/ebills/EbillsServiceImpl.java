@@ -1,11 +1,13 @@
 package com.backbase.billpay.fiserv.ebills;
 
+import static com.backbase.billpay.fiserv.utils.FiservUtils.fromLocalDate;
 import static com.backbase.billpay.fiserv.utils.FiservUtils.toFiservDate;
 import static com.backbase.billpay.fiserv.utils.PaginationUtils.paginateList;
 
 import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.fiserv.ebills.model.EbillAccountCancelRequest;
 import com.backbase.billpay.fiserv.ebills.model.EbillFileRequest;
+import com.backbase.billpay.fiserv.payees.model.BldrDate;
 import com.backbase.billpay.fiserv.payeessummary.model.Ebill;
 import com.backbase.billpay.fiserv.payeessummary.model.Ebill.EbillStatus;
 import com.backbase.billpay.fiserv.payeessummary.model.EbillFilter;
@@ -16,6 +18,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.i
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.EbillByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.EbillByIdPutResponseBody;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -58,21 +61,21 @@ public class EbillsServiceImpl implements EbillsService {
     }
     
     @Override
-    public BillPayEbillsGetResponseBody getEbills(Header header, String payeeId, String status, Date startDate,
-                    Date endDate, Integer from, Integer size, String orderBy, String direction) {
-        
+    public BillPayEbillsGetResponseBody getEbills(Header header, String payeeId, String status, LocalDate startDate,
+                    LocalDate endDate, Integer from, Integer size, String orderBy, String direction) {
+
         EbillFilter ebillFilter = null;
         if (startDate != null || endDate != null) {
             ebillFilter = new EbillFilter();
             if (startDate != null && endDate != null) {
-                ebillFilter.setStartingDate(toFiservDate(startDate));
+                ebillFilter.setStartingDate(BldrDate.builder().date(startDate.toString()).build());
                 ebillFilter.setNumberOfDays(
-                                (int) Duration.between(startDate.toInstant(), endDate.toInstant()).toDays());
+                                (int) Duration.between(startDate.atStartOfDay(), endDate.atStartOfDay()).toDays());
             } else if (startDate == null) {
-                ebillFilter.setStartingDate(toFiservDate(endDate));
+                ebillFilter.setStartingDate(BldrDate.builder().date(endDate.toString()).build());
                 ebillFilter.setNumberOfDays(NEGATIVE_MAX_DAYS);
             } else {
-                ebillFilter.setStartingDate(toFiservDate(startDate));
+                ebillFilter.setStartingDate(BldrDate.builder().date(startDate.toString()).build());
                 ebillFilter.setNumberOfDays(POSITIVE_MAX_DAYS);
             }
         }

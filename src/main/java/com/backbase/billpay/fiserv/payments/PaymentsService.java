@@ -12,7 +12,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.PaymentByI
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutResponseBody;
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Interface for payment operations.
@@ -41,7 +41,7 @@ public interface PaymentsService {
      * @return payments response.
      */
     BillPayPaymentsGetResponseBody getBillPayPayments(
-            Header header, String status, Date startDate, Date endDate, String payeeId, String paymentType,
+            Header header, String status, LocalDate startDate, LocalDate endDate, String payeeId, String paymentType,
             Integer from, Integer size, String orderBy, String direction);
     
     /**

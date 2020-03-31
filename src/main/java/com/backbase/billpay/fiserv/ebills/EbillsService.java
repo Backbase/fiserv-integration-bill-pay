@@ -4,7 +4,7 @@ import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.BillPayEbillsGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.EbillByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.EbillByIdPutResponseBody;
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Interface for eBill operations.
@@ -31,7 +31,7 @@ public interface EbillsService {
      * @param direction direction to return eBills.
      * @return eBills
      */
-    BillPayEbillsGetResponseBody getEbills(Header header, String payeeId, String status, Date startDate, Date endDate, //NOSONAR
+    BillPayEbillsGetResponseBody getEbills(Header header, String payeeId, String status, LocalDate startDate, LocalDate endDate, //NOSONAR
                     Integer from, Integer size, String orderBy, String direction);
     
     /**

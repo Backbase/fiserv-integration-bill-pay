@@ -5,6 +5,9 @@ import com.backbase.billpay.fiserv.payees.model.BldrDate;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Component;
 public class FiservUtils {
     
     private static final String FISERV_DATE_FORMAT = "yyyy-MM-dd";
+    private static final ZoneId EST = ZoneId.of("America/New_York");
 
     @Value("${backbase.billpay.provider.clientAppText}")
     private String clientAppText;
@@ -71,5 +75,41 @@ public class FiservUtils {
     
     public static BldrDate todayFiservDate() {
         return toFiservDate(new Date());
+    }
+
+    /**
+     * Covert a Date to a ZonedDateTime object with Eastern time zone.
+     * @param date the date to convert
+     * @return a ZonedDateTime object with Eastern time zone
+     */
+    public static ZonedDateTime toZonedDateTime(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return ZonedDateTime.ofInstant(date.toInstant(), EST);
+    }
+
+    /**
+     * Convert LocalDate to Date object with Eastern time zone.
+     * @param date the date to be converted
+     * @return a Date object with Eastern time zone
+     */
+    public static Date fromLocalDate(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
+        return Date.from(date.atStartOfDay(EST).toInstant());
+    }
+
+    /**
+     * Convert Fiserv Bldr date to LocalDate
+     * @param date the Fiserv date string
+     * @return The Local Date object
+     */
+    public static LocalDate toLocalDate(BldrDate date) {
+        if (date == null) {
+            return null;
+        }
+        return LocalDate.parse(date.getDate());
     }
 }

@@ -1,5 +1,7 @@
 package com.backbase.billpay.fiserv.ebills;
 
+import static com.backbase.billpay.fiserv.utils.FiservUtils.fromLocalDate;
+
 import com.backbase.billpay.fiserv.common.model.Header;
 import com.backbase.billpay.fiserv.utils.AbstractController;
 import com.backbase.billpay.integration.rest.spec.serviceapi.v2.billpay.payees.electronic.id.ebills.BillPayEbillsApi;
@@ -7,6 +9,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.i
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.BillPayEbillsGetResponseBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.EbillByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.electronic.id.ebills.EbillByIdPutResponseBody;
+import java.time.LocalDate;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,8 +39,8 @@ public class EbillsController extends AbstractController implements BillPayEbill
     }
     
     @Override
-    public BillPayEbillsGetResponseBody getBillPayEbills(String payeeId, String subscriberId, String status, Date startDate,
-                    Date endDate, Integer from, Integer size, String orderBy, String direction,
+    public BillPayEbillsGetResponseBody getBillPayEbills(String payeeId, String subscriberId, String status, LocalDate startDate,
+                    LocalDate endDate, Integer from, Integer size, String orderBy, String direction,
                     HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         logger.debug("Retrieving eBills for payee with id: {}, status: {}, startDate: {}, endDate: {}, from: {}, "
                         + "size: {}, orderBy: {}, direction: {}", payeeId, status, startDate, endDate, from, size,

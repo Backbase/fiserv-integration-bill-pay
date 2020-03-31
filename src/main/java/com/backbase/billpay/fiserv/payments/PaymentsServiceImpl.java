@@ -1,6 +1,7 @@
 package com.backbase.billpay.fiserv.payments;
 
 import static com.backbase.billpay.fiserv.utils.FiservUtils.fromFiservDate;
+import static com.backbase.billpay.fiserv.utils.FiservUtils.fromLocalDate;
 import static com.backbase.billpay.fiserv.utils.FiservUtils.toFiservDate;
 import static com.backbase.billpay.fiserv.utils.PaginationUtils.paginateList;
 
@@ -38,6 +39,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringP
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutRequestBody;
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutResponseBody;
 import com.backbase.buildingblocks.presentation.errors.NotFoundException;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
@@ -103,13 +105,13 @@ public class PaymentsServiceImpl implements PaymentsService {
     }
 
     @Override
-    public BillPayPaymentsGetResponseBody getBillPayPayments(Header header, String status, Date startDate, Date endDate,
+    public BillPayPaymentsGetResponseBody getBillPayPayments(Header header, String status, LocalDate startDate, LocalDate endDate,
                     String payeeId, String paymentType, Integer from, Integer size, String orderBy, String direction) {
 
         int numberOfDays;
-        Date calculatedStartDate = startDate;
+        LocalDate calculatedStartDate = startDate;
         if (calculatedStartDate == null && endDate == null) {
-            calculatedStartDate = Date.from(ZonedDateTime.now().plusDays(POSITIVE_MAX_DAYS).toInstant());
+            calculatedStartDate = LocalDate.now().plusDays(POSITIVE_MAX_DAYS);
             numberOfDays = NEGATIVE_MAX_DAYS;
         } else if (calculatedStartDate == null) {
             calculatedStartDate = endDate;
@@ -117,10 +119,10 @@ public class PaymentsServiceImpl implements PaymentsService {
         } else if (endDate == null) {
             numberOfDays = POSITIVE_MAX_DAYS;
         } else {
-            numberOfDays = (int) ChronoUnit.DAYS.between(calculatedStartDate.toInstant(), endDate.toInstant());
+            numberOfDays = (int) ChronoUnit.DAYS.between(calculatedStartDate, endDate);
         }
 
-        BldrDate bldrStartDate = toFiservDate(calculatedStartDate);
+        BldrDate bldrStartDate = BldrDate.builder().date(calculatedStartDate.toString()).build();
         PaymentListResponse response = client.call(PaymentListRequest.builder()
                                               .filter(PaymentFilter.builder()
                                                                    .numberOfDays(numberOfDays)

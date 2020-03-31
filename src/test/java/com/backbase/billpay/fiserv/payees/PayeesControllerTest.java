@@ -1,6 +1,7 @@
 package com.backbase.billpay.fiserv.payees;
 
 import static com.backbase.billpay.fiserv.payees.PaymentServicesMapper.CURRENCY;
+import static com.backbase.billpay.fiserv.utils.FiservUtils.toZonedDateTime;
 import static com.backbase.billpay.fiserv.utils.FiservUtils.todayFiservDate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -67,6 +68,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.PutElectroni
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payees.PutRequestPayee;
 import com.backbase.buildingblocks.presentation.errors.NotFoundException;
 import java.math.BigDecimal;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -75,7 +77,8 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 
 public class PayeesControllerTest extends AbstractWebServiceTest {
-    
+
+    private static final ZoneId EST = ZoneId.of("America/New_York");
     private static final String URL = "/service-api/v2/bill-pay/payees";
     private static final String ELECTRONIC_ENDPOINT = "/electronic";
     private static final String ID_ENDPOINT = "/{id}";
@@ -219,14 +222,16 @@ public class PayeesControllerTest extends AbstractWebServiceTest {
         
         List<PaymentService> paymentServices = payee.getPaymentServices();
         PaymentService regularPaymentService = paymentServices.get(0);
-        assertEquals(payeeSummary.getCutoffTime(), regularPaymentService.getCutoffTime());
+        assertEquals(toZonedDateTime(payeeSummary.getCutoffTime()), regularPaymentService.getCutoffTime()
+            .withZoneSameInstant(EST));
         assertEquals("REGULAR_PAYMENT", regularPaymentService.getPaymentServiceType());
         assertEquals(payeeSummary.getLeadDays(), regularPaymentService.getDeliveryDays());
         assertNull(regularPaymentService.getFee());
         
         PaymentService overnightCheckPaymentService = paymentServices.get(1);
         PaymentServices paymentServicesOvernightCheck = payeeSummary.getPaymentServices().get(0);
-        assertEquals(paymentServicesOvernightCheck.getCutOffTime(), overnightCheckPaymentService.getCutoffTime());
+        assertEquals(toZonedDateTime(paymentServicesOvernightCheck.getCutOffTime()), overnightCheckPaymentService
+            .getCutoffTime().withZoneSameInstant(EST));
         assertEquals("OVERNIGHT_CHECK", overnightCheckPaymentService.getPaymentServiceType());
         assertEquals(payeeSummary.getLeadDays(), overnightCheckPaymentService.getDeliveryDays());
         assertEquals(paymentServicesOvernightCheck.getFee(), overnightCheckPaymentService.getFee().getAmount());
@@ -234,7 +239,8 @@ public class PayeesControllerTest extends AbstractWebServiceTest {
         
         PaymentService expeditedPaymentService = paymentServices.get(2);
         PaymentServices paymentServicesExpeditedPayment = payeeSummary.getPaymentServices().get(1);
-        assertEquals(paymentServicesExpeditedPayment.getCutOffTime(), expeditedPaymentService.getCutoffTime());
+        assertEquals(toZonedDateTime(paymentServicesExpeditedPayment.getCutOffTime()), expeditedPaymentService.
+            getCutoffTime().withZoneSameInstant(EST));
         assertEquals("EXPEDITED_PAYMENT", expeditedPaymentService.getPaymentServiceType());
         assertEquals(payeeSummary.getLeadDays(), expeditedPaymentService.getDeliveryDays());
         assertEquals(paymentServicesExpeditedPayment.getFee(), expeditedPaymentService.getFee().getAmount());
@@ -537,20 +543,23 @@ public class PayeesControllerTest extends AbstractWebServiceTest {
         
         List<PaymentService> paymentServices = payee.getPaymentServices();
         PaymentService regularPaymentService = paymentServices.get(0);
-        assertEquals(payeeSummary.getCutoffTime(), regularPaymentService.getCutoffTime());
+        assertEquals(toZonedDateTime(payeeSummary.getCutoffTime()), regularPaymentService.getCutoffTime()
+            .withZoneSameInstant(EST));
         assertEquals("REGULAR_PAYMENT", regularPaymentService.getPaymentServiceType());
         assertEquals(payeeSummary.getLeadDays(), regularPaymentService.getDeliveryDays());
         assertNull(regularPaymentService.getFee());
         
         PaymentService overnightCheckPaymentService = paymentServices.get(1);
-        assertEquals(paymentServicesOvernightCheck.getCutOffTime(), overnightCheckPaymentService.getCutoffTime());
+        assertEquals(toZonedDateTime(paymentServicesOvernightCheck.getCutOffTime()),
+            overnightCheckPaymentService.getCutoffTime().withZoneSameInstant(EST));
         assertEquals("OVERNIGHT_CHECK", overnightCheckPaymentService.getPaymentServiceType());
         assertEquals(payeeSummary.getLeadDays(), overnightCheckPaymentService.getDeliveryDays());
         assertEquals(paymentServicesOvernightCheck.getFee(), overnightCheckPaymentService.getFee().getAmount());
         assertEquals(CURRENCY, overnightCheckPaymentService.getFee().getCurrencyCode());
         
         PaymentService expeditedPaymentService = paymentServices.get(2);
-        assertEquals(paymentServicesExpeditedPayment.getCutOffTime(), expeditedPaymentService.getCutoffTime());
+        assertEquals(toZonedDateTime(paymentServicesExpeditedPayment.getCutOffTime()), expeditedPaymentService
+            .getCutoffTime().withZoneSameInstant(EST));
         assertEquals("EXPEDITED_PAYMENT", expeditedPaymentService.getPaymentServiceType());
         assertEquals(payeeSummary.getLeadDays(), expeditedPaymentService.getDeliveryDays());
         assertEquals(paymentServicesExpeditedPayment.getFee(), expeditedPaymentService.getFee().getAmount());
@@ -564,7 +573,7 @@ public class PayeesControllerTest extends AbstractWebServiceTest {
         LatestBill latestBill = responseEbill.getLatestBill();
 
         assertEquals(ebill.getEbillId(), latestBill.getId());
-        assertEquals(ebill.getDueDate(), latestBill.getPaymentDate());
+        assertEquals(toZonedDateTime(ebill.getDueDate()).toLocalDate(), latestBill.getPaymentDate());
         assertEquals(ebill.getAmountDue(), latestBill.getAmount().getAmount());
         assertEquals(CURRENCY, latestBill.getAmount().getCurrencyCode());
         assertEquals(ebill.getMinimumAmountDue(), latestBill.getMinAmountDue().getAmount());

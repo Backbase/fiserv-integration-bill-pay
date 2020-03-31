@@ -54,6 +54,7 @@ import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringP
 import com.backbase.billpay.integration.rest.spec.v2.billpay.payments.RecurringPaymentByIdPutResponseBody;
 import com.backbase.rest.spec.common.types.Currency;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 import org.junit.Test;
 import org.springframework.http.MediaType;
@@ -209,7 +210,7 @@ public class PaymentsControllerTest extends AbstractWebServiceTest {
                                                                                   .withAccountNumber("1234")
                                                                                   .withAccountType("DDA")
                                                                                   .withRoutingNumber("4321"))
-                                                          .withPaymentDate("2020-12-23")
+                                                          .withPaymentDate(LocalDate.parse("2020-12-23"))
                                                           .withPaymentMemo("memo1")));
                         
         String stringRequest = objectMapper.writeValueAsString(request);
@@ -265,7 +266,7 @@ public class PaymentsControllerTest extends AbstractWebServiceTest {
                                                                   .withAccountNumber("1234")
                                                                   .withAccountType("DDA")
                                                                   .withRoutingNumber("4321"))
-                                          .withPaymentDate("2020-12-23")
+                                          .withPaymentDate(LocalDate.parse("2020-12-23"))
                                           .withPaymentMemo("memo1"));
                         
         String stringRequest = objectMapper.writeValueAsString(request);
@@ -499,7 +500,7 @@ public class PaymentsControllerTest extends AbstractWebServiceTest {
                                                                   .withAccountNumber("1234")
                                                                   .withAccountType("DDA")
                                                                   .withRoutingNumber("4321"))
-                                          .withPaymentDate("2020-12-23")
+                                          .withPaymentDate(LocalDate.parse("2020-12-23"))
                                           .withPaymentMemo("Payment memo")
                                           .withModelExpirationAlert(true)
                                           .withPaymentScheduledAlert(true)
@@ -560,7 +561,7 @@ public class PaymentsControllerTest extends AbstractWebServiceTest {
                                                                   .withAccountNumber("1234")
                                                                   .withAccountType("DDA")
                                                                   .withRoutingNumber("4321"))
-                                          .withPaymentDate("2020-12-23")
+                                          .withPaymentDate(LocalDate.parse("2020-12-23"))
                                           .withPaymentMemo("Payment memo")
                                           .withModelExpirationAlert(true)
                                           .withPaymentScheduledAlert(true)
