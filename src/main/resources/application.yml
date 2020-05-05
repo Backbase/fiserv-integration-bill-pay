@@ -4,10 +4,8 @@ spring:
 
 backbase:
   security:
-    public:
-      paths: /**
     mtls:
-      enabled: true
+      paths: /integration-api/**
 
 sso:
   jwt:
