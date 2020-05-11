@@ -8,6 +8,9 @@ logging:
     org.springframework: INFO
 
 backbase:
+  security:
+    public:
+      paths: /**
   billpay: 
     provider:
       url: http://localhost:1080/fiserv
